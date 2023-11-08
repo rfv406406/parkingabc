@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Kalam&family=Noto+Sans+TC&display=swap');
+
+body{
+    margin: 0;
+}
+
+.nav{
+    display:flex;
+    align-items: center;
+    padding: 10px;
+    width:340px;
+    height:30px;
+    background-color: #0E578D;
+    border-radius: 12px 12px 0 0;
+}
+
+.logo{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    min-width:32px;
+    height:32px;
+    border-radius: 50%;
+    background-color: #BDE3FF;
+    margin-right: 10px;
+}
+
+.logo .text{
+    color: #0D99FF;
+    font-family: 'ABeeZee', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.wakachiau{
+    color: #BDE3FF;
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.PARKING{
+    color: #BDE3FF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.menu_container{
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.menu{
+    width: 80px;
+    height: 32px;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 24px */
+    border-radius: 12px;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:360px;
+    height: 50px;
+    background-color: #0E578D;
+    border-radius:0 0 12px 12px;
+}
+
+.footer_content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:#BDE3FF;
+}
+
+.footer_content img{
+    width: 17px;
+    height: 17px;
+    object-fit: cover;
+    cursor: pointer;
+    margin-right: 10px;
+}
+   
+.menu-hidden {
+    position: fixed;
+    top: 50px;
+    right: -100%;
+    width: 100%;
+    background: rgb(15, 155, 143);
+    overflow-x: hidden;
+    transition: 0.3s;
+}
+
+.toggle-menu {
+    right: 0; /* the width you want for your menu */
+}
+
+.list{
+    display:flex;
+    align-items: center;
+    padding: 5px;
+    width: 100%;
+    height:30px;
+    background: #fefefe;
+    margin-bottom: 1px;
+}
+
+.main{
+    display:flex;
+    align-items: center;
+    padding: 10px;
+    width:340px;
+    height:360px;
+    background-color: #BDE3FF;
+}
+
+.signin-container{
+    width:100%;
+    height:340px;
+    padding: 5px;
+    border-radius: 12px;
+    border:#1E1E1E,solid,1px;
+}
+
+.signin-container .header{
+    width:100%;
+    height:20px;
+    border-radius: 12px 12px 0 0;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
+}
+
+.header .close{
+    width: 50px;
+    height: 24px;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 24px */
+    border-radius: 12px;
+}
+
+.close img{
+    width: 17px;
+    height: 17px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.signin-form{
+    width: 100%;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    gap: 10px;
+}
+
+.signin-form .input-box{
+    width:100%;
+    height:auto;
+}
+
+.signin-container .text{
+    width:80%;
+    height:20px;
+}
+
+.signin-container .consistent-text{
+    font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
+    line-height: 1.6;
+}
+
+.signin-button{
+    width: 80px;
+    height: 40px;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    border-radius: 12px;
+}
+
+.signon-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 24px */
+    border-radius: 12px;
+}
+
+.go-signon{
+    width: 80px;
+    height: 40px;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 24px */
+    border-radius: 12px;
+}
+
+.signin-container .footer{
+    width:100%;
+    height:20px;
+    border-radius:0 0 12px 12px;
+    background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
+}
