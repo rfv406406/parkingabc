@@ -92,7 +92,7 @@ body{
     margin-right: 10px;
 }
    
-.menu-hidden {
+.menuContent {
     position: fixed;
     top: 50px;
     right: -100%;
@@ -102,7 +102,7 @@ body{
     transition: 0.3s;
 }
 
-.toggle-menu {
+.menuContent_toggled {
     right: 0; /* the width you want for your menu */
 }
 
@@ -116,25 +116,44 @@ body{
     margin-bottom: 1px;
 }
 
-.main{
-    display:flex;
-    align-items: center;
-    padding: 10px;
+.black-back{
+    display: none; /* 預設為隱藏 */
+    position: fixed; /* 讓彈出窗口固定在畫面上，不受滾動影響 */
+    top: 0;
+    left: 0;
+    width: 100%; /* 覆蓋整個視窗的寬度 */
+    height: 100%; /* 覆蓋整個視窗的高度 */
+    background-color: rgba(0, 0, 0, 0.25); /* 透明黑色背景，可產生半透明的遮罩效果 */
+    z-index: 1000; /* 確保在其他元素之上 */
+}
+
+.black-back-toggled{
+    display: block;
+}
+
+.signin-container, .signon-container{
     width:340px;
-    height:360px;
-    background-color: #BDE3FF;
-}
-
-.signin-container{
-    width:100%;
-    height:340px;
-    padding: 5px;
+    /* height:100%; */
+    display:none;
+    position: absolute; /* 相對於.modal定位 */
+    top: 30%; /* 將其移至父元素的中央 */
+    left: 50%; /* 將其移至父元素的中央 */
+    transform: translate(-50%, -50%); /* 使用transform確保完美居中 */
+    /* padding: 5px; */
     border-radius: 12px;
-    border:#1E1E1E,solid,1px;
+    /* margin: auto; */
+    border: 0.5px solid #0E578D;
+    background: #fefefe;
+    margin-top: 5px;
+    z-index: 1000; /* 確保在其他元素之上 */
 }
 
-.signin-container .header{
-    width:100%;
+.signin-container-toggled, .signon-container-toggled{
+    display: block;
+}
+
+.signin-container .header, .signon-container .header{
+    /* width:100%; */
     height:20px;
     border-radius: 12px 12px 0 0;
     display:flex;
@@ -163,8 +182,8 @@ body{
     cursor: pointer;
 }
 
-.signin-form{
-    width: 100%;
+.signin-form, .signon-form{
+    /* width: 100%; */
     display:flex;
     flex-direction: column;
     align-items: center;
@@ -172,23 +191,25 @@ body{
     gap: 10px;
 }
 
-.signin-form .input-box{
+.signin-form .input-box, .signon-form .input-box{
+    display:flex;
+    justify-content: end;
     width:100%;
     height:auto;
 }
 
-.signin-container .text{
-    width:80%;
+.signin-container .text, .signon-container .text{
     height:20px;
+    margin-right: 20%;
 }
 
-.signin-container .consistent-text{
+.signin-container .consistent-text, .signon-container .consistent-text{
     font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
     line-height: 1.6;
 }
 
-.signin-button{
-    width: 80px;
+.signin-button, .signon-button{
+    width: 100px;
     height: 40px;
     color: #1E1E1E;
     font-family: Inter;
@@ -198,7 +219,7 @@ body{
     border-radius: 12px;
 }
 
-.signon-container{
+.signon-go-container, .signin-return-container{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -211,7 +232,7 @@ body{
     border-radius: 12px;
 }
 
-.go-signon{
+.go-signon, .return-signin{
     width: 80px;
     height: 40px;
     color: #1E1E1E;
@@ -223,9 +244,18 @@ body{
     border-radius: 12px;
 }
 
-.signin-container .footer{
+.signin-container .footer, .signon-container .footer{
     width:100%;
     height:20px;
     border-radius:0 0 12px 12px;
     background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
+}
+
+.main{
+    display:flex;
+    align-items: center;
+    padding: 10px;
+    width:340px;
+    height:360px;
+    background-color: #F5FBFF;
 }
