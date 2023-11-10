@@ -16,6 +16,7 @@ function setupToggle(buttonSelector, toggles) {
   });
 }
 
+//base
 //使用函式來設置事件監聽器
 setupToggle('#menu', [
   { elementSelector: '#menuContent', classToToggle: 'menuContent_toggled' }
@@ -43,5 +44,19 @@ setupToggle('#close-signon', [
   { elementSelector: '#menuContent', classToToggle: 'menuContent_toggled' }
 ]);
 
+// //id
+// setupToggle('#edit-button', [
+//   { elementSelector: '#information-page', classToToggle: 'information-page-toggled' },
+//   { elementSelector: '#information-container', classToToggle: 'information-container-toggled' }
+// ]);
 
+// setupToggle('#close-information', [
+//   { elementSelector: '#information-page', classToToggle: 'information-page-toggled' },
+//   { elementSelector: '#information-container', classToToggle: 'information-container-toggled' }
+// ]);
 
+//plate_board
+setupToggle('#plate-board-edit-button', [
+  { elementSelector: '#plate-board-container-header', classToToggle: 'plate-board-container-header-toggled' },
+  { elementSelector: '#plate-board-information', classToToggle: 'plate-board-information-toggled' }
+]);

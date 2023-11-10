@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Kalam&family=Noto+Sans+TC&display=swap');
+
 
 body{
     margin: 0;
@@ -8,10 +8,11 @@ body{
     display:flex;
     align-items: center;
     padding: 10px;
-    width:340px;
-    height:30px;
+    width:100%;
+    height:50px;
     background-color: #0E578D;
     border-radius: 12px 12px 0 0;
+    box-sizing: border-box;
 }
 
 .logo{
@@ -71,7 +72,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    width:360px;
+    width:100%;
     height: 50px;
     background-color: #0E578D;
     border-radius:0 0 12px 12px;
@@ -251,11 +252,3 @@ body{
     background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
 }
 
-.main{
-    display:flex;
-    align-items: center;
-    padding: 10px;
-    width:340px;
-    height:360px;
-    background-color: #F5FBFF;
-}

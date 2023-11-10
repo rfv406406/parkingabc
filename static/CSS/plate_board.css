@@ -1,0 +1,94 @@
+.plate-board-container{
+    margin: auto;
+    width: 90%;
+    padding: 10px;
+}
+
+.plate-board-container-header{
+    display:none;
+    width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+    border: 2px solid #E8E8E8;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
+    line-height: 1.6;
+}
+
+.plate-board-container-header-toggled{
+    display:block;
+}
+
+.plate-board-container .message_content{
+    height: 20px;
+}
+
+
+.plate-board-container .edit-button{
+    width:100px;
+    height:50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    border-radius: 12px;
+    background: #fefefe;
+    margin: 20px auto 10px auto;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size:24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 24px */
+}
+
+
+.separator{
+    width: 100%;
+    height: 1px;
+    background-color: #d2d2d2;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.board-number{
+    width:100px;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    border-radius: 12px;
+    margin: auto;
+    border: 0.5px solid #0E578D;
+    background: #fefefe;
+    margin-top: 20px;
+}
+
+
+.plate-board-information{
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    margin: auto;
+    border: 1px solid #d4d6d7;
+    box-sizing: border-box;
+}
+
+.plate-board-information-toggled{
+    display: none;
+}
+
+.plate-board-information .fig{
+    width: 100%;
+    height: 100%;
+}
+
+.plate-board-information .fig img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
