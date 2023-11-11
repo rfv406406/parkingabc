@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/CSS/base.css">
+    <link rel="stylesheet" href="../static/CSS/id.css">
+    <link rel="stylesheet" href="../static/CSS/plate_board.css">
+    <link rel="stylesheet" href="../static/CSS/parking_lot.css">
+    <link rel="stylesheet" href="../static/CSS/selector.css">
+    <title>首頁</title>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">
+            <div class="text">享</div>
+        </div>
+        <div>
+            <div class="wakachiau">wakachiau</div>
+            <div class="PARKING">PARKING</div>
+        </div>
+        <div class="menu_container">
+            <button class="menu" id="menu">MENU</button>
+        </div>
+    </nav>
+       <div class="menuContent" id="menuContent">
+        <div class="list">帳戶資訊</div>
+        <div class="list">你的車車</div>
+        <div class="list">篩選條件</div>
+        <div class="list">停車頁面</div>
+        <div class="list">停車紀錄</div>
+        <div class="list">通報業主</div>
+        <div class="list">付款頁面</div>
+        <div class="list" id="signin-button-list">登入</div>
+       </div>
+
+    <div class="black-back" id="black-back">
+        <div class="signin-container" id="signin-container">
+            <div class="header">
+                <div>登入帳戶</div>
+                <button class="close" id="close-signin"><img src="../static/IMAGE/close.png"></button>
+            </div>
+            <form class="signin-form" id="signin-form" action="/signin" method="PUT">
+                <div class="input-box">
+                    <label for="account" class="consistent-text">帳號：</label>
+                    <input type="text" id="account" name="account" class="text" placeholder="請輸入帳號">
+                </div>
+                <div class="input-box">
+                    <label for="password" class="consistent-text">密碼：</label>
+                    <input type="text" id="password" name="password" class="text" placeholder="請輸入密碼">
+                </div>
+                <button class="signin-button" id="signin-button">登入</button>
+                <div class="signon-go-container">還沒有帳戶？<button class="go-signon" id="go-signon">點此註冊</button></div>
+            </form>
+            <div class="footer"></div>
+        </div>
+    
+        <div class="signon-container" id="signon-container">
+            <div class="header">
+                <div>註冊帳戶</div>
+                <button class="close" id="close-signon"><img src="../static/IMAGE/close.png"></button>
+            </div>
+            <form class="signon-form" id="signon-form" action="/signon" method="POST">
+                <div class="input-box">
+                    <label for="account" class="consistent-text">帳號：</label>
+                    <input type="text" id="account-signon" name="account-signon" class="text" placeholder="請輸入帳號">
+                </div>
+                <div class="input-box">
+                    <label for="password" class="consistent-text">密碼：</label>
+                    <input type="text" id="password-signon" name="password-signon" class="text" placeholder="請輸入密碼">
+                </div>
+                <div class="input-box">
+                    <label for="name" class="consistent-text">姓名：</label>
+                    <input type="text" id="name" name="name" class="text" placeholder="請輸入姓名">
+                </div>
+                <div class="input-box">
+                    <label for="e-mail" class="consistent-text">e-mail：</label>
+                    <input type="text" id="email" name="e-mail" class="text" placeholder="請輸入電子郵件">
+                </div>
+                <button class="signon-button" id="signon-button">註冊新帳戶</button>
+                <div class="signin-return-container">已經有帳戶了？<button class="return-signin">點此登入</button></div>
+            </form>
+            <div class="footer"></div>
+        </div>
+       </div> 
+  
+
+   <main class="main">
+    <div class="range-slider">
+        <input class="range-slider-min" type="range" min="0" max="100" value="0" id="rangeMin" step="5">
+        <input class="range-slider-max" type="range" min="0" max="100" value="100" id="rangeMax" step="5">
+        <div class="slider-track"></div>
+        <span id="minValue">0</span>
+        <span id="maxValue">100</span>
+    </div>
+   </main>
+
+   <footer class="footer">
+    <div class="footer_content">
+        <img src="../static/IMAGE/logo C.png" alt="Logo">
+        2023 PARKING
+    </div>
+  </footer>
+
+   <script src="../static/JS/base.js"></script>
+   <script src="../static/JS/selector.js"></script>
+</body>
+</html>
