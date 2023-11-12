@@ -1,28 +1,25 @@
-const rangeMin = document.getElementById('rangeMin');
-const rangeMax = document.getElementById('rangeMax');
-const minValueDisplay = document.getElementById('minValue');
-const maxValueDisplay = document.getElementById('maxValue');
+let slider = document.getElementById("rangeMax");
+let output = document.getElementById("Value");
+let priceLabelWidth = document.querySelector(".price-label").offsetWidth;
+let outputWidth = document.getElementById("Value").offsetWidth;
 
-function updateTrack() {
-    const minVal = parseInt(rangeMin.value, 10);
-    const maxVal = parseInt(rangeMax.value, 10);
+function updateSliderValuePosition() {
+    output.innerHTML = slider.value + "元";
+    let percent = (slider.value - slider.min) / (slider.max - slider.min);
+    let sliderWidth = slider.offsetWidth;
+    console.log(percent)
+    let thumbWidth = 8; // 假設滑塊的寬度
+    let newPosition = percent * (sliderWidth - thumbWidth) + priceLabelWidth;
+    if (percent == 0){
+        output.style.left = priceLabelWidth  + 'px';
+    }else if(percent <= 0.95){
+        output.style.left = newPosition-(outputWidth/2) + 'px';
+    }else{
+        output.style.left = newPosition-(outputWidth/2) - 10 + 'px';
+    };
+};
 
-    const width = maxVal - minVal;
-    const left = minVal;
+slider.addEventListener('input', updateSliderValuePosition);
 
-    const track = document.querySelector('.slider-track');
-    track.style.left = left + '%';
-    track.style.width = width + '%';
-
-    minValueDisplay.textContent = minVal;
-    maxValueDisplay.textContent = maxVal;
-
-    // 更新顯示標籤的位置
-    minValueDisplay.style.left = rangeMin.value + '%';
-    maxValueDisplay.style.left = rangeMax.value + '%';
-}
-
-rangeMin.addEventListener('input', updateTrack);
-rangeMax.addEventListener('input', updateTrack);
-
-updateTrack(); // 初始化
+// 初始化
+updateSliderValuePosition();
