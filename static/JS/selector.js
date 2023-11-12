@@ -1,25 +1,30 @@
-let slider = document.getElementById("rangeMax");
-let output = document.getElementById("Value");
-let priceLabelWidth = document.querySelector(".price-label").offsetWidth;
-let outputWidth = document.getElementById("Value").offsetWidth;
-
-function updateSliderValuePosition() {
-    output.innerHTML = slider.value + "元";
+// 更新滑塊值顯示位置的函數
+function updateSliderValuePosition(slider, output, labelWidth, thumbWidth = 8) {
+    output.innerHTML = slider.value + (output.id === 'valuePrice' ? '元' : ' m ');
     let percent = (slider.value - slider.min) / (slider.max - slider.min);
     let sliderWidth = slider.offsetWidth;
-    console.log(percent)
-    let thumbWidth = 8; // 假設滑塊的寬度
-    let newPosition = percent * (sliderWidth - thumbWidth) + priceLabelWidth;
+    let newPosition = percent * (sliderWidth - thumbWidth) + labelWidth;
+
     if (percent == 0){
-        output.style.left = priceLabelWidth  + 'px';
-    }else if(percent <= 0.95){
-        output.style.left = newPosition-(outputWidth/2) + 'px';
-    }else{
-        output.style.left = newPosition-(outputWidth/2) - 10 + 'px';
-    };
-};
+        output.style.left = labelWidth + 'px';
+    } else if (percent <= 0.95){
+        output.style.left = newPosition - (output.offsetWidth / 3) + 'px';
+    } else {
+        output.style.left = newPosition - (output.offsetWidth / 3) - 10 + 'px';
+    }
+}
 
-slider.addEventListener('input', updateSliderValuePosition);
+// 為每個滑塊添加輸入事件監聽器
+function initializeSlider(sliderId, outputId) {
+    let slider = document.getElementById(sliderId);
+    let output = document.getElementById(outputId);
+    let labelWidth = document.querySelector(".slider-label").offsetWidth;
 
-// 初始化
-updateSliderValuePosition();
+    slider.addEventListener('input', () => updateSliderValuePosition(slider, output, labelWidth));
+    updateSliderValuePosition(slider, output, labelWidth); // 初始化
+}
+
+initializeSlider('rangeMaxPrice', 'valuePrice');
+initializeSlider('rangeMaxDistance', 'valueDistance');
+initializeSlider('rangeMaxLength', 'valueLength');
+initializeSlider('rangeMaxWidth', 'valueWidth');

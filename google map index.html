@@ -15,7 +15,7 @@
     <script>
         let map;
         let currentPosition; 
-        let selectedRestaurant;
+        let selectedPlace;
         let marker;
         let directionsService;
         let directionsRenderer;
@@ -36,7 +36,6 @@
                 const autocomplete = new google.maps.places.Autocomplete(
                     document.getElementById('searchInput'),
                     {
-                        types: ['restaurant'],
                         bounds:{
                             east: currentPosition.lng + 0.001,
                             west: currentPosition.lng - 0.001,
@@ -48,20 +47,21 @@
                 );
                 autocomplete.addListener('place_changed', function(){
                     const place = autocomplete.getPlace();
-                    selectedRestaurant = {
+                    selectedPlace = {
                         location: place.geometry.location,
                         placeId: place.place_id,
                         name: place.name,
-                        address: place.formatted_phone_number,
+                        address: place.formatted_address,
                         rating: place.rating,
+                        phoneNumber: place.formatted_phone_number
                     };
-                    map.setCenter(selectedRestaurant.location);
+                    map.setCenter(selectedPlace.location);
                     if(!marker){
                         marker = new google.maps.Marker({
                             map: map,
                         });
                     }
-                    marker.setPosition(selectedRestaurant.location);
+                    marker.setPosition(selectedPlace.location);
                     if(!directionsService){
                         directionsService = new google.maps.DirectionsService();
                     }
@@ -78,7 +78,7 @@
                             currentPosition.lng
                         ),
                         destination: {
-                            placeId: selectedRestaurant.placeId,
+                            placeId: selectedPlace.placeId,
                         },
                         travelMode: 'WALKING',
                     },
@@ -90,10 +90,10 @@
                             }
                             infoWindow.setContent(
                                 `
-                                <h3>${selectedRestaurant.name}</h3>
-                                <div>地址:${selectedRestaurant.address}</div>
-                                <div>電話:${selectedRestaurant.phoneNumber}</div>
-                                <div>評分:${selectedRestaurant.rating}</div>
+                                <h3>${selectedPlace.name}</h3>
+                                <div>地址:${selectedPlace.address}</div>
+                                <div>電話:${selectedPlace.phoneNumber}</div>
+                                <div>評分:${selectedPlace.rating}</div>
                                 <div>步行時間:${response.routes[0].legs[0].duration.text}</div>
                                 `
                             );

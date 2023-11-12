@@ -44,7 +44,7 @@
     z-index: 2;
 }
 
-.button{
+.parking_lot-information .button{
     width:100px;
     height:40px;
     display: flex;
