@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/CSS/base.css">
+    <link rel="stylesheet" href="../static/CSS/id.css">
+    <link rel="stylesheet" href="../static/CSS/plate_board.css">
+    <link rel="stylesheet" href="../static/CSS/parking_lot_booking.css">
+    <link rel="stylesheet" href="../static/CSS/selector.css">
+    <link rel="stylesheet" href="../static/CSS/parking_lot_page.css">
+    <title>首頁</title>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">
+            <div class="text">享</div>
+        </div>
+        <div>
+            <div class="wakachiau">wakachiau</div>
+            <div class="PARKING">PARKING</div>
+        </div>
+        <div class="menu_container">
+            <button class="menu" id="menu">MENU</button>
+        </div>
+    </nav>
+    <div class="menuContent" id="menuContent">
+        <div class="list">帳戶資訊</div>
+        <div class="list">你的車車</div>
+        <div class="list">篩選條件</div>
+        <div class="list">停車頁面</div>
+        <div class="list">停車紀錄</div>
+        <div class="list">通報業主</div>
+        <div class="list">付款頁面</div>
+        <div class="list" id="signin-button-list">登入</div>
+    </div>
+
+    <div class="black-back" id="black-back">
+        <div class="signin-container" id="signin-container">
+            <div class="header">
+                <div>登入帳戶</div>
+                <button class="close" id="close-signin"><img src="../static/IMAGE/close.png"></button>
+            </div>
+            <form class="signin-form" id="signin-form" action="/signin" method="PUT">
+                <div class="input-box">
+                    <label for="account" class="consistent-text">帳號：</label>
+                    <input type="text" id="account" name="account-input-box" class="text" placeholder="請輸入帳號">
+                </div>
+                <div class="input-box">
+                    <label for="password" class="consistent-text">密碼：</label>
+                    <input type="text" id="password" name="password-input-box" class="text" placeholder="請輸入密碼">
+                </div>
+                <button class="signin-button" id="signin-button">登入</button>
+                <div class="signon-go-container">還沒有帳戶？<button class="go-signon" id="go-signon">點此註冊</button></div>
+            </form>
+            <div class="footer"></div>
+        </div>
+    
+        <div class="signon-container" id="signon-container">
+            <div class="header">
+                <div>註冊帳戶</div>
+                <button class="close" id="close-signon"><img src="../static/IMAGE/close.png"></button>
+            </div>
+            <form class="signon-form" id="signon-form" action="/signon" method="POST">
+                <div class="input-box">
+                    <label for="account-signon" class="consistent-text">帳號：</label>
+                    <input type="text" id="account-signon" name="account-signon-input-box" class="text" placeholder="請輸入帳號">
+                </div>
+                <div class="input-box">
+                    <label for="password-signon" class="consistent-text">密碼：</label>
+                    <input type="text" id="password-signon" name="password-signon-input-box" class="text" placeholder="請輸入密碼">
+                </div>
+                <div class="input-box">
+                    <label for="name" class="consistent-text">姓名：</label>
+                    <input type="text" id="name" name="name-input-box" class="text" placeholder="請輸入姓名">
+                </div>
+                <div class="input-box">
+                    <label for="e-mail" class="consistent-text">e-mail：</label>
+                    <input type="text" id="email" name="e-mail-input-box" class="text" placeholder="請輸入電子郵件">
+                </div>
+                <button class="signon-button" id="signon-button">註冊新帳戶</button>
+                <div class="signin-return-container">已經有帳戶了？<button class="return-signin">點此登入</button></div>
+            </form>
+            <div class="footer"></div>
+        </div>
+    </div> 
+  
+
+    <main class="main">
+        <div class="parking-lot-information-container" id="parking-lot-information-container">
+            <div class="information-header">
+                <div>停車場資訊</div>
+                <button class="close" id="close-information"><img src="../static/IMAGE/close.png"></button>
+            </div>
+            <form class="information-form" id="information-form">
+                <div class="input-box">
+                    <label for="parking-lot-name" class="consistent-text">名稱：</label>
+                    <input type="text" id="parking-lot-name" name="parking-lot-name-information" class="text" placeholder="請輸入名稱">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-address" class="consistent-text">地址：</label>
+                    <input type="text" id="parking-lot-address" name="parking-lot-address-information" class="text" placeholder="請輸入地址">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-near" class="consistent-text">附近地標：</label>
+                    <input type="text" id="parking-lot-near" name="parking-lot-near-information" class="text" placeholder="請輸入地標">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-opening-time" class="consistent-text">開放時間：</label>
+                    <input type="time" id="parking-lot-opening-time" name="parking-lot-opening-time-information" class="text-time" min="00:00" max="24:00" placeholder="08:00">
+                    <input type="time" id="parking-lot-closing-time" name="parking-lot-closing-time-information" class="text-time" min="00:00" max="24:00" placeholder="18:00">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-in-out" class="consistent-text">空間位置：</label>
+                    <input type="text" id="parking-lot-in-out" name="parking-lot-in-out-information" class="text" placeholder="室內、室外、室外含遮蔽">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-price" class="consistent-text">價格：</label>
+                    <input type="number" id="parking-lot-price" name="parking-lot-price-information" class="text" placeholder="請輸入價格">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-width" class="consistent-text">車寬限制：</label>
+                    <input type="number" id="parking-lot-width" name="parking-lot-width-information" class="text" placeholder="請輸入寬度">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-height" class="consistent-text">車高限制：</label>
+                    <input type="number" id="parking-lot-height" name="parking-lot-height-information" class="text" placeholder="請輸入高度">
+                </div>
+                <div class="input-box-container" id="input-box-container">
+                    <div class="input-box">
+                        <label for="parking-lot-number" class="consistent-text">車位編號：</label>
+                        <input type="text" id="parking-lot-number" name="parking-lot-number-information" class="text" placeholder="請輸入車位編號">
+                    </div>
+                </div>
+                <button type="button" id="add-button">增加欄位</button>
+                <button class="storage-button" id="storage-button" type="button">儲存</button>
+            </form>
+            <div class="footer"></div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer_content">
+            <img src="../static/IMAGE/logo C.png" alt="Logo">
+            2023 PARKING
+        </div>
+    </footer>
+
+   <script src="../static/JS/base.js"></script>
+   <script src="../static/JS/selector.js"></script>
+   <script src="../static/JS/parking_lot_page.js"></script>
+</body>
+</html>

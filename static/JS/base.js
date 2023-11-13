@@ -3,8 +3,8 @@ function toggleClass(elementSelector, classToToggle) {
   let element = document.querySelector(elementSelector);
   if (element) {
     element.classList.toggle(classToToggle);
-  }
-}
+  };
+};
 
 // 事件監聽設置的通用函式
 function setupToggle(buttonSelector, toggles) {
@@ -14,7 +14,7 @@ function setupToggle(buttonSelector, toggles) {
       toggleClass(toggle.elementSelector, toggle.classToToggle);
     });
   });
-}
+};
 
 //base
 //使用函式來設置事件監聽器
