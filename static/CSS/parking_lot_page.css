@@ -1,7 +1,7 @@
 .parking-lot-information-container{
     width:100%;
     height:100%;
-    /* display:none; */
+    display:block;
     /* padding: 5px; */
     border-radius: 12px;
     margin: auto;
@@ -52,12 +52,12 @@
     align-items: center;
     padding: 5px;
     gap: 10px;
-    margin: 0 10% 0 10%;
+    margin: 0 5% 0 5%;
 }
 
 .information-form .input-box{
     display:flex;
-    justify-content: end;
+    /* justify-content: end; */
     width:100%;
     height:auto;
 }
@@ -71,18 +71,22 @@
 }
 
 .parking-lot-information-container .text{
-    height:20px;
+    height:auto;
+    flex: 1;
 }
 
 .parking-lot-information-container .text-time{
     height:20px;
-    font-size: 10px;
+    font-size: 12px;
+    flex-grow: 0.5;
 }
 
 .parking-lot-information-container .consistent-text{
     font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
     line-height: 1.6;
     white-space: nowrap;
+    text-align: right;
+    flex: 0 0 30%; /* flex-grow: 0, flex-shrink: 0, flex-basis: 30% */
 }
 
 .storage-button{
@@ -106,10 +110,10 @@
 
 /* -------------------------------------------------------------------- */
 
-.information-page{
-    width:340px;
-    /* height:100%; */
-    display:block;
+.parking-lot-information-page{
+    width:100%;
+    height:100%;
+    display:none;
     /* padding: 5px; */
     /* border-radius: 12px; */
     margin: auto;
@@ -117,11 +121,11 @@
     background: #fefefe;
 }
 
-.information-page-toggled{
+.parking-lot-information-page-toggled{
     display: none;
 }
 
-.information-page .information-page-header{
+.parking-lot-information-page .information-page-header{
     /* width:100%; */
     height:20px;
     border-radius: 4px 4px 0 0;
@@ -132,34 +136,26 @@
     background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
 }
 
-.information-table{
-    /* width: 100%; */
+.parking-lot-information-page .input-box{
     display:flex;
     flex-direction: column;
     align-items: center;
-    padding: 5px;
-    gap: 10px;
-    border-radius:0 0 4px 4px;
-}
-
-.information-table .table{
-    display:flex;
-    justify-content: start;
     width:100%;
     height:auto;
 }
 
-.information-table .infor-data{
-    font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
+.information-table .infor-data {
+    font-family: 'Noto Sans TC', sans-serif;
     line-height: 1.6;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    border-radius: 4px;
+    background-color: #fefefe;
 }
 
-.information-table .consistent-text{
-    font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
-    line-height: 1.6;
-}
-
-.edit-button{
+.parking-lot-information-page .edit-button{
     width: 80px;
     height: 40px;
     color: #1E1E1E;
@@ -169,10 +165,4 @@
     font-weight: 500;
     line-height: 150%; /* 24px */
     border-radius: 12px;
-}
-
-.information-table .separator{
-    width: 100%;
-    height: 1px;
-    background-color: #d2d2d2;
 }
