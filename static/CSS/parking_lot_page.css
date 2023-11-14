@@ -122,7 +122,7 @@
 }
 
 .parking-lot-information-page-toggled{
-    display: none;
+    display: block;
 }
 
 .parking-lot-information-page .information-page-header{
@@ -171,12 +171,27 @@
 .parking-lot-page{
     width:100%;
     height:100%;
-    /* display:none; */
+    display:block;
     /* padding: 5px; */
     /* border-radius: 12px; */
     margin: auto;
     /* border: 0.5px solid #0E578D; */
     background: #fefefe;
+}
+
+.parking-lot-page-toggled{
+    display:none;
+}
+
+.parking-lot-page .information-page-header {
+    /* width: 100%; */
+    height: 20px;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
 }
 
 .parking-lot-page .parking-lot-page-table{
@@ -221,4 +236,54 @@
     background-color: #d2d2d2;
     margin-bottom: 10px;
     margin-top: 10px;
+}
+
+/* -------------------------------------------------------------------------- */
+
+.parking-lot-square-page{
+    width:100%;
+    height:100%;
+    display:none;
+    /* padding: 5px; */
+    /* border-radius: 12px; */
+    margin: auto;
+    /* border: 0.5px solid #0E578D; */
+    background: #fefefe;
+}
+
+.parking-lot-square-page-toggled{
+    display: block;
+}
+
+.parking-lot-square-page .information-header{
+    height:20px;
+    border-radius: 12px 12px 0 0;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
+}
+
+.parking-lot-square-page .parking-lot-square-table{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.parking-lot-square-page .image{
+    width: 100%;
+    height: auto;
+}
+
+.parking-lot-square-page .image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.parking-lot-square-page .footer{
+    height: 20px;
 }

@@ -90,75 +90,19 @@
         <div class="parking-lot-page" id="parking-lot-page">
             <div class="information-page-header">
                 <div>出租停車場</div>
+                <button class="close" id="parking-lot-page-increase">新增</button>
             </div>
             <div class="separator"></div>
             <div class="parking-lot-page-table" id="parking-lot-page-table">
                 <div class="image"><img src="../static/IMAGE/noimage.png"></div>
-                <button type="button" class="parking-lot-information-page-go-button">123停車場</button>
+                <button type="button" class="parking-lot-information-page-go-button" id="parking-lot-information-page-go-button">123停車場</button>
             </div>
             <div class="separator"></div>
-        </div>
-        <div class="parking-lot-information-container" id="parking-lot-information-container">
-            <div class="information-header">
-                <div>停車場資訊</div>
-                <button class="close" id="close-information"><img src="../static/IMAGE/close.png"></button>
-            </div>
-            <form class="information-form" id="information-form">
-                <div class="input-box">
-                    <label for="parking-lot-name" class="consistent-text">名稱：</label>
-                    <input type="text" id="parking-lot-name" name="parking-lot-name-information" class="text" placeholder="請輸入名稱">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-address" class="consistent-text">地址：</label>
-                    <input type="text" id="parking-lot-address" name="parking-lot-address-information" class="text" placeholder="請輸入地址">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-near" class="consistent-text">附近地標：</label>
-                    <input type="text" id="parking-lot-near" name="parking-lot-near-information" class="text" placeholder="請輸入地標">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-image" class="consistent-text">上傳圖片：</label>
-                    <input type="file" id="parking-lot-image" name="parking-lot-image-information" class="text" placeholder="停車場圖片">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-opening-time" class="consistent-text">開放時間：</label>
-                    <input type="time" id="parking-lot-opening-time" name="parking-lot-opening-time-information" class="text-time" min="00:00" max="24:00" placeholder="08:00">
-                    <input type="time" id="parking-lot-closing-time" name="parking-lot-closing-time-information" class="text-time" min="00:00" max="24:00" placeholder="18:00">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-in-out" class="consistent-text">空間位置：</label>
-                    <input type="text" id="parking-lot-in-out" name="parking-lot-in-out-information" class="text" placeholder="室內、室外、室外含遮蔽">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-price" class="consistent-text">價格：</label>
-                    <input type="number" id="parking-lot-price" name="parking-lot-price-information" class="text" placeholder="請輸入價格">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-width" class="consistent-text">車寬限制：</label>
-                    <input type="number" id="parking-lot-width" name="parking-lot-width-information" class="text" placeholder="請輸入寬度">
-                </div>
-                <div class="input-box">
-                    <label for="parking-lot-height" class="consistent-text">車高限制：</label>
-                    <input type="number" id="parking-lot-height" name="parking-lot-height-information" class="text" placeholder="請輸入高度">
-                </div>
-                <div class="input-box-container" id="input-box-container">
-                    <div class="input-box">
-                        <label for="parking-lot-number" class="consistent-text">車位編號：</label>
-                        <input type="text" id="parking-lot-number" name="parking-lot-number-information" class="text" placeholder="請輸入車位編號">
-                    </div>
-                    <div class="input-box">
-                        <label for="parking-square-image" class="consistent-text">車位圖片：</label>
-                        <input type="file" id="parking-square-image" name="parking-square-image-information" class="text" placeholder="車位圖片">
-                    </div>
-                </div>
-                <button type="button" id="add-button">增加欄位</button>
-                <button class="storage-button" id="storage-button" type="button">儲存</button>
-            </form>
-            <div class="footer"></div>
         </div>
         <div class="parking-lot-information-page" id="parking-lot-information-page">
             <div class="information-page-header">
                 <div>停車場資訊</div>
+                <button class="close" id="parking-lot-information-page-close"><img src="../static/IMAGE/close.png"></button>
             </div>
             <div class="separator"></div>
             <div class="information-table" id="information-table">
@@ -202,15 +146,85 @@
                     <label for="callphone" class="consistent-text">車位數量：</label>
                     <div class="infor-data">1 位</div>
                 </div>
-                <div class="input-box-container" id="input-box-container">
+                <div class="input-box-container" id="car-board-container">
                     <div class="input-box">
                         <div class="consistent-text">車位編號：</div>
-                        <button class="infor-data">ASD-1234</button>
+                        <button class="infor-data" id="parking-lot-square-page-go-button">ASD-1234</button>
                     </div>
                 </div>
                 <div class="separator"></div>
-                <button class="edit-button" id="edit-button">編輯</button>
+                <button class="edit-button" id="parking-lot-information-page-edit-button">編輯</button>
             </div>
+        </div>
+        <div class="parking-lot-information-container" id="parking-lot-information-container">
+            <div class="information-header">
+                <div>停車場資訊</div>
+                <button class="close" id="parking-lot-information-container-close"><img src="../static/IMAGE/close.png"></button>
+            </div>
+            <form class="information-form" id="information-form">
+                <div class="input-box">
+                    <label for="parking-lot-name" class="consistent-text">名稱：</label>
+                    <input type="text" id="parking-lot-name" name="parking-lot-name-information" class="text" placeholder="請輸入名稱">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-address" class="consistent-text">地址：</label>
+                    <input type="text" id="parking-lot-address" name="parking-lot-address-information" class="text" placeholder="請輸入地址">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-near" class="consistent-text">附近地標：</label>
+                    <input type="text" id="parking-lot-near" name="parking-lot-near-information" class="text" placeholder="請輸入地標">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-image" class="consistent-text">上傳圖片：</label>
+                    <input type="file" id="parking-lot-image" name="parking-lot-image-information" class="text" multiple>
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-opening-time" class="consistent-text">開放時間：</label>
+                    <input type="time" id="parking-lot-opening-time-am" name="parking-lot-opening-time-information" class="text-time" min="00:00" max="24:00" placeholder="08:00">
+                    <input type="time" id="parking-lot-closing-time-pm" name="parking-lot-closing-time-information" class="text-time" min="00:00" max="24:00" placeholder="18:00">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-in-out" class="consistent-text">空間位置：</label>
+                    <input type="text" id="parking-lot-in-out" name="parking-lot-in-out-information" class="text" placeholder="室內、室外、室外含遮蔽">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-price" class="consistent-text">價格：</label>
+                    <input type="number" id="parking-lot-price" name="parking-lot-price-information" class="text" placeholder="請輸入價格">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-width" class="consistent-text">車寬限制：</label>
+                    <input type="number" id="parking-lot-width" name="parking-lot-width-information" class="text" placeholder="請輸入寬度">
+                </div>
+                <div class="input-box">
+                    <label for="parking-lot-height" class="consistent-text">車高限制：</label>
+                    <input type="number" id="parking-lot-height" name="parking-lot-height-information" class="text" placeholder="請輸入高度">
+                </div>
+                <div class="input-box-container" id="input-car-space-container">
+                    <div class="input-box">
+                        <label for="parking-lot-number" class="consistent-text">車位編號：</label>
+                        <input type="text" id="parking-lot-number" name="parkingLotNumber" class="text" placeholder="請輸入車位編號">
+                    </div>
+                    <div class="input-box">
+                        <label for="parking-square-image" class="consistent-text">車位圖片：</label>
+                        <input type="file" id="parking-square-image" name="parkingSquareImage" class="text" multiple>
+                    </div>
+                </div>
+                <button type="button" id="add-input-car-board-container-button">增加欄位</button>
+                <button class="storage-button" id="parking-lot-information-container-storage-button" type="button">儲存</button>
+            </form>
+            <div class="footer"></div>
+        </div>
+        <div class="parking-lot-square-page" id="parking-lot-square-page">
+            <div class="information-header">
+                <div>停車位資訊</div>
+                <button class="close" id="parking-lot-square-page-close"><img src="../static/IMAGE/close.png"></button>
+            </div>
+            <div class="parking-lot-square-table" id="parking-lot-square-table">
+                    <div class="image"><img src="../static/IMAGE/noimage.png"></div>
+                    <div class="infor-data">ASD-1234</div>
+                    <div class="infor-data">停車場一樓，靠電梯右側第一個車位</div>
+            </div>
+            <div class="footer"></div>
         </div>
     </main>
 
