@@ -48,23 +48,80 @@ def index():
 def input_parking_lot_information():
     if request.method == "POST":
         try:
-            message = request.form.get('message')  
-            image = request.files.get('file')
+            name = request.form.get('name')
+            address = request.form.get('address')
+            near_landmark = request.form.get('nearLandmark')
+            opening_time_am = request.form.get('openingTimeAm')
+            opening_time_pm = request.form.get('openingTimePm')
+            space = request.form.get('space')
+            price = request.form.get('price')
+            car_width = request.form.get('carWidth')
+            car_height = request.form.get('carHeight')
+            lng = request.form.get('lng')
+            lat = request.form.get('lat')
 
-            if not message or message.strip() == "":
-                return jsonify({"error":"留言啦"}), 400
-            
-            image_url = None
-            if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
-                filename = secure_filename(image.filename)
-                key = f"{str(int(time.time()))}-{filename}" # 生成檔案名稱
-                s3_client.upload_fileobj(image, BUCKET_NAME, key)
-                image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
-            
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
-            cursor.execute("INSERT INTO messages(URL_image, message) VALUES(%s, %s)", (image_url, message))
+            cursor.execute("""
+                INSERT INTO parkinglotdata(
+                    name, 
+                    address, 
+                    landmark, 
+                    openingTime, 
+                    closingTime, 
+                    spaceInOut, 
+                    price, 
+                    widthLimit, 
+                    heightLimit, 
+                    lng, 
+                    lat
+                ) 
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (name, address, near_landmark, opening_time_am, opening_time_pm, space, price, car_width, car_height, lng, lat))
             connection.commit()
+            
+            parking_lot_images = request.files.getlist('img')
+            for image in parking_lot_images:
+                if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
+                    filename = secure_filename(image.filename)
+                    key = f"{str(int(time.time()))}-{filename}" # 生成檔案名稱
+                    s3_client.upload_fileobj(image, BUCKET_NAME, key)
+                    image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
+
+                    # 将 image_url 和 parkinglotdata_id 保存到数据库
+                    insert_query = """
+                        INSERT INTO parkinglotimage (parkinglotdata, image)
+                        VALUES (%s, %s);
+                    """
+                    cursor.execute(insert_query, (parkinglotdata_id, image_url))
+            connection.commit()
+
+            parking_square_number = request.form.get('parkingSquareNumber')
+            parkinglotdata_id = cursor.lastrowid
+            for number in parking_square_number:
+                insert_query = """
+                            INSERT INTO parkinglotspace (parkinglotdata, number)
+                            VALUES (%s, %s);
+                        """
+                cursor.execute(insert_query, (parkinglotdata_id, number))
+            connection.commit()
+
+            parking_space_images = request.files.getlist('parkingSquareImage')
+            for image in parking_space_images:
+                if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
+                    filename = secure_filename(image.filename)
+                    key = f"{str(int(time.time()))}-{filename}" # 生成檔案名稱
+                    s3_client.upload_fileobj(image, BUCKET_NAME, key)
+                    image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
+
+                    # 将 image_url 和 parkinglotdata_id 保存到数据库
+                    insert_query = """
+                        INSERT INTO parkingspaceimage (parkinglotdata, image)
+                        VALUES (%s, %s);
+                    """
+                    cursor.execute(insert_query, (parkinglotdata_id, image_url))
+            connection.commit()
+
             cursor.close()
             connection.close()
             return jsonify({"ok":"True"}), 200
