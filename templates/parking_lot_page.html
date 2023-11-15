@@ -108,43 +108,39 @@
             <div class="information-table" id="information-table">
                 <div class="table">
                     <label for="account" class="consistent-text">名稱：</label>
-                    <div class="infor-data">123停車場</div>
+                    <div class="infor-data" id="parking-lot-name">123停車場</div>
                 </div>
                 <div class="table">
                     <label for="password" class="consistent-text">地址：</label>
-                    <div class="infor-data">新北市泰山區福興三街186號9樓</div>
+                    <div class="infor-data" id="parking-lot-address">新北市泰山區福興三街186號9樓</div>
                 </div>
                 <div class="table">
                     <label for="name" class="consistent-text">附近地標：</label>
-                    <div class="infor-data">靠近新光三越旁的台北火車站</div>
+                    <div class="infor-data" id="parking-lot-near-landmark">靠近新光三越旁的台北火車站</div>
                 </div>
                 <div class="table">
                     <label for="e-mail" class="consistent-text">開放時間：</label>
-                    <div class="infor-data">08:00~19:00</div>
+                    <div class="infor-data" id="parking-lot-opening-time">08:00~19:00</div>
                 </div>
                 <div class="table">
                     <label for="birthday" class="consistent-text">空間位置：</label>
-                    <div class="infor-data">室外含遮雨棚</div>
+                    <div class="infor-data" id="parking-lot-in-out">室外含遮雨棚</div>
                 </div>
                 <div class="table">
                     <label for="callphone" class="consistent-text">價格：</label>
-                    <div class="infor-data">100元</div>
+                    <div class="infor-data" id="parking-lot-price">100元</div>
                 </div>
                 <div class="table">
                     <label for="callphone" class="consistent-text">車寬限制：</label>
-                    <div class="infor-data">2.0 m</div>
+                    <div class="infor-data" id="parking-lot-width">2.0 m</div>
                 </div>
                 <div class="table">
                     <label for="callphone" class="consistent-text">車高限制：</label>
-                    <div class="infor-data">2.0 m</div>
-                </div>
-                <div class="table">
-                    <label for="callphone" class="consistent-text">車高限制：</label>
-                    <div class="infor-data">2.0 m</div>
+                    <div class="infor-data" id="parking-lot-height">2.0 m</div>
                 </div>
                 <div class="table">
                     <label for="callphone" class="consistent-text">車位數量：</label>
-                    <div class="infor-data">1 位</div>
+                    <div class="infor-data" id="parking-space-total-number">1 位</div>
                 </div>
                 <div class="input-box-container" id="car-board-container">
                     <div class="input-box">
@@ -164,52 +160,52 @@
             <form class="information-form" id="information-form">
                 <div class="input-box">
                     <label for="parking-lot-name" class="consistent-text">名稱：</label>
-                    <input type="text" id="parking-lot-name" name="parking-lot-name-information" class="text" placeholder="請輸入名稱">
+                    <input type="text" id="parking-lot-name-input" name="parking-lot-name-input" class="text" placeholder="請輸入名稱">
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-address" class="consistent-text">地址：</label>
-                    <input type="text" id="parking-lot-address" name="parking-lot-address-information" class="text" placeholder="請輸入地址">
+                    <input type="text" id="parking-lot-address-input" name="parking-lot-address-input" class="text" placeholder="請輸入地址">
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-near" class="consistent-text">附近地標：</label>
-                    <input type="text" id="parking-lot-near" name="parking-lot-near-information" class="text" placeholder="請輸入地標">
+                    <input type="text" id="parking-lot-near-input" name="parking-lot-near-input" class="text" placeholder="請輸入地標">
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-image" class="consistent-text">上傳圖片：</label>
-                    <input type="file" id="parking-lot-image" name="parking-lot-image-information" class="text" multiple>
+                    <input type="file" id="parking-lot-image-input" name="parking-lot-image-input" class="text" multiple>
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-opening-time" class="consistent-text">開放時間：</label>
-                    <input type="time" id="parking-lot-opening-time-am" name="parking-lot-opening-time-information" class="text-time" min="00:00" max="24:00" placeholder="08:00">
-                    <input type="time" id="parking-lot-closing-time-pm" name="parking-lot-closing-time-information" class="text-time" min="00:00" max="24:00" placeholder="18:00">
+                    <input type="time" id="parking-lot-opening-time-am-input" name="parking-lot-opening-time-input" class="text-time" min="00:00" max="24:00" placeholder="08:00">
+                    <input type="time" id="parking-lot-closing-time-pm-input" name="parking-lot-closing-time-input" class="text-time" min="00:00" max="24:00" placeholder="18:00">
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-in-out" class="consistent-text">空間位置：</label>
-                    <input type="text" id="parking-lot-in-out" name="parking-lot-in-out-information" class="text" placeholder="室內、室外、室外含遮蔽">
+                    <input type="text" id="parking-lot-in-out-input" name="parking-lot-in-out-input" class="text" placeholder="室內、室外、室外含遮蔽">
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-price" class="consistent-text">價格：</label>
-                    <input type="number" id="parking-lot-price" name="parking-lot-price-information" class="text" placeholder="請輸入價格">
+                    <input type="number" id="parking-lot-price-input" name="parking-lot-price-input" class="text" placeholder="請輸入價格">
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-width" class="consistent-text">車寬限制：</label>
-                    <input type="number" id="parking-lot-width" name="parking-lot-width-information" class="text" placeholder="請輸入寬度">
+                    <input type="number" id="parking-lot-width-input" name="parking-lot-width-input" class="text" placeholder="請輸入寬度">
                 </div>
                 <div class="input-box">
                     <label for="parking-lot-height" class="consistent-text">車高限制：</label>
-                    <input type="number" id="parking-lot-height" name="parking-lot-height-information" class="text" placeholder="請輸入高度">
+                    <input type="number" id="parking-lot-height-input" name="parking-lot-height-input" class="text" placeholder="請輸入高度">
                 </div>
                 <div class="input-box-container" id="input-car-space-container">
                     <div class="input-box">
                         <label for="parking-lot-number" class="consistent-text">車位編號：</label>
-                        <input type="text" id="parking-lot-number" name="parkingLotNumber" class="text" placeholder="請輸入車位編號">
+                        <input type="text" id="parking-lot-number-input" name="parkingLotNumber" class="text" placeholder="請輸入車位編號">
                     </div>
                     <div class="input-box">
                         <label for="parking-square-image" class="consistent-text">車位圖片：</label>
-                        <input type="file" id="parking-square-image" name="parkingSquareImage" class="text" multiple>
+                        <input type="file" id="parking-square-image-input" name="parkingSquareImage" class="text" multiple>
                     </div>
                 </div>
-                <button type="button" id="add-input-car-board-container-button">增加欄位</button>
+                <button type="button" id="add-input-car-space-container-button">增加欄位</button>
                 <button class="storage-button" id="parking-lot-information-container-storage-button" type="button">儲存</button>
             </form>
             <div class="footer"></div>
