@@ -13,7 +13,7 @@ function addInputField() {
     newInputBoxImage.className = 'input-box';
     newInputBoxNumber.innerHTML = 
     `<label for="parking-lot-number${inputCount}" class="consistent-text">車位編號${inputCount}：</label>
-    <input type="text" id="parking-lot-number-input${inputCount}" name="parkingLotNumber${inputCount}" class="text" placeholder="請輸入車牌編號">`;
+    <input type="text" id="parking-lot-number-input${inputCount}" name="parkingSquareNumber${inputCount}" class="text" placeholder="請輸入車牌編號">`;
     newInputBoxImage.innerHTML = 
     `<label for="parking-square-image${inputCount}" class="consistent-text">車位圖片${inputCount}：</label>
     <input type="file" id="parking-square-image-input${inputCount}" name="parkingSquareImage${inputCount}" class="text" multiple>`;
@@ -172,7 +172,7 @@ async function passData(){
         const response = await inputDataToDB(formData);
         const data = await handleResponse(response);
         console.log(data);
-        await fetchData();
+        // await fetchData();
     }catch(error){
         handleError(error);
     }

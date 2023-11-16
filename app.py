@@ -1,7 +1,7 @@
 from flask import *
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
-import os, boto3, time
+import os, boto3, time , re, uuid, time
 
 load_dotenv()
 
@@ -81,13 +81,14 @@ def input_parking_lot_information():
             connection.commit()
             
             parking_lot_images = request.files.getlist('img')
+            parkinglotdata_id = cursor.lastrowid
             for image in parking_lot_images:
                 if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
                     filename = secure_filename(image.filename)
                     key = f"{str(int(time.time()))}-{filename}" # 生成檔案名稱
                     s3_client.upload_fileobj(image, BUCKET_NAME, key)
                     image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
-
+                    # print(image_url)
                     # 将 image_url 和 parkinglotdata_id 保存到数据库
                     insert_query = """
                         INSERT INTO parkinglotimage (parkinglotdata, image)
@@ -96,32 +97,41 @@ def input_parking_lot_information():
                     cursor.execute(insert_query, (parkinglotdata_id, image_url))
             connection.commit()
 
-            parking_square_number = request.form.get('parkingSquareNumber')
-            parkinglotdata_id = cursor.lastrowid
-            for number in parking_square_number:
-                insert_query = """
+
+            all_text_data = request.form.to_dict()
+            # print(all_text_data)
+            for key, value in all_text_data.items():
+                if key.startswith("parkingSquareNumber"):
+                    insert_query = """
                             INSERT INTO parkinglotspace (parkinglotdata, number)
                             VALUES (%s, %s);
                         """
-                cursor.execute(insert_query, (parkinglotdata_id, number))
-            connection.commit()
+                    cursor.execute(insert_query, (parkinglotdata_id, value))
+            connection.commit()  
 
-            parking_space_images = request.files.getlist('parkingSquareImage')
-            for image in parking_space_images:
-                if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
+            # all_image_files = request.files.to_dict()
+            for key, image in request.files.items():
+                if key.startswith("parkingSquareImage") and image:
+                    # 使用正則表達式提取數字
+                    match = re.search(r'parkingSquareImage(\d+)', key)
+                    parkinglotspace = int(match.group(1)) if match else 1
+
                     filename = secure_filename(image.filename)
-                    key = f"{str(int(time.time()))}-{filename}" # 生成檔案名稱
+                    key = f"{str(int(time.time()))}-{filename}"
+                    
+                    # 假設 s3_client 已經被正確初始化
                     s3_client.upload_fileobj(image, BUCKET_NAME, key)
                     image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
-
-                    # 将 image_url 和 parkinglotdata_id 保存到数据库
+                    print(image_url)
+                    
+                    # 假設 cursor 已經被正確初始化
                     insert_query = """
-                        INSERT INTO parkingspaceimage (parkinglotdata, image)
+                        INSERT INTO parkingspaceimage (parkinglotspace, image)
                         VALUES (%s, %s);
                     """
-                    cursor.execute(insert_query, (parkinglotdata_id, image_url))
-            connection.commit()
-
+                    cursor.execute(insert_query, (parkinglotspace, image_url))
+            connection.commit()      
+            
             cursor.close()
             connection.close()
             return jsonify({"ok":"True"}), 200
