@@ -41,7 +41,7 @@ s3_client = boto3.client('s3',
 
 @app.route("/")
 def index():
-    return render_template("parking_lot_page.html")
+    return render_template("index.html")
 
 @app.route("/api/input_parking_lot_information", methods = ["GET","POST"])
 
@@ -57,8 +57,8 @@ def input_parking_lot_information():
             price = request.form.get('price')
             car_width = request.form.get('carWidth')
             car_height = request.form.get('carHeight')
-            lng = request.form.get('lng')
-            lat = request.form.get('lat')
+            lng = request.form.get('Longitude')
+            lat = request.form.get('Latitude')
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
@@ -145,21 +145,40 @@ def input_parking_lot_information():
     if request.method == "GET":
         try:
             connection = con.get_connection()
-            cursor = connection.cursor(dictionary=True)   
-            cursor.execute("SELECT * FROM messages")
-            data = cursor.fetchall()
+            cursor = connection.cursor(dictionary=True)
+            # 获取基本的停车场数据
+            sql_query = (
+                "SELECT id, name, landmark, address, openingTime, closingTime, "
+                "spaceInOut, price, lat, lng, widthLimit, heightLimit "
+                "FROM parkinglotdata"
+            )
+            cursor.execute(sql_query)
+            parking_lot_datas = cursor.fetchall()
+
+            # 为每个停车场获取图像和空间信息
+            for parking_lot_data in parking_lot_datas:
+                # 获取图像
+                cursor.execute("SELECT image FROM parkinglotimage WHERE parkinglotdata = %s", (parking_lot_data["id"],))
+                images = cursor.fetchall()
+                parking_lot_data["images"] = [image["image"] for image in images]
+
+                # 获取空间信息
+                cursor.execute("SELECT number FROM parkinglotspace WHERE parkinglotdata = %s", (parking_lot_data["id"],))
+                spaces = cursor.fetchall()
+                parking_lot_data["spaces"] = [space["number"] for space in spaces]
+
             cursor.close()
             connection.close()
-            print(data)
+
             return_data = {
-                "data":data
+                "data": parking_lot_datas
             }
             return jsonify(return_data), 200
-        except mysql.connector.Error:
+        except mysql.connector.Error as e:
             if cursor:
                 cursor.close()
             if connection:
                 connection.close()
-            return jsonify({"error": True,"message": "databaseError"}), 500
+            return jsonify({"error": True, "message": "databaseError"}), 500
         
 app.run(debug=True, host="0.0.0.0", port=4000)

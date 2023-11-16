@@ -47,7 +47,7 @@ async function getParkingLotInformation(){
     let carWidth = document.querySelector('#parking-lot-width-input').value;
     let carHeight = document.querySelector('#parking-lot-height-input').value;
    
-    // let location = await getLatLonFromAddress(address)
+    let location = await getLatLonFromAddress(address)
 
     return {
         name: name,
@@ -60,8 +60,8 @@ async function getParkingLotInformation(){
         price: price,
         carWidth: carWidth,
         carHeight: carHeight,
-        // Latitude: location ? location.lat : "", // 如果无法获取则显示空值
-        // Longitude: location ? location.lng : "" // 如果无法获取则显示空值
+        Latitude: location ? location.lat : "", // 如果无法获取则显示空值
+        Longitude: location ? location.lng : "" // 如果无法获取则显示空值
     }
 };
 
@@ -129,6 +129,8 @@ async function packingData(event){
     formData.append('price', parkingLotData.price);
     formData.append('carWidth', parkingLotData.carWidth);
     formData.append('carHeight', parkingLotData.carHeight);
+    formData.append('Latitude', parkingLotData.Latitude);
+    formData.append('Longitude', parkingLotData.Longitude);
 
     if (parkingLotData.img && parkingLotData.img.length > 0) {
         for (let i = 0; i < parkingLotData.img.length; i++) {
@@ -168,7 +170,7 @@ async function displayFormData(formData) {
 async function passData(){
     let formData = await packingData();
     await displayFormData(formData) 
-      try{
+    try{
         const response = await inputDataToDB(formData);
         const data = await handleResponse(response);
         console.log(data);
