@@ -1,3 +1,58 @@
+// 通用函式來切換類
+function toggleClass(elementSelector, classToToggle) {
+    let element = document.querySelector(elementSelector);
+    if (element) {
+      element.classList.toggle(classToToggle);
+    };
+  };
+  
+  // 事件監聽設置的通用函式
+  function setupToggle(buttonSelector, toggles) {
+    document.querySelector(buttonSelector).addEventListener('click', function(event) {
+      event.preventDefault();
+      toggles.forEach(function(toggle) {
+        toggleClass(toggle.elementSelector, toggle.classToToggle);
+      });
+    });
+  };
+
+  //parking_lot_page
+setupToggle('#parking-lot-page-increase', [
+    { elementSelector: '#parking-lot-information-container', classToToggle: 'parking-lot-information-container-toggled' },
+    { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' }
+  ]);
+  
+  
+  setupToggle('#parking-lot-information-page-go-button', [
+    { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' },
+    { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' }
+  ]);
+  
+  setupToggle('#parking-lot-information-page-close', [
+    { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' },
+    { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
+  ]);
+  
+  setupToggle('#parking-lot-square-page-go-button', [
+    { elementSelector: '#parking-lot-square-page', classToToggle: 'parking-lot-square-page-toggled' },
+    { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
+  ]);
+  
+  setupToggle('#parking-lot-information-page-edit-button', [
+    { elementSelector: '#parking-lot-information-container', classToToggle: 'parking-lot-information-container-toggled' },
+    { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
+  ]);
+  
+  setupToggle('#parking-lot-square-page-close', [
+    { elementSelector: '#parking-lot-square-page', classToToggle: 'parking-lot-square-page-toggled' },
+    { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
+  ]);
+  
+  setupToggle('#parking-lot-information-container-close', [
+    { elementSelector: '#parking-lot-information-container', classToToggle: 'parking-lot-information-container-toggled' },
+    { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' }
+  ]);
+
 //新增車位輸入框
 let inputCount = 1;
 const addButton = document.getElementById('add-input-car-space-container-button')
@@ -65,26 +120,26 @@ async function getParkingLotInformation(){
     }
 };
 
-// async function getLatLonFromAddress(address) {
-//     const apiKey = 'AIzaSyCiz02ZEX650VEundSMH87J_fHaDtmMQP8'; // 替换为您的 Google Maps API 密钥
-//     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+async function getLatLonFromAddress(address) {
+    const apiKey = 'AIzaSyCiz02ZEX650VEundSMH87J_fHaDtmMQP8'; // 替换为您的 Google Maps API 密钥
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
 
-//     try {
-//         const response = await fetch(url);
-//         const data = await response.json();
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-//         if (data.status === 'OK') {
-//             const location = data.results[0].geometry.location;
-//             return location; // { lat: 纬度, lng: 经度 }
-//         } else {
-//             console.error('Geocoding failed:', data.status);
-//             return null;
-//         }
-//     } catch (error) {
-//         console.error('Error during geocoding:', error);
-//         return null;
-//     }
-// }
+        if (data.status === 'OK') {
+            const location = data.results[0].geometry.location;
+            return location; // { lat: 纬度, lng: 经度 }
+        } else {
+            console.error('Geocoding failed:', data.status);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error during geocoding:', error);
+        return null;
+    }
+}
 
 async function getCarSpaceData() {
     let inputCarSpaceContainer = document.querySelector('#input-car-space-container');

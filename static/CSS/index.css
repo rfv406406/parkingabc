@@ -5,6 +5,7 @@
     width: 100%;
     height: 100%;
     position: relative;
+    z-index: 1;
 }
 
 .map{
@@ -26,14 +27,17 @@
 }
 
 .labels {
-    /* 自定义样式 */
-    color: #ea4335;
-    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: #59ea35;
+    background-color: #f4efef;
     font-family: Roboto, Arial, sans-serif;
-    font-size: 10px;
+    font-size: 16px;
     font-weight: bold;
     text-align: center;
-    width: 30px;
+    width: 40px;
+    height: 30px;
     padding: 2px;
     border: 1px solid #999;
     box-sizing: border-box;

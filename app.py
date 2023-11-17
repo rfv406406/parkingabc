@@ -42,6 +42,9 @@ s3_client = boto3.client('s3',
 @app.route("/")
 def index():
     return render_template("index.html")
+@app.route("/parkinglotpage")
+def parking_lot_page():
+    return render_template("parking_lot_page.html")
 
 @app.route("/api/input_parking_lot_information", methods = ["GET","POST"])
 

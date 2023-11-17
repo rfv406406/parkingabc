@@ -1,14 +1,3 @@
-
-
-
-
-
-// const markerr = new google.maps.Marker(
-//     {
-//         position:{},
-//         map:map,
-//     }
-// );
 fetchData()
 async function fetchData(){
     try{
@@ -28,7 +17,7 @@ function displayMarkers(dataObject) {
             // 使用 location 中的 lat 和 lng 屬性來設置標記的位置
             const latLng = new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng));
 
-
+            //de
             // const marker = new google.maps.Marker({
             //     position: latLng,
             //     map: map,
@@ -40,16 +29,26 @@ function displayMarkers(dataObject) {
                 draggable: true,
                 map: map,
                 labelContent: location.price + "元", // can also be HTMLElement
-                labelAnchor: new google.maps.Point(5, 3),
+                labelAnchor: new google.maps.Point(-20, -45),
                 labelClass: "labels", // the CSS class for the label
                 labelStyle: { opacity: 1.0 },
                 icon: {
-                    url: '../static/IMAGE/pngwing.com.png', // 自定义图标的URL
-                    scaledSize: new google.maps.Size(40, 40), // 调整图标大小
+                    url: getIconUrl(location.price), // 根据价格选择图标
+                    scaledSize: new google.maps.Size(50, 50), // 调整图标大小
                     origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(0, 0)
+                    anchor: new google.maps.Point(25, 50)
                 }
             });
+            //依照價錢分顏色
+            function getIconUrl(price) {
+                if (price <= 25) {
+                    return '../static/IMAGE/greenlable.png'; // 低价位图标
+                } else if (price <= 50) {
+                    return '../static/IMAGE/orangelable.png'; // 中价位图标
+                } else {
+                    return '../static/IMAGE/redlable.png'; // 高价位图标
+                }
+            }
 
             // 為標記添加信息窗口，顯示更多信息
             const infoWindow = new google.maps.InfoWindow({

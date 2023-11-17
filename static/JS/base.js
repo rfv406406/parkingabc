@@ -44,58 +44,17 @@ setupToggle('#close-signon', [
   { elementSelector: '#menuContent', classToToggle: 'menuContent_toggled' }
 ]);
 
-// //id
-// setupToggle('#edit-button', [
-//   { elementSelector: '#information-page', classToToggle: 'information-page-toggled' },
-//   { elementSelector: '#information-container', classToToggle: 'information-container-toggled' }
-// ]);
+//turn to parking_lot_page
+function turnPage(renderTemplate){
+  window.location.href = renderTemplate;
+}
 
-// setupToggle('#close-information', [
-//   { elementSelector: '#information-page', classToToggle: 'information-page-toggled' },
-//   { elementSelector: '#information-container', classToToggle: 'information-container-toggled' }
-// ]);
+function clickButton(buttonSelector, renderTemplate) {
+  document.querySelector(buttonSelector).addEventListener('click', function(event) {
+    event.preventDefault();
+    turnPage(renderTemplate)
+  });
+};
 
-//plate_board
-// setupToggle('#plate-board-edit-button', [
-//   { elementSelector: '#plate-board-container-header', classToToggle: 'plate-board-container-header-toggled' },
-//   { elementSelector: '#plate-board-information', classToToggle: 'plate-board-information-toggled' }
-// ]);
-
-//parking_lot_page
-setupToggle('#parking-lot-page-increase', [
-  { elementSelector: '#parking-lot-information-container', classToToggle: 'parking-lot-information-container-toggled' },
-  { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' }
-]);
-
-
-setupToggle('#parking-lot-information-page-go-button', [
-  { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' },
-  { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' }
-]);
-
-setupToggle('#parking-lot-information-page-close', [
-  { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' },
-  { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
-]);
-
-setupToggle('#parking-lot-square-page-go-button', [
-  { elementSelector: '#parking-lot-square-page', classToToggle: 'parking-lot-square-page-toggled' },
-  { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
-]);
-
-setupToggle('#parking-lot-information-page-edit-button', [
-  { elementSelector: '#parking-lot-information-container', classToToggle: 'parking-lot-information-container-toggled' },
-  { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
-]);
-
-setupToggle('#parking-lot-square-page-close', [
-  { elementSelector: '#parking-lot-square-page', classToToggle: 'parking-lot-square-page-toggled' },
-  { elementSelector: '#parking-lot-information-page', classToToggle: 'parking-lot-information-page-toggled' }
-]);
-
-setupToggle('#parking-lot-information-container-close', [
-  { elementSelector: '#parking-lot-information-container', classToToggle: 'parking-lot-information-container-toggled' },
-  { elementSelector: '#parking-lot-page', classToToggle: 'parking-lot-page-toggled' }
-]);
-
-
+clickButton('#parking-lot-button-list','/parkinglotpage')
+clickButton('#home','/')
