@@ -1,3 +1,17 @@
+.parking_lot-information-container{
+    width: 100%;
+    height: 30%; /* 初始高度为页面高度的 30% */
+    position: absolute;
+    z-index: 3;
+    background-color: #F5FBFF;
+    bottom: 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: height 0.5s; /* 使用 transform 实现过渡效果 */
+    cursor: pointer; /* 手型光标表示整个容器可拖动 */
+    overflow: auto; /* 如果内容超出自身高度，则显示滚动条 */
+}
+
 .parking_lot-information{
     width:100%;
     height:100%;
@@ -5,7 +19,7 @@
 
 .parking_lot-image{
     width:100%;
-    height:100%;
+    height:auto;
     display: flex;
     align-items: center;
 }
@@ -16,7 +30,6 @@
     object-fit: cover;
     position: relative;
     flex-shrink: 0;
-    z-index: 1;
     border-radius: 4px;
 }
 
@@ -29,7 +42,7 @@
     border: transparent;
     position:absolute;
     left: 10px;
-    z-index: 2;
+    z-index: 1;
 }
 
 .button-img-right{

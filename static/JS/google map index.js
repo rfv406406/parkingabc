@@ -39,16 +39,6 @@ function displayMarkers(dataObject) {
                     anchor: new google.maps.Point(25, 50)
                 }
             });
-            //依照價錢分顏色
-            function getIconUrl(price) {
-                if (price <= 25) {
-                    return '../static/IMAGE/greenlable.png'; // 低价位图标
-                } else if (price <= 50) {
-                    return '../static/IMAGE/orangelable.png'; // 中价位图标
-                } else {
-                    return '../static/IMAGE/redlable.png'; // 高价位图标
-                }
-            }
 
             // 為標記添加信息窗口，顯示更多信息
             const infoWindow = new google.maps.InfoWindow({
@@ -66,6 +56,17 @@ function displayMarkers(dataObject) {
                 infoWindow.open(map, marker);
             });
         });
+    }
+}
+
+  //依照價錢分顏色
+function getIconUrl(price) {
+    if (price <= 25) {
+        return '../static/IMAGE/greenlable.png'; // 低价位图标
+    } else if (price <= 50) {
+        return '../static/IMAGE/orangelable.png'; // 中价位图标
+    } else {
+        return '../static/IMAGE/redlable.png'; // 高价位图标
     }
 }
 
