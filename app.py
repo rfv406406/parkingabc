@@ -186,4 +186,4 @@ def input_parking_lot_information():
                 connection.close()
             return jsonify({"error": True, "message": "databaseError"}), 500
         
-app.run(debug=True, host="0.0.0.0", port=4000)
+app.run(debug=True, host="0.0.0.0", port=5000)
