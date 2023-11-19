@@ -55,7 +55,7 @@ function displayMarkers(dataObject) {
                 const locationData = findDataByLatLng(location.lat, location.lng, dataObject.data);
                 console.log(locationData)
                 parkingLotInformationTable(locationData);
-                getBookingInformation(locationData);
+                // getBookingInformation(locationData);
             });
         });
     }
