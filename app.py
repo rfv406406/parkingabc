@@ -80,7 +80,8 @@ def input_parking_lot_information():
                     lat
                 ) 
                 VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (name, address, near_landmark, opening_time_am, opening_time_pm, space, price, car_width, car_height, lng, lat))
+            """, (name, address, near_landmark, opening_time_am, opening_time_pm, 
+                  space, price, car_width, car_height, lng, lat))
             connection.commit()
             
             parking_lot_images = request.files.getlist('img')
@@ -166,9 +167,10 @@ def input_parking_lot_information():
                 parking_lot_data["images"] = [image["image"] for image in images]
 
                 # 获取空间信息
-                cursor.execute("SELECT number FROM parkinglotspace WHERE parkinglotdata = %s", (parking_lot_data["id"],))
+                cursor.execute("SELECT id, number FROM parkinglotspace WHERE parkinglotdata = %s", (parking_lot_data["id"],))
                 spaces = cursor.fetchall()
                 parking_lot_data["spaces"] = [space["number"] for space in spaces]
+                parking_lot_data["spaces_id"] = [space["id"] for space in spaces]
 
             cursor.close()
             connection.close()

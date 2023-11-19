@@ -261,15 +261,3 @@ async function handleError(error) {
     console.error('Backend could got problems', error);
 }
 
-// function parkingLotInformationTable(){
-//     let parkingLotName = document.querySelector('#parking-lot-name').textContent;
-//     let parkingLotAddress = document.querySelector('#parking-lot-address').textContent;
-//     let parkingLotNearLandmark = document.querySelector('#parking-lot-near-landmark').textContent;
-//     let parkingLotOpeningTime = document.querySelector('#parking-lot-opening-time').textContent;
-//     let parkingLotInOut = document.querySelector('#parking-lot-in-out').textContent;
-//     let parkingLotPrice = document.querySelector('#parking-lot-price').textContent;
-//     let parkingLotWidth = document.querySelector('#parking-lot-width').textContent;
-//     let parkingLotHeight = document.querySelector('#parking-lot-height').textContent;
-//     let parkingSpaceTotalNumber = document.querySelector('#parking-space-total-number').textContent;
-//     let parkingLotSquarePageGoButton = document.querySelector('#parking-lot-square-page-go-button').textContent;
-// };
