@@ -41,7 +41,8 @@ CREATE TABLE parkinglotimage(
 CREATE TABLE parkinglotspace(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
     parkinglotdata BIGINT,
-    number VARCHAR(255) 
+    number VARCHAR(255), 
+    status VARCHAR(255)
 );
 
 CREATE TABLE parkingspaceimage(
@@ -52,13 +53,37 @@ CREATE TABLE parkingspaceimage(
 
 CREATE TABLE income(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    date VARCHAR(255),
+    date DATE NOT NULL DEFAULT (CURDATE()),
     parkinglot BIGINT,
     parkinglotname VARCHAR(255),
     parkinglotspace BIGINT,
     parkinglotspacename VARCHAR(255),
-    starttime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    stoptime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(255),
+    address VARCHAR(255) NOT NULL,
+    price VARCHAR(255) NOT NULL,
+    starttime VARCHAR(255),
+    stoptime VARCHAR(255),
     income BIGINT
+);
+
+CREATE TABLE member(
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    birthday VARCHAR(255) NOT NULL,
+	cellphone TEXT NOT NULL,
+    email TEXT NOT NULL,
+    account TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+
+CREATE TABLE car(
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    member_id VARCHAR(255) NOT NULL,
+    carboard_unmber VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE car_image(
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    car_id VARCHAR(255) NOT NULL,
+    member_id VARCHAR(255) NOT NULL,
+    car_image VARCHAR(255) NOT NULL
 );

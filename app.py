@@ -1,6 +1,7 @@
 from flask import *
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import os, boto3, time , re, uuid, time
 
 load_dotenv()
@@ -42,9 +43,18 @@ s3_client = boto3.client('s3',
 @app.route("/")
 def index():
     return render_template("index.html")
+@app.route("/id")
+def id():
+    return render_template("id.html")
 @app.route("/parkinglotpage")
 def parking_lot_page():
     return render_template("parking_lot_page.html")
+@app.route("/selector")
+def selector():
+    return render_template("selector.html")
+@app.route("/car_page")
+def car_page():
+    return render_template("car_page.html")
 
 @app.route("/api/input_parking_lot_information", methods = ["GET","POST"])
 
@@ -167,10 +177,9 @@ def input_parking_lot_information():
                 parking_lot_data["images"] = [image["image"] for image in images]
 
                 # 获取空间信息
-                cursor.execute("SELECT id, number FROM parkinglotspace WHERE parkinglotdata = %s", (parking_lot_data["id"],))
+                cursor.execute("SELECT id, number, status FROM parkinglotspace WHERE parkinglotdata = %s", (parking_lot_data["id"],))
                 spaces = cursor.fetchall()
-                parking_lot_data["spaces"] = [space["number"] for space in spaces]
-                parking_lot_data["spaces_id"] = [space["id"] for space in spaces]
+                parking_lot_data["spaces"] = [{"id": space["id"], "number": space["number"], "status": space["status"]} for space in spaces]
 
             cursor.close()
             connection.close()
@@ -185,5 +194,142 @@ def input_parking_lot_information():
             if connection:
                 connection.close()
             return jsonify({"error": True, "message": "databaseError"}), 500
+
+@app.route("/api/input_booking_information", methods = ["POST"])
+
+def input_booking_information():
+    try:
+        data = request.get_json()
+        bookingData = data.get('bookingData')
+        bookingTime = data.get('bookingTime')
+
+        parking_lot_id = bookingData.get('id')
+        parking_lot_name = bookingData.get('name')
+        parking_lot_address = bookingData.get('address')
+        parking_lot_price = bookingData.get('price')
+        parking_lot_space_obj = bookingData.get('spaces')[0]
+        parking_lot_space_id = parking_lot_space_obj.get('id')
+        parking_lot_space_name = parking_lot_space_obj.get('number')
         
+
+        connection = con.get_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            INSERT INTO income(
+                parkinglot, 
+                parkinglotname, 
+                parkinglotspace, 
+                parkinglotspacename, 
+                starttime,
+                address,
+                price
+            ) 
+            VALUES(%s, %s, %s, %s, %s, %s, %s)
+        """, (parking_lot_id, parking_lot_name, parking_lot_space_id, 
+            parking_lot_space_name, bookingTime, parking_lot_address, parking_lot_price))
+        # 更新 parkinglotspace 表中的 status
+        cursor.execute("""
+            UPDATE parkinglotspace
+            SET status = '使用中'
+            WHERE id = %s
+        """, (parking_lot_space_id,))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({"ok":"True"}), 200
+    except mysql.connector.Error:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        return jsonify({"error": True,"message": "databaseError"}), 500
+
+@app.route("/api/get_booking_information", methods = ["GET"])
+
+def get_booking_information():
+    try:
+        connection = con.get_connection()
+        cursor = connection.cursor(dictionary=True)
+        # 获取基本的停车场数据
+        sql_query = (
+            "SELECT id, date, parkinglot, parkinglotname, parkinglotspace, "
+            "parkinglotspacename, address, price, starttime, stoptime, income "
+            "FROM income"
+        )
+        cursor.execute(sql_query)
+        booking_information_data = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return_data = {
+            "data": booking_information_data
+        }
+        return jsonify(return_data), 200
+    except mysql.connector.Error as e:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        return jsonify({"error": True, "message": "databaseError"}), 500
+         
+@app.route("/api/input_stopping_data", methods = ["POST"])
+
+def input_stopping_data():
+    try:
+        data = request.get_json()
+        stoppingDataId = data.get('stopData')
+        stoppingTime = data.get('stopTime')
+
+        connection = con.get_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            UPDATE income
+            SET stoptime = %s
+            WHERE id = %s
+        """, (stoppingTime, stoppingDataId))
+
+        cursor.execute("""
+            SELECT starttime, price, parkinglot, parkinglotspacename
+            FROM income
+            WHERE id = %s
+        """, (stoppingDataId,))
+        row = cursor.fetchone()
+        if row:
+            starttime = row['starttime']
+            price_per_hour = row['price']
+            parkinglot = row['parkinglot']
+            parkinglotspacename = row['parkinglotspacename']
+        
+         # 计算总时间（小时）
+        total_hours = (datetime.strptime(stoppingTime, '%Y-%m-%d %H:%M:%S') - 
+                    datetime.strptime(starttime, '%Y-%m-%d %H:%M:%S')).total_seconds() / 3600
+
+        total_hours = float(total_hours)  # 转换为浮点数
+        price_per_hour = float(price_per_hour)  # 同样转换为浮点数
+        # 计算总费用
+        total_cost = total_hours * price_per_hour
+        cursor.execute("""
+            UPDATE income
+            SET income = %s
+            WHERE id = %s
+        """, (total_cost, stoppingDataId))
+
+        cursor.execute("""
+            UPDATE parkinglotspace
+            SET status = NULL
+            WHERE parkinglotdata = %s AND number = %s
+        """, (parkinglot, parkinglotspacename))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({"ok":"True"}), 200
+    except mysql.connector.Error:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        return jsonify({"error": True,"message": "databaseError"}), 500
 app.run(debug=True, host="0.0.0.0", port=5000)

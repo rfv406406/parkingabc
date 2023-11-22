@@ -1,72 +1,88 @@
-<div class="information-container" id="information-container">
-    <div class="information-header">
-        <div>帳戶資訊</div>
-        <button class="close" id="close-information"><img src="../static/IMAGE/close.png"></button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/CSS/base.css">
+    <link rel="stylesheet" href="../static/CSS/id.css">
+    <title>首頁</title>
+</head>
+<body>
+    {% include 'nav.html' %} {% include 'sign_system.html' %}
+    <div class="information-container" id="information-container">
+        <div class="information-header">
+            <div>帳戶資訊</div>
+            <button class="close" id="close-information"><img src="../static/IMAGE/close.png"></button>
+        </div>
+        <form class="information-form" id="information-form">
+            <div class="input-box">
+                <label for="account" class="consistent-text">帳號：</label>
+                <input type="text" id="account-information" name="account-signon" class="text" placeholder="請輸入帳號">
+            </div>
+            <div class="input-box">
+                <label for="password" class="consistent-text">密碼：</label>
+                <input type="text" id="password-information" name="password-signon" class="text" placeholder="請輸入密碼">
+            </div>
+            <div class="input-box">
+                <label for="name" class="consistent-text">姓名：</label>
+                <input type="text" id="name-information" name="name" class="text" placeholder="請輸入姓名">
+            </div>
+            <div class="input-box">
+                <label for="e-mail" class="consistent-text">e-mail：</label>
+                <input type="text" id="email-information" name="e-mail" class="text" placeholder="請輸入電子郵件">
+            </div>
+            <div class="input-box">
+                <label for="birthday" class="consistent-text">生日：</label>
+                <input type="text" id="birthday-information" name="birthday" class="text" placeholder="請輸入出生年月分">
+            </div>
+            <div class="input-box">
+                <label for="callphone" class="consistent-text">手機：</label>
+                <input type="text" id="callphone-information" name="callphone" class="text" placeholder="請輸入手機號碼">
+            </div>
+            <button class="storage-button" id="storage-button" type="button">儲存</button>
+        </form>
+        <div class="footer"></div>
     </div>
-    <form class="information-form" id="information-form">
-        <div class="input-box">
-            <label for="account" class="consistent-text">帳號：</label>
-            <input type="text" id="account-information" name="account-signon" class="text" placeholder="請輸入帳號">
+    <div class="information-page" id="information-page">
+        <div class="information-page-header">
+            <div>帳戶資訊</div>
         </div>
-        <div class="input-box">
-            <label for="password" class="consistent-text">密碼：</label>
-            <input type="text" id="password-information" name="password-signon" class="text" placeholder="請輸入密碼">
+        <div class="information-table" id="information-table">
+            <div class="table">
+                <label for="account" class="consistent-text">帳號：</label>
+                <div class="infor-data">rfv406406</div>
+            </div>
+            <div class="separator"></div>
+            <div class="table">
+                <label for="password" class="consistent-text">密碼：</label>
+                <div class="infor-data">12345678</div>
+            </div>
+            <div class="separator"></div>
+            <div class="table">
+                <label for="name" class="consistent-text">姓名：</label>
+                <div class="infor-data">康智偉</div>
+            </div>
+            <div class="separator"></div>
+            <div class="table">
+                <label for="e-mail" class="consistent-text">e-mail：</label>
+                <div class="infor-data">rfv406406@gamil.com</div>
+            </div>
+            <div class="separator"></div>
+            <div class="table">
+                <label for="birthday" class="consistent-text">生日：</label>
+                <div class="infor-data">1911.01.10</div>
+            </div>
+            <div class="separator"></div>
+            <div class="table">
+                <label for="callphone" class="consistent-text">手機：</label>
+                <div class="infor-data">0987654321</div>
+            </div>
+            <div class="separator"></div>
+            <button class="edit-button" id="edit-button">編輯</button>
         </div>
-        <div class="input-box">
-            <label for="name" class="consistent-text">姓名：</label>
-            <input type="text" id="name-information" name="name" class="text" placeholder="請輸入姓名">
-        </div>
-        <div class="input-box">
-            <label for="e-mail" class="consistent-text">e-mail：</label>
-            <input type="text" id="email-information" name="e-mail" class="text" placeholder="請輸入電子郵件">
-        </div>
-        <div class="input-box">
-            <label for="birthday" class="consistent-text">生日：</label>
-            <input type="text" id="birthday-information" name="birthday" class="text" placeholder="請輸入出生年月分">
-        </div>
-        <div class="input-box">
-            <label for="callphone" class="consistent-text">手機：</label>
-            <input type="text" id="callphone-information" name="callphone" class="text" placeholder="請輸入手機號碼">
-        </div>
-        <button class="storage-button" id="storage-button" type="button">儲存</button>
-    </form>
-    <div class="footer"></div>
-</div>
-<div class="information-page" id="information-page">
-    <div class="information-page-header">
-        <div>帳戶資訊</div>
     </div>
-    <div class="information-table" id="information-table">
-        <div class="table">
-            <label for="account" class="consistent-text">帳號：</label>
-            <div class="infor-data">rfv406406</div>
-        </div>
-        <div class="separator"></div>
-        <div class="table">
-            <label for="password" class="consistent-text">密碼：</label>
-            <div class="infor-data">12345678</div>
-        </div>
-        <div class="separator"></div>
-        <div class="table">
-            <label for="name" class="consistent-text">姓名：</label>
-            <div class="infor-data">康智偉</div>
-        </div>
-        <div class="separator"></div>
-        <div class="table">
-            <label for="e-mail" class="consistent-text">e-mail：</label>
-            <div class="infor-data">rfv406406@gamil.com</div>
-        </div>
-        <div class="separator"></div>
-        <div class="table">
-            <label for="birthday" class="consistent-text">生日：</label>
-            <div class="infor-data">1993.01.10</div>
-        </div>
-        <div class="separator"></div>
-        <div class="table">
-            <label for="callphone" class="consistent-text">手機：</label>
-            <div class="infor-data">0939931593</div>
-        </div>
-        <div class="separator"></div>
-        <button class="edit-button" id="edit-button">編輯</button>
-    </div>
-</div>
+    {% include 'foot.html' %}
+    <script src="../static/JS/id.js"></script>
+    <script src="../static/JS/base.js"></script>
+</body>
+</html>

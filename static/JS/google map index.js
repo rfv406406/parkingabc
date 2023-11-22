@@ -55,7 +55,7 @@ function displayMarkers(dataObject) {
                 const locationData = findDataByLatLng(location.lat, location.lng, dataObject.data);
                 console.log(locationData)
                 parkingLotInformationTable(locationData);
-                // getBookingInformation(locationData);
+                getBookingInformation(locationData);
             });
         });
     }
@@ -77,12 +77,19 @@ function createInfoWindow(location) {
 //產稱自定義marker
 function createMarker(location) {
     const latLng = new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng));
+    let labelContent = location.price + "元";  // 默认显示价格
+
+    // 检查是否存在停车空间和第一个空间的状态
+    if (location.spaces && location.spaces.every(space => space.status)) {
+        labelContent = "使用中";
+    }
+
     const marker = new markerWithLabel.MarkerWithLabel({
         position: latLng,
         clickable: true,
         draggable: true,
         map: map,
-        labelContent: location.price + "元",
+        labelContent: labelContent,
         labelAnchor: new google.maps.Point(-20, -45),
         labelClass: "labels",
         labelStyle: { opacity: 1.0 },

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/CSS/base.css">
+    <link rel="stylesheet" href="../static/CSS/plate_board.css">
+    <title>首頁</title>
+</head>
+<body>
+    {% include 'nav.html' %} {% include 'sign_system.html' %}
+    <div class="plate-board-container">
+        <header class="plate-board-container-header" id="plate-board-container-header">
+            <div class="text">上傳車車編號與圖片</div>
+            </br>
+            車牌編號：<input type="text" name="message_content" class="message_content" placeholder="輸入車牌編號">
+            <form>
+                <label for="file">上傳車車圖片檔案</label>
+                <input type="file" id="file" name="file">
+                </br>
+                <input type="submit" id="data_submit" value="送出">
+            </form>
+        </header>
+
+        <div class="plate-board-information" id="plate-board-information">
+            <div class="board-number">ZXC-1234</div>
+            <div class="separator"></div>
+            <div class="fig">
+                <img src="../static/IMAGE/0.jpg">
+            </div>
+            <div class="fig">
+                <img src="../static/IMAGE/download.jfif">
+            </div>
+            <div class="fig">
+                <img src="../static/IMAGE/images.jfif">
+            </div>
+        </div>
+        <button class="edit-button" id="plate-board-edit-button">編輯</button>
+    </div>
+    {% include 'foot.html' %}
+    <script src="../static/JS/base.js"></script>
+</body>
+</html>

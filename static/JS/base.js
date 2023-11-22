@@ -49,9 +49,19 @@ function removeClass(elementSelector, classesToRemove) {
   }
 }
 
-// 事件監聽設置的通用函式
+// 事件監聽設置的通用函式 //非元件類
 function setupRemove(Selector, elementSelectorANDcss) {
   Selector.addListener('click', function() {
+    elementSelectorANDcss.forEach(item => {
+      removeClass(item.elementSelector, item.css);
+  });
+});
+}
+
+// 事件監聽設置的通用函式 
+function setupRemoveButton(Selector, elementSelectorANDcss) {
+  let element = document.querySelector(Selector);
+  element.addEventListener('click', function() {
     elementSelectorANDcss.forEach(item => {
       removeClass(item.elementSelector, item.css);
   });
@@ -100,6 +110,10 @@ function clickButton(buttonSelector, renderTemplate) {
 
 clickButton('#parking-lot-button-list','/parkinglotpage')
 clickButton('#home','/')
+clickButton('#selector','/selector')
+clickButton('#car_page','/car_page')
+clickButton('#id','/id')
+
 
 //parking_lot-information-container go up
 setupToggleNotButtonElements('.parking_lot-information-container', [
@@ -109,4 +123,16 @@ setupToggleNotButtonElements('.parking_lot-information-container', [
 setupRemove(map, [
   { elementSelector: '.parking_lot-information-container', 
   css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
+]);
+
+//parking_page block
+setupToggle('#parking-page-button-list', [
+  { elementSelector: '#packing-page-container', classToToggle: 'packing-page-container-toggled' },
+  { elementSelector: '#packing-page-black-back', classToToggle: 'black-back-toggled' }
+]);
+
+setupRemoveButton('#close-packing-page', [
+  { elementSelector: '#packing-page-container', css: ['packing-page-container-toggled'] },
+  { elementSelector: '#packing-page-black-back', css: ['black-back-toggled'] },
+  { elementSelector: '#menuContent', css: ['menuContent_toggled'] }
 ]);

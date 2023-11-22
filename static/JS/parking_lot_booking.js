@@ -1,91 +1,96 @@
-// fetchData()
-// //調用停車場DB數據
-// async function fetchData(){
-//     try{
-//         const response = await getData();
-//         const data = await handleResponse(response);
-//         console.log(data);
-//         displayMarkers(data);
-//     }catch(error){
-//         await handleError(error);
-//     }
-// }
+// ----------------------------------------------------------------------
+let bookingLocationData;
 
-// async function getData(){
-//     const response = await fetch("/api/input_parking_lot_information", {
-//         method: 'GET',
-//     });
-//     return response;
-// }
+buttonBooking = document.querySelector('#button-parking-booking')
+buttonReservation = document.querySelector('#button-parking-reservation')
 
-// async function handleResponse(response) {
-//     if (!response.ok) {
-//         throw new Error('Get null from backend');
-//     }
-//     return response.json();
-// }
+buttonBooking.addEventListener('click', async function() {
+    let bookingData = bookingLocationData; // 等待 packingData 函数完成并获取其返回值
+    let bookingTime = await getCurrentDateTime();
+    // console.log(bookingData)
+    // console.log(bookingTime)
+    await passBookingData(bookingData, bookingTime); // 将 formData 传递给 passData 函数并等待其执行完成
+    await returnBookingData()
+    fetchData()
+    toggleClass('#packing-page-container', 'packing-page-container-toggled');
+    toggleClass('#packing-page-black-back', 'black-back-toggled');  
+    startTimer(updateTimerDisplay);   
+});
+//停車資料取得
+async function getBookingInformation(locationData){
+    console.log(locationData)
+    bookingLocationData = locationData
+};
+//取得停車當下時間
+async function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份是從 0 開始的
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
 
-// async function handleError(error) {
-//     console.error('Backend could got problems', error);
-// }
-// // ----------------------------------------------------------------------
-// buttonBooking = document.querySelector('#button-parking-booking')
-// buttonReservation = document.querySelector('#button-parking-reservation')
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
-// buttonBooking.addEventListener('click', async function() {
-//     let bookingData = await getBookingInformation(location); // 等待 packingData 函数完成并获取其返回值
-//     let bookingTime = await getCurrentDateTime();
-//     await passBookingData(formData); // 将 formData 传递给 passData 函数并等待其执行完成
-// });
-// //停車資料取得
-// async function getBookingInformation(location){
-//     return location
-// };
-// //取得停車當下時間
-// async function getCurrentDateTime() {
-//     const now = new Date();
-//     const year = now.getFullYear();
-//     const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份是從 0 開始的
-//     const day = String(now.getDate()).padStart(2, '0');
-//     const hours = String(now.getHours()).padStart(2, '0');
-//     const minutes = String(now.getMinutes()).padStart(2, '0');
-//     const seconds = String(now.getSeconds()).padStart(2, '0');
+async function returnBookingData(){
+    try{
+        const response = await showBookingDataOnParkingPage();
+        const data = await handleResponse(response);
+        console.log(data);
+        const lastItem = data.data[data.data.length - 1];
+        console.log(lastItem);
+        renderParkingPage(lastItem)
+    }catch(error){
+        handleError(error);
+    }
+}
 
-//     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-// }
+async function showBookingDataOnParkingPage(){
+    const response = await fetch("/api/get_booking_information", {
+        method: 'GET',
+    });
+    return response;
+}
 
+async function passBookingData(bookingData, bookingTime){
+    try{
+        const response = await inputBookingDataToDB(bookingData, bookingTime);
+        const data = await handleResponse(response);
+        console.log(data);
+        // await fetchData();
+    }catch(error){
+        handleError(error);
+    }
+}
 
+async function inputBookingDataToDB(bookingData, bookingTime){
+    const bookingInformationData = {
+        bookingData: bookingData,
+        bookingTime: bookingTime
+    };
+    const response = await fetch("/api/input_booking_information", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bookingInformationData), 
+    });
+    console.log(bookingInformationData)
+    return response;
+}
 
-// async function passBookingData(){
-//     let formData = await packingData();
-//     try{
-//         const response = await inputDataToDB(formData);
-//         const data = await handleResponse(response);
-//         console.log(data);
-//         // await fetchData();
-//     }catch(error){
-//         handleError(error);
-//     }
-// }
+async function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error('Get null from backend');
+    }
+    return response.json();
+}
 
-// async function inputDataToDB(formData){
-//     const response = await fetch("/api/input_booking_information", {
-//         method: 'POST',
-//         body: formData,
-//     });
-//     return response;
-// }
-
-// async function handleResponse(response) {
-//     if (!response.ok) {
-//         throw new Error('Get null from backend');
-//     }
-//     return response.json();
-// }
-
-// async function handleError(error) {
-//     console.error('Backend could got problems', error);
-// }
+async function handleError(error) {
+    console.error('Backend could got problems', error);
+}
 
 function parkingLotInformationTable(locationData){
     document.querySelector('#parking-lot-name').textContent = locationData.name || '';
@@ -97,8 +102,9 @@ function parkingLotInformationTable(locationData){
     document.querySelector('#parking-lot-price').textContent = locationData.price + '元' || '';
     document.querySelector('#parking-lot-width').textContent = locationData.widthLimit + 'm' || '';
     document.querySelector('#parking-lot-height').textContent = locationData.heightLimit + 'm'|| '';
-    document.querySelector('#parking-space-total-number').textContent = locationData.spaces ? locationData.spaces.length.toString() + '位': '';
-    const parkingLotImageElement = document.querySelector('#parking-lot-image');
+    const spacesWithEmptyStatus = locationData.spaces ? locationData.spaces.filter(space => !space.status).length : 0;
+    const totalSpaces = locationData.spaces ? locationData.spaces.length : 0;
+    document.querySelector('#parking-space-total-number').textContent = `${spacesWithEmptyStatus} / ${totalSpaces} 位`;    const parkingLotImageElement = document.querySelector('#parking-lot-image');
     if (locationData.images && locationData.images[0]) {
         parkingLotImageElement.src = locationData.images[0];
     } else {
@@ -106,4 +112,11 @@ function parkingLotInformationTable(locationData){
     }
 };
 
-
+function renderParkingPage(lastItem){
+    document.querySelector('#packing-page-parking-lot-id').textContent = lastItem.id;
+    document.querySelector('#packing-page-parking-lot-name').textContent = lastItem.parkinglotname;
+    document.querySelector('#packing-page-parking-lot-address').textContent = lastItem.address;
+    document.querySelector('#packing-page-parking-lot-space-number').textContent = lastItem.parkinglotspacename;
+    document.querySelector('#packing-page-parking-lot-price').textContent = lastItem.price;
+    document.querySelector('#packing-page-parking-lot-start-time').textContent = lastItem.starttime;
+};

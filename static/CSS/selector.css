@@ -12,9 +12,10 @@
 
 .range-slider{
     display: flex;
-    width: 100%;
+    width: auto;
     height: 60px;
     position: relative; /* 加上定位屬性以便於定位數值標籤 */
+    margin: 5%;
 }
 
 .range-slider .consistent-text{
@@ -40,7 +41,7 @@ input[type=range]{
     display: flex;
     justify-content: center;
     align-items: center;
-    top: -5px; /* 保持原有位置 */
+    top: 5px; /* 保持原有位置 */
     color: #000;
     font-size: 14px;
     border: 1px solid #d4d6d7;
@@ -49,7 +50,7 @@ input[type=range]{
     left: 48px; */
 }
 
-.main-selector .button{
+.main-selector-button{
     width:100px;
     height:40px;
     display: flex;
