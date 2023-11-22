@@ -16,6 +16,7 @@
             <button class="signin-button" id="signin-button">登入</button>
             <div class="signon-go-container">還沒有帳戶？<button class="go-signon" id="go-signon">點此註冊</button></div>
         </form>
+        <div class="alert_informations" id="signin-alert"></div>
         <div class="footer"></div>
     </div>
 
@@ -24,24 +25,25 @@
             <div>註冊帳戶</div>
             <button class="close" id="close-signon"><img src="../static/IMAGE/close.png"></button>
         </div>
-        <form class="signon-form" id="signon-form" action="/signon" method="POST">
+        <form class="signup-form" id="signup-form" action="/signup" method="POST">
             <div class="input-box">
                 <label for="account" class="consistent-text">帳號：</label>
-                <input type="text" id="account-signon" name="account-signon" class="text" placeholder="請輸入帳號">
+                <input type="text" id="account-signup" name="account-signup" class="text" placeholder="請輸入帳號">
             </div>
             <div class="input-box">
                 <label for="password" class="consistent-text">密碼：</label>
-                <input type="text" id="password-signon" name="password-signon" class="text" placeholder="請輸入密碼">
+                <input type="text" id="password-signup" name="password-signup" class="text" placeholder="請輸入密碼">
             </div>
-            <div class="input-box">
+            <!-- <div class="input-box">
                 <label for="name" class="consistent-text">姓名：</label>
                 <input type="text" id="name" name="name" class="text" placeholder="請輸入姓名">
-            </div>
+            </div> -->
             <div class="input-box">
                 <label for="e-mail" class="consistent-text">e-mail：</label>
                 <input type="text" id="email" name="e-mail" class="text" placeholder="請輸入電子郵件">
             </div>
-            <button class="signon-button" id="signon-button">註冊新帳戶</button>
+            <div class="alert_informations" id="signup-alert"></div>
+            <button class="signup-button" id="signup-button">註冊新帳戶</button>
             <div class="signin-return-container">已經有帳戶了？<button class="return-signin">點此登入</button></div>
         </form>
         <div class="footer"></div>

@@ -115,7 +115,7 @@ clickButton('#car_page','/car_page')
 clickButton('#id','/id')
 
 
-//parking_lot-information-container go up
+//parking_lot-information-container go up顯示
 setupToggleNotButtonElements('.parking_lot-information-container', [
   { elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-toggled' }
 ]);
@@ -125,7 +125,7 @@ setupRemove(map, [
   css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
 ]);
 
-//parking_page block
+//parking_page block顯示
 setupToggle('#parking-page-button-list', [
   { elementSelector: '#packing-page-container', classToToggle: 'packing-page-container-toggled' },
   { elementSelector: '#packing-page-black-back', classToToggle: 'black-back-toggled' }

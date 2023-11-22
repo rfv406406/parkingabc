@@ -3,30 +3,14 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os, boto3, time , re, uuid, time
-
+from module.JWT import create_token, decode_token
+from module.MYSQL import *
 load_dotenv()
 
 app=Flask(__name__)
 
 app.config["JSON_AS_ASCII"]=False
 app.config["TEMPLATES_AUTO_RELOAD"]=True
-
-import mysql.connector
-from mysql.connector import pooling
-config = {
-    "host":os.getenv('HOST'),
-    "user":os.getenv('USER'),
-    "password":os.getenv('PASSWORD'),
-    "database":os.getenv('DATABASE'),
-    # "host":"db-stage3-week1.cxzjwrl3yccb.us-east-1.rds.amazonaws.com",
-    # "port":3306,
-    # "user":"root",
-    # "password":"12345678",
-    # "database":"Stage3",
-}
-con =  pooling.MySQLConnectionPool(pool_name = "mypool",
-                              pool_size = 10,
-                              **config)
 
 # 從環境變數中取得 AWS 設定
 ACCESS_KEY = os.getenv('ACCESS_KEY')
@@ -175,12 +159,12 @@ def input_parking_lot_information():
                 cursor.execute("SELECT image FROM parkinglotimage WHERE parkinglotdata = %s", (parking_lot_data["id"],))
                 images = cursor.fetchall()
                 parking_lot_data["images"] = [image["image"] for image in images]
-
+                
                 # 获取空间信息
                 cursor.execute("SELECT id, number, status FROM parkinglotspace WHERE parkinglotdata = %s", (parking_lot_data["id"],))
                 spaces = cursor.fetchall()
                 parking_lot_data["spaces"] = [{"id": space["id"], "number": space["number"], "status": space["status"]} for space in spaces]
-
+                print(spaces)
             cursor.close()
             connection.close()
 
@@ -332,4 +316,81 @@ def input_stopping_data():
         if connection:
             connection.close()
         return jsonify({"error": True,"message": "databaseError"}), 500
+
+@app.route("/api/user", methods = ["POST"])
+
+def user():
+    try:
+        data = request.json
+        account = data["signupName"]
+        email = data["signupEmail"]
+        password = data["signupPassword"]
+
+        connection = con.get_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("SELECT email FROM member WHERE email= %s", (email, ))
+        data = cursor.fetchone()
+
+        if data is None:
+            cursor.execute("INSERT INTO member(account, email, password) VALUES(%s, %s, %s)", (account, email, password))
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return jsonify({"ok":True}), 200
+        else:
+            cursor.close()
+            connection.close()
+            return jsonify({"error": True,"message": "Email已經註冊帳戶"}), 400
+    except mysql.connector.Error:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+        return jsonify({"error": True,"message": "databaseError"}), 500
+
+@app.route("/api/user/auth", methods=["GET","PUT"])
+
+def user_auth():
+    if request.method == "PUT":
+        try:
+            data = request.json
+            email = data["account"]
+            password = data["password"]
+
+            connection = con.get_connection()
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("SELECT id, name, email FROM member WHERE email= %s AND password=%s", (email, password))
+            data = cursor.fetchone()
+
+            if data is None:
+                cursor.close()
+                connection.close()
+                return jsonify({"error": True,"message": "帳號或密碼錯誤"}), 400
+            else:
+                cursor.close()
+                connection.close()
+                token = create_token(data)
+                return jsonify({'token': token}), 200
+        except mysql.connector.Error:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+            return jsonify({"error": True,"message": "databaseError"}), 500
+                   
+    if request.method == "GET":
+        try:
+            auth_header = request.headers.get('Authorization')
+            token = auth_header.split(' ')[1]
+            payload = decode_token(token)
+    
+            user_id = payload.get('id')
+            user_name = payload.get('name')
+            user_email = payload.get('email')
+
+            return jsonify({"data":{'id': user_id, 'name': user_name, 'email': user_email}}), 200
+        except ExpiredSignatureError:
+            return ({"error": True, "message": "Token is expired"}),401
+        except Exception:
+            return jsonify(None), 400
 app.run(debug=True, host="0.0.0.0", port=5000)
