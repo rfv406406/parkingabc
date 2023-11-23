@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os, boto3, time , re, uuid, time
-from module.JWT import create_token, decode_token
+from module.JWT import *
 from module.MYSQL import *
 load_dotenv()
 
@@ -322,15 +322,15 @@ def input_stopping_data():
 def user():
     try:
         data = request.json
-        account = data["signupName"]
+        account = data["signupAccount"]
         email = data["signupEmail"]
         password = data["signupPassword"]
-
+        print(data)
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT email FROM member WHERE email= %s", (email, ))
         data = cursor.fetchone()
-
+        print(data)
         if data is None:
             cursor.execute("INSERT INTO member(account, email, password) VALUES(%s, %s, %s)", (account, email, password))
             connection.commit()

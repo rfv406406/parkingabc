@@ -8,6 +8,23 @@ function startTimer(updateDisplayCallback) {
     }, 1000);
 }
 
+function updateTimerDisplay(timerValue) {
+    // 將總秒數轉換為天、小時、分、秒
+    let seconds = timerValue % 60;
+    let totalMinutes = Math.floor(timerValue / 60);
+    let minutes = totalMinutes % 60;
+    let totalHours = Math.floor(totalMinutes / 60);
+    let hours = totalHours % 24;
+    let days = Math.floor(totalHours / 24);
+
+    // 創建顯示字符串
+    let displayString = `${days}天 ${hours}小時 ${minutes}分 ${seconds}秒`;
+
+    // 更新DOM元素
+    const timerDisplay = document.getElementById('timerDisplay');
+    timerDisplay.textContent = displayString;
+}
+
 function stopTimer() {
     clearInterval(timerInterval); // 停止计时器
 }
@@ -20,7 +37,7 @@ buttonParkingStop.addEventListener('click', async function() {
     const parkingLotIdText = parkingLotIdElement.textContent;
     let ParkingStopTime = await getCurrentDateTime();
     await passParkingStopData(parkingLotIdText, ParkingStopTime); // 将 formData 传递给 passData 函数并等待其执行完成   
-    fetchData();
+    await fetchData();
     stopTimer();
 });
 

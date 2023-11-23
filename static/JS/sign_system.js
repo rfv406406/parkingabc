@@ -2,73 +2,87 @@
 const signupButton = document.querySelector("#signup-button");
 const signinButton = document.querySelector("#signin-button");
 //註冊
-signupButton.addEventListener("click", SignSystemSubmit);
+signupButton.addEventListener("click", SignupSubmit);
 //登入
-signinButton.addEventListener("click", SignSystemSubmit);
+signinButton.addEventListener("click", SigninSubmit);
 //登入及註冊資料確認後連接對應之傳送API
-async function SignSystemSubmit(event) {
+async function SignupSubmit(event) {
     event.preventDefault();
-    const signSystemInput = await getSignSystemData();
-    const inputResults = await isInputEmpty(signSystemInput);
+    const signupInput = await getSignupData();
+    const inputResults = await isSignupInputEmpty(signupInput);
     
-    if (inputResults[0]) {
+    if (inputResults) {
         let signupAlert = document.querySelector("#signup-alert");
         signupAlert.textContent = "請輸入完整資訊"
         return;
+    }else{
+        await signup(signupInput)
     }
-    if (inputResults[1]) {
+}
+async function SigninSubmit(event) {
+    event.preventDefault();
+    const signinInput = await getSigninData();
+    const inputResults = await isSigninInputEmpty(signinInput);
+    
+    if (inputResults) {
         let signinAlert = document.querySelector("#signin-alert");
         signinAlert.textContent = "請輸入帳號與密碼"
         return;
-    }
-
-    if (!inputResults[0]){
-        await signup(signSystemInput)
     }else{
-        await signin(signSystemInput)
+        await signin(signinInput)
     }
 }
 //取得註冊及登入資料
-async function getSignSystemData() {
+async function getSignupData() {
     const signupAccount = document.querySelector("input[name=account-signup]").value;
     const signupEmail = document.querySelector("input[name=e-mail]").value;
     const signupPassword = document.querySelector("input[name=password-signup]").value;
-    const account = document.querySelector("input[name=account]").value;
-    const password = document.querySelector("input[name=password]").value;
     return { 
         signupAccount: signupAccount, 
         signupEmail: signupEmail, 
         signupPassword: signupPassword, 
+    };
+}
+
+async function getSigninData() {
+    const account = document.querySelector("input[name=account]").value;
+    const password = document.querySelector("input[name=password]").value;
+    return { 
         account: account,
         password: password
     };
 }
 //檢查註冊及登入資料是否有缺失
-async function isInputEmpty(signSystemInput) {
-    let firstThreeEmpty = signSystemInput.slice(0, 3).some(value => value === "");
-    let lastTwoHasEmpty = signSystemInput.slice(3).some(value => value === "");
-    return [firstThreeEmpty,lastTwoHasEmpty];
+async function isSignupInputEmpty(signupInput) {
+    let signupInputvalues = Object.values(signupInput);
+    let threeEmpty = signupInputvalues.slice(0, 3).some(value => value === "");
+    return threeEmpty;
+}
+async function isSigninInputEmpty(signinInput) {
+    let signinInputvalues = Object.values(signinInput);
+    let twoHasEmpty = signinInputvalues.slice(0,2).some(value => value === "");
+    return twoHasEmpty;
 }
 //連接後端註冊API
 async function signup(signSystemInput) {
     try{
         const response = await submitSignSystemForm("/api/user", "POST", signSystemInput);
-        const data = await handleResponse(response);
+        const data = await handleSignResponse(response);
         console.log(data);
         displaySignSystemResponse(data)
     }catch(error){
-        handleError(error);
+        handleSignError(error);
     }
 }
 //連接後端登入API
 async function signin(signSystemInput) {
     try{
         const response = await submitSignSystemForm("/api/user/auth", "PUT", signSystemInput);
-        const data = await handleResponse(response);
+        const data = await handleSignResponse(response);
         console.log(data);
         displaySignSystemResponse(data)
     }catch(error){
-        handleError(error);
+        handleSignError(error);
     }
 }
 //送出表單到後端
@@ -83,15 +97,25 @@ async function submitSignSystemForm(api, method, signSystemInput) {
    return response;
 }
 
-async function handleResponse(response) {
+async function handleSignResponse(response) {
     if (!response.ok) {
-        throw new Error('Get null from backend');
+        // 直接将响应对象作为错误的一部分抛出
+        throw response;
     }
     return response.json();
 }
 
-async function handleError(error) {
-    console.error('Backend could got problems', error);
+async function handleSignError(response) {
+    console.error('Backend could got problems', response);
+
+    let errorMessage = "未知錯誤";
+    if (response && response.json) {
+        // 从响应对象中解析错误信息
+        const data = await response.json();
+        errorMessage = data.message || errorMessage;
+    }
+    console.log(errorMessage);
+    displaySignSystemResponse({ message: errorMessage });
 }
 
 //後端註冊及登入回應處理
@@ -104,7 +128,7 @@ function displaySignSystemResponse(data) {
     }  
 
     if (data.token) {
-        signinForsuccess(signininfor, data);
+        signinForsuccess(signinAlert, data);
         saveToken(data.token);
     } 
     
@@ -143,7 +167,7 @@ function signinForfailure(signinAlert, data) {
     console.log(data);
 }
 //登出_監聽事件
-buttonSignout.addEventListener('click', logout);
+// buttonSignout.addEventListener('click', logout);
 
 //token儲存
 function saveToken(token){
@@ -153,15 +177,19 @@ function saveToken(token){
 async function init(){
     const token = localStorage.getItem('Token');
     if (token == null){
-        window.location.href = '/'; 
-    }
-    try{
-        const response = await submitToken("/api/user/auth", 'GET', token);
-        const data = await handleResponse(response);
-        console.log(data);
-        loginCheck(data, buttonSignin, buttonSignout)
-    }catch(error){
-        handleError(error);
+        if (!localStorage.getItem('redirected')) {
+            localStorage.setItem('redirected', 'true');
+            window.location.href = '/';
+        }
+    }else{
+        try{
+            const response = await submitToken("/api/user/auth", 'GET', token);
+            const data = await handleResponse(response);
+            console.log(data);
+            loginCheck(data)
+        }catch(error){
+            handleError(error);
+        }
     }
 }
 

@@ -8,12 +8,18 @@ SELECT * FROM parkinglotimage;
 SELECT * FROM parkinglotspace;
 SELECT * FROM parkingspaceimage;
 SELECT * FROM income;
+SELECT * FROM member;
+SELECT * FROM car;
+SELECT * FROM car_image;
 
 DROP TABLE parkinglotdata;
 DROP TABLE parkinglotimage;
 DROP TABLE parkinglotspace;
 DROP TABLE parkingspaceimage;
 DROP TABLE income;
+DROP TABLE member;
+DROP TABLE car;
+DROP TABLE car_image;
 
 DROP DATABASE parkingabc;
 
@@ -67,9 +73,9 @@ CREATE TABLE income(
 
 CREATE TABLE member(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    birthday VARCHAR(255) NOT NULL,
-	cellphone TEXT NOT NULL,
+    name VARCHAR(255),
+    birthday VARCHAR(255),
+	cellphone TEXT,
     email TEXT NOT NULL,
     account TEXT NOT NULL,
     password TEXT NOT NULL
