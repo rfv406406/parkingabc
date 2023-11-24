@@ -1,4 +1,6 @@
-
+from dotenv import load_dotenv
+import boto3, os
+load_dotenv()
 
 # 從環境變數中取得 AWS 設定
 ACCESS_KEY = os.getenv('ACCESS_KEY')
