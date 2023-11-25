@@ -8,29 +8,42 @@ check_out = Blueprint('STOP_PARKING', __name__)
 
 def input_stopping_data():
     try:
-        data = request.get_json()
+        auth_header = request.headers.get('Authorization')
+        # print(auth_header)
+        if auth_header is None:
+            return ({"error": True,"message": "please sign in"}), 403
+        else:
+            token = auth_header.split(' ')[1]
+            payload = decode_token(token)
+            member_id = payload.get('id')
+
+        data = request.json
+        # print(data)
+        if not data:
+            return ({"error": True,"message": "data is not existed"}), 400
+        # data = request.get_json()
         stoppingDataId = data.get('stopData')
         stoppingTime = data.get('stopTime')
 
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
         cursor.execute("""
-            UPDATE income
+            UPDATE consumption
             SET stoptime = %s
             WHERE id = %s
         """, (stoppingTime, stoppingDataId))
 
         cursor.execute("""
-            SELECT starttime, price, parkinglot, parkinglotspacename
-            FROM income
+            SELECT starttime, price, parkinglotdata_id, square_number
+            FROM consumption
             WHERE id = %s
         """, (stoppingDataId,))
         row = cursor.fetchone()
         if row:
             starttime = row['starttime']
             price_per_hour = row['price']
-            parkinglot = row['parkinglot']
-            parkinglotspacename = row['parkinglotspacename']
+            parkinglotdata_id = row['parkinglotdata_id']
+            square_number = row['square_number']
         
          # 计算总时间（小时）
         total_hours = (datetime.strptime(stoppingTime, '%Y-%m-%d %H:%M:%S') - 
@@ -41,16 +54,16 @@ def input_stopping_data():
         # 计算总费用
         total_cost = total_hours * price_per_hour
         cursor.execute("""
-            UPDATE income
-            SET income = %s
+            UPDATE consumption
+            SET consumption = %s
             WHERE id = %s
         """, (total_cost, stoppingDataId))
 
         cursor.execute("""
-            UPDATE parkinglotspace
+            UPDATE parkinglotsquare
             SET status = NULL
-            WHERE parkinglotdata = %s AND number = %s
-        """, (parkinglot, parkinglotspacename))
+            WHERE parkinglotdata_id = %s AND number = %s
+        """, (parkinglotdata_id, square_number))
 
         connection.commit()
         cursor.close()

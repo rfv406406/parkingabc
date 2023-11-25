@@ -42,12 +42,12 @@ def user_auth():
     if request.method == "PUT":
         try:
             data = request.json
-            email = data["account"]
+            account = data["account"]
             password = data["password"]
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
-            cursor.execute("SELECT id, name, email FROM member WHERE email= %s AND password=%s", (email, password))
+            cursor.execute("SELECT id, account, email FROM member WHERE account= %s AND password=%s", (account, password))
             data = cursor.fetchone()
 
             if data is None:

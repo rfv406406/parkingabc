@@ -90,47 +90,17 @@ document.querySelector('.pay_button').addEventListener('click', function (event)
             return;
         }
         // alert('get prime 成功，prime: ' + result.card.prime);
-        fetchDepositData(result.card.prime, totalPrice);
+        depositData(result.card.prime, totalPrice);
     });
 });
 
-function fetchDepositData(prime, totalPrice) {
+function depositData(prime, totalPrice) {
     const token = localStorage.getItem('Token');
-        
-    fetch("/api/booking", {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    })
-    .then(checkResponse) 
-    .then(data => {
-        const depositData = depositData(data); 
-
-        const json = {
-            "prime": prime,
-            "order": {
-                "price": bookingData.price,
-                "trip": {
-                    "attraction": {
-                        "id": bookingData.attractionId,
-                        "name": bookingData.name,
-                        "address": bookingData.address,
-                        "image": bookingData.imageURL
-                    },
-                    "date": bookingData.date,
-                    "time": bookingData.time
-                },
-                "contact": {
-                    "name": connectionName,
-                    "email": connectionEmail,
-                    "phone": connectionPhone
-                }
-            }
-        };
-        console.log(JSON.stringify(json)); 
-        
-        return fetch("/api/orders", {
+    const json = {
+        "prime": prime,
+        "deposit": totalPrice,
+    };
+    fetch("/api/pay", {
             method: 'POST',
             body: JSON.stringify(json), 
             headers: {
@@ -141,13 +111,13 @@ function fetchDepositData(prime, totalPrice) {
         .then(checkResponse)
         .then(data => {
             if(data.data.payment.message === "付款成功"){
-                let orderNumber = data.data.number;
-                window.location.href = `/thankyou?number=${orderNumber}`;
+                // let orderNumber = data.data.number;
+                // window.location.href = `/thankyou?number=${orderNumber}`;
             }else{
                 alert('付款失敗')
             }
         })
-    });
+    };
 
 function depositData(data){
    

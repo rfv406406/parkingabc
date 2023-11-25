@@ -11,12 +11,21 @@ input_parking_lot = Blueprint('INPUT_PARKING_LOT', __name__)
 def input_parking_lot_information():
     if request.method == "POST":
         try:
+            auth_header = request.headers.get('Authorization')
+            # print(auth_header)
+            if auth_header is None:
+                return ({"error": True,"message": "please signin"}), 403
+            else:
+                token = auth_header.split(' ')[1]
+                payload = decode_token(token)
+                member_id = payload.get('id')
+
             name = request.form.get('name')
             address = request.form.get('address')
             near_landmark = request.form.get('nearLandmark')
             opening_time_am = request.form.get('openingTimeAm')
             opening_time_pm = request.form.get('openingTimePm')
-            space = request.form.get('space')
+            space_in_out = request.form.get('spaceInOut')
             price = request.form.get('price')
             car_width = request.form.get('carWidth')
             car_height = request.form.get('carHeight')
@@ -27,6 +36,7 @@ def input_parking_lot_information():
             cursor = connection.cursor(dictionary=True)
             cursor.execute("""
                 INSERT INTO parkinglotdata(
+                    member_id,
                     name, 
                     address, 
                     landmark, 
@@ -39,9 +49,9 @@ def input_parking_lot_information():
                     lng, 
                     lat
                 ) 
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (name, address, near_landmark, opening_time_am, opening_time_pm, 
-                  space, price, car_width, car_height, lng, lat))
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (member_id, name, address, near_landmark, opening_time, closing_time, 
+                space_in_out, price, car_width, car_height, lng, lat))
             connection.commit()
             
             parking_lot_images = request.files.getlist('img')
@@ -55,7 +65,7 @@ def input_parking_lot_information():
                     # print(image_url)
                     # 将 image_url 和 parkinglotdata_id 保存到数据库
                     insert_query = """
-                        INSERT INTO parkinglotimage (parkinglotdata, image)
+                        INSERT INTO parkinglotimage (parkinglotdata_id, image)
                         VALUES (%s, %s);
                     """
                     cursor.execute(insert_query, (parkinglotdata_id, image_url))
@@ -67,7 +77,7 @@ def input_parking_lot_information():
             for key, value in all_text_data.items():
                 if key.startswith("parkingSquareNumber"):
                     insert_query = """
-                            INSERT INTO parkinglotspace (parkinglotdata, number)
+                            INSERT INTO parkinglotsquare (parkinglotdata_id, square_number)
                             VALUES (%s, %s);
                         """
                     cursor.execute(insert_query, (parkinglotdata_id, value))
@@ -90,10 +100,10 @@ def input_parking_lot_information():
                     
                     # 假設 cursor 已經被正確初始化
                     insert_query = """
-                        INSERT INTO parkingspaceimage (parkinglotspace, image)
+                        INSERT INTO parkingsquareimage (parkinglotsquare_id, image)
                         VALUES (%s, %s);
                     """
-                    cursor.execute(insert_query, (parkinglotspace, image_url))
+                    cursor.execute(insert_query, (parkinglotsquare_id, image_url))
             connection.commit()      
             
             cursor.close()
@@ -112,7 +122,7 @@ def input_parking_lot_information():
             cursor = connection.cursor(dictionary=True)
             # 获取基本的停车场数据
             sql_query = (
-                "SELECT id, name, landmark, address, openingTime, closingTime, "
+                "SELECT id, member_id, name, landmark, address, openingTime, closingTime, "
                 "spaceInOut, price, lat, lng, widthLimit, heightLimit "
                 "FROM parkinglotdata"
             )
@@ -122,21 +132,27 @@ def input_parking_lot_information():
             # 为每个停车场获取图像和空间信息
             for parking_lot_data in parking_lot_datas:
                 # 获取图像
-                cursor.execute("SELECT image FROM parkinglotimage WHERE parkinglotdata = %s", (parking_lot_data["id"],))
+                cursor.execute("SELECT image FROM parkinglotimage WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
                 images = cursor.fetchall()
                 parking_lot_data["images"] = [image["image"] for image in images]
                 
                 # 获取空间信息
-                cursor.execute("SELECT id, number, status FROM parkinglotspace WHERE parkinglotdata = %s", (parking_lot_data["id"],))
+                cursor.execute("SELECT id, number, status FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
                 spaces = cursor.fetchall()
-                parking_lot_data["spaces"] = [{"id": space["id"], "number": space["number"], "status": space["status"]} for space in spaces]
-                print(spaces)
+                parking_lot_data["squares"] = [{"id": square["id"], "square_number": square["square_number"], "status": square["status"]} for square in squares]
+                print(squares)
             cursor.close()
             connection.close()
 
-            return_data = {
-                "data": parking_lot_datas
-            }
+            if parking_lot_datas is not None:  # Check if parking_lot_datas is not None
+                return_data = {
+                    "data": parking_lot_datas
+                }
+            else:  # This will execute if parking_lot_datas is None
+                return_data = {
+                    "data": "no data found"
+                }
+            
             return jsonify(return_data), 200
         except mysql.connector.Error as e:
             if cursor:

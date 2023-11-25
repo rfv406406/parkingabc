@@ -7,24 +7,40 @@ SELECT * FROM parkinglotdata;
 SELECT * FROM parkinglotimage;
 SELECT * FROM parkinglotspace;
 SELECT * FROM parkingspaceimage;
-SELECT * FROM income;
+SELECT * FROM consumption;
 SELECT * FROM member;
 SELECT * FROM car;
 SELECT * FROM car_image;
+SELECT * FROM deposit_account;
+SELECT * FROM transactions;
 
 DROP TABLE parkinglotdata;
 DROP TABLE parkinglotimage;
 DROP TABLE parkinglotspace;
 DROP TABLE parkingspaceimage;
-DROP TABLE income;
+DROP TABLE consumption;
 DROP TABLE member;
 DROP TABLE car;
 DROP TABLE car_image;
+DROP TABLE deposit_account;
+DROP TABLE transactions;
 
 DROP DATABASE parkingabc;
 
+CREATE TABLE member(
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    birthday VARCHAR(255),
+	cellphone TEXT,
+    email TEXT NOT NULL,
+    account TEXT NOT NULL,
+    password TEXT NOT NULL,
+    RegistrationDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE parkinglotdata(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    member_id BIGINT,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
 	landmark TEXT NOT NULL,
@@ -40,45 +56,21 @@ CREATE TABLE parkinglotdata(
 
 CREATE TABLE parkinglotimage(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    parkinglotdata BIGINT,
+    parkinglotdata_id BIGINT,
     image VARCHAR(255) 
 );
 
-CREATE TABLE parkinglotspace(
+CREATE TABLE parkinglotsquare(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    parkinglotdata BIGINT,
-    number VARCHAR(255), 
+    parkinglotdata_id BIGINT,
+    square_number VARCHAR(255), 
     status VARCHAR(255)
 );
 
-CREATE TABLE parkingspaceimage(
+CREATE TABLE parkingsquareimage(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    parkinglotspace BIGINT,
+    parkinglotsquare_id BIGINT,
     image VARCHAR(255) 
-);
-
-CREATE TABLE income(
-	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    date DATE NOT NULL DEFAULT (CURDATE()),
-    parkinglot BIGINT,
-    parkinglotname VARCHAR(255),
-    parkinglotspace BIGINT,
-    parkinglotspacename VARCHAR(255),
-    address VARCHAR(255) NOT NULL,
-    price VARCHAR(255) NOT NULL,
-    starttime VARCHAR(255),
-    stoptime VARCHAR(255),
-    income BIGINT
-);
-
-CREATE TABLE member(
-	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255),
-    birthday VARCHAR(255),
-	cellphone TEXT,
-    email TEXT NOT NULL,
-    account TEXT NOT NULL,
-    password TEXT NOT NULL
 );
 
 CREATE TABLE car(
@@ -90,6 +82,37 @@ CREATE TABLE car(
 CREATE TABLE car_image(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
     car_id VARCHAR(255) NOT NULL,
-    member_id VARCHAR(255) NOT NULL,
     car_image VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE deposit_account(
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    member_id VARCHAR(255) NOT NULL,
+    Balance  BIGINT NOT NULL DEFAULT 0,
+    deposit_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transactions (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_number BIGINT NOT NULL,
+    deposit_account_id INT NOT NULL,
+    Type ENUM('DEPOSIT', 'WITHDRAWAL') NOT NULL,
+    Amount BIGINT NOT NULL,
+    status VARCHAR(255) NOT NULL,
+    transactions_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE consumption(
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    member_id BIGINT,
+    date DATE NOT NULL DEFAULT (CURDATE()),
+    parkinglotdata_id BIGINT,
+    parkinglotname VARCHAR(255),
+    parkinglotsquare BIGINT,
+    square_number VARCHAR(255),
+    address VARCHAR(255) NOT NULL,
+    price VARCHAR(255) NOT NULL,
+    starttime VARCHAR(255),
+    stoptime VARCHAR(255),
+    payment BIGINT
 );

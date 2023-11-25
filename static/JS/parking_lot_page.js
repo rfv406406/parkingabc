@@ -97,7 +97,7 @@ async function getParkingLotInformation(){
     
     let openingTimeAm = document.querySelector('#parking-lot-opening-time-am-input').value;
     let openingTimePm = document.querySelector('#parking-lot-closing-time-pm-input').value;
-    let space = document.querySelector('#parking-lot-in-out-input').value;
+    let spaceInOut = document.querySelector('#parking-lot-in-out-input').value;
     let price = document.querySelector('#parking-lot-price-input').value;
     let carWidth = document.querySelector('#parking-lot-width-input').value;
     let carHeight = document.querySelector('#parking-lot-height-input').value;
@@ -111,7 +111,7 @@ async function getParkingLotInformation(){
         img: imgArray, // 如果是多文件，則用 img.files
         openingTimeAm: openingTimeAm,
         openingTimePm: openingTimePm,
-        space: space,
+        spaceInOut: spaceInOut,
         price: price,
         carWidth: carWidth,
         carHeight: carHeight,
@@ -180,7 +180,7 @@ async function packingData(event){
     formData.append('nearLandmark', parkingLotData.nearLandmark);
     formData.append('openingTimeAm', parkingLotData.openingTimeAm);
     formData.append('openingTimePm', parkingLotData.openingTimePm);
-    formData.append('space', parkingLotData.space);
+    formData.append('spaceInOut', parkingLotData.spaceInOut);
     formData.append('price', parkingLotData.price);
     formData.append('carWidth', parkingLotData.carWidth);
     formData.append('carHeight', parkingLotData.carHeight);

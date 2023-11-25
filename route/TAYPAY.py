@@ -5,8 +5,8 @@ from module.JWT import *
 tappay = Blueprint('TAPPAY', __name__)
 
 
-@tappay.route("/api/orders", methods=["POST"])
-def api_orders():
+@tappay.route("/api/pay", methods=["POST"])
+def api_pay():
     try:
         auth_header = request.headers.get('Authorization')
         if not auth_header:
@@ -22,19 +22,11 @@ def api_orders():
 
         data = request.get_json()
        
-        name = data["order"]["contact"]["name"]
-        email = data["order"]["contact"]["email"]
-        phone_number = data["order"]["contact"]["phone"]
         prime = data["prime"]
-        price = data["order"]["price"]
-        attraction_name = data["order"]["trip"]["attraction"]["name"] 
-        attraction_address = data["order"]["trip"]["attraction"]["address"]
-        attraction_id = data["order"]["trip"]["attraction"]["id"]  
-        date = data["order"]["trip"]["date"]  
-        time = data["order"]["trip"]["time"]
+        deposit = data["totalPrice"]
     
-        if not name or not email or not phone_number:
-            return jsonify({"error": True,"message": "please fill all information"}), 400
+        if not deposit or deposit == 0:
+            return jsonify({"error": True,"message": "請輸入金額"}), 400
         else:
             order_number = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
             payload = {
@@ -42,22 +34,16 @@ def api_orders():
                 "partner_key": os.getenv('PARTNER_KEY'),
                 "merchant_id": "rfv406406_CTBC",
                 "details": "TapPay Test",
-                "amount": data["order"]["price"],
+                "amount": data["deposit"],
                 "order_number": order_number,
-                "cardholder": {
-                    "phone_number": phone_number,
-                    "name": name,
-                    "email": email
-                },
                 "remember": True
             }
         cursor.execute("""
-                       INSERT INTO ordering(
-                       member_id, order_number, attraction_id, attraction_name, attraction_address,
-                       connection_name, connection_email, phone_number, 
-                       date, time, price, status) 
-                       VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", 
-                       (member_id, order_number, attraction_id, attraction_name, attraction_address, name, email, phone_number, date, time, price, '未繳款'))
+        INSERT INTO transactions(
+                deposit_account_id, order_number, Type, Amount, status
+            ) 
+            VALUES(%s, %s, %s, %s)
+        """, (deposit_account_id, order_number, 'DEPOSIT', deposit, '未繳款'))
         connection.commit()
         cursor.close()
         connection.close()
@@ -72,13 +58,12 @@ def api_orders():
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
             cursor.execute("""
-                            UPDATE ordering
+                            UPDATE transactions
                             SET status = %s
                             WHERE order_number = %s
                         """, ('已繳款', order_number))
             connection.commit()
-            cursor.execute("DELETE FROM booking WHERE member_id = %s", (member_id, ))
-            connection.commit()
+
             cursor.close()
             connection.close()
             return jsonify({
@@ -103,46 +88,46 @@ def api_orders():
     except Exception as e:
             return jsonify({"error": True,"message":f"Error occurred: {str(e)}"}), 500
     
-@tappay.route("/api/orders/<orderNumber>", methods=['GET'])
-def orders_get(orderNumber):
+# @tappay.route("/api/orders/<orderNumber>", methods=['GET'])
+# def orders_get(orderNumber):
  
-    auth_header = request.headers.get('Authorization')
-    # print(auth_header)
-    if not auth_header:
-        return ({"error": True,"message": "please sign in"}), 403
-    token = auth_header.split(' ')[1]
-    payload = decode_token(token)
-    if not payload:
-        return ({"error": True,"message": "please sign in"}), 403
+#     auth_header = request.headers.get('Authorization')
+#     # print(auth_header)
+#     if not auth_header:
+#         return ({"error": True,"message": "please sign in"}), 403
+#     token = auth_header.split(' ')[1]
+#     payload = decode_token(token)
+#     if not payload:
+#         return ({"error": True,"message": "please sign in"}), 403
     
-    connection = con.get_connection()
-    cursor = connection.cursor(dictionary=True)
+#     connection = con.get_connection()
+#     cursor = connection.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM ordering WHERE order_number = %s",(orderNumber,))
-    data = cursor.fetchone()
-    # print(data)
-    cursor.close()
-    connection.close()
-    if data:
-        order_info = {
-            'data':{
-            "number": data["order_number"],
-            "price": data["price"],
-            "trip": {
-                "attraction": {
-                    "id": data["attraction_id"],
-                    "name": data["attraction_name"],
-                    "address": data["attraction_address"],
-                },
-                "date": data["date"],
-                "time": data["time"],
-            },
-            "contact": {
-                "name": data["connection_name"],
-                "email":data["connection_email"],
-                "phone": data["phone_number"]
-            },
-            "status": data["status"]
-        }}
+#     cursor.execute("SELECT * FROM ordering WHERE order_number = %s",(orderNumber,))
+#     data = cursor.fetchone()
+#     # print(data)
+#     cursor.close()
+#     connection.close()
+#     if data:
+#         order_info = {
+#             'data':{
+#             "number": data["order_number"],
+#             "price": data["price"],
+#             "trip": {
+#                 "attraction": {
+#                     "id": data["attraction_id"],
+#                     "name": data["attraction_name"],
+#                     "address": data["attraction_address"],
+#                 },
+#                 "date": data["date"],
+#                 "time": data["time"],
+#             },
+#             "contact": {
+#                 "name": data["connection_name"],
+#                 "email":data["connection_email"],
+#                 "phone": data["phone_number"]
+#             },
+#             "status": data["status"]
+#         }}
 
-    return jsonify(order_info), 200
+#     return jsonify(order_info), 200
