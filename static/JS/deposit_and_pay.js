@@ -77,24 +77,24 @@ document.querySelector('.pay_button').addEventListener('click', function (event)
     const tappayStatus = TPDirect.card.getTappayFieldsStatus();
 
     if (tappayStatus.canGetPrime === false) {
-        // alert('can not get prime');
+        alert('請輸入金額及付款資料');
         return;
     }
-
     // Get prime
     TPDirect.card.getPrime(function (result) {
-        let totalPrice = document.querySelector("#total_price").value;
-
-        if (totalPrice=="" || totalPrice==0){
-            alert('請輸入金額')
-            return;
-        }
         // alert('get prime 成功，prime: ' + result.card.prime);
-        depositData(result.card.prime, totalPrice);
+        depositData(result.card.prime);
     });
 });
 
-function depositData(prime, totalPrice) {
+function depositData(prime) {
+    let totalPrice = document.querySelector("#total_price").textContent;
+
+    if (totalPrice=="" || totalPrice==0){
+        alert('請輸入金額')
+        return;
+    }
+
     const token = localStorage.getItem('Token');
     const json = {
         "prime": prime,
@@ -108,7 +108,7 @@ function depositData(prime, totalPrice) {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(checkResponse)
+        .then(handleResponse)
         .then(data => {
             if(data.data.payment.message === "付款成功"){
                 // let orderNumber = data.data.number;
@@ -119,38 +119,31 @@ function depositData(prime, totalPrice) {
         })
     };
 
-function depositData(data){
+// function depositData(data){
    
-    const nameData = data.data.attraction.name;
-    const attractionIdData = data.data.attraction.attractionId;
-    const addressData = data.data.attraction.address;
-    const imageData = data.data.attraction.URL_image;
-    const dateData = data.data.date;
-    const timeData = data.data.time;
-    const priceData = data.data.price;
-    console.log(attractionIdData)
-    return {
-        name: nameData,
-        attractionId: attractionIdData,
-        address: addressData,
-        imageURL: imageData,
-        date: dateData,
-        time: timeData,
-        price: priceData
-    };
-}
-}
+//     const nameData = data.data.attraction.name;
+//     const attractionIdData = data.data.attraction.attractionId;
+//     const addressData = data.data.attraction.address;
+//     const imageData = data.data.attraction.URL_image;
+//     const dateData = data.data.date;
+//     const timeData = data.data.time;
+//     const priceData = data.data.price;
+//     console.log(attractionIdData)
+//     return {
+//         name: nameData,
+//         attractionId: attractionIdData,
+//         address: addressData,
+//         imageURL: imageData,
+//         date: dateData,
+//         time: timeData,
+//         price: priceData
+//     };
+// }
 
-function checkResponse(response) {
-    let body = document.querySelector('#body');
-    return response.json().then(data => {
-        if (data == null || data.data == null) {
-            body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; width: 90%; margin:auto; margin-bottom: 30px;">目前沒有任何預定行程</div>';
-            throw new Error('No booking data available'); // 抛出错误
-        }
-        return data; // 返回实际数据以进行进一步处理
-    }).catch(error => {
-        console.error('Error during processing response:', error);
-        throw error; // 重新抛出错误，以便于调用者也可以捕获
-    });
+function handleResponse(response) {
+    if (!response.ok) {
+        // 直接将响应对象作为错误的一部分抛出
+        throw response;
+    }
+    return response.json();
 }

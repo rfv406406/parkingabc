@@ -5,6 +5,7 @@ from route.BOOKING import booking
 from route.INPUT_PARKING_LOT import input_parking_lot
 from route.SIGN_SYSTEM import sign_system
 from route.STOP_PARKING import check_out
+from route.TAPPAY import tappay
 
 app=Flask(__name__)
 
@@ -15,6 +16,7 @@ app.register_blueprint(booking)
 app.register_blueprint(input_parking_lot)
 app.register_blueprint(sign_system)
 app.register_blueprint(check_out)
+app.register_blueprint(tappay)
 
 @app.route("/")
 def index():

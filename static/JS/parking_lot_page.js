@@ -236,8 +236,12 @@ async function passData(){
 }
 
 async function inputDataToDB(formData){
+    const token = localStorage.getItem('Token');
     const response = await fetch("/api/input_parking_lot_information", {
         method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
         body: formData,
     });
     return response;

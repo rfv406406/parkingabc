@@ -1,4 +1,4 @@
-from flask import Blueprint,jsonify,request
+from flask import *
 from module.MYSQL import *
 from module.JWT import *
 
@@ -21,6 +21,9 @@ def user():
         print(data)
         if data is None:
             cursor.execute("INSERT INTO member(account, email, password) VALUES(%s, %s, %s)", (account, email, password))
+            connection.commit()
+            member_id = cursor.lastrowid
+            cursor.execute("INSERT INTO deposit_account(member_id) VALUES(%s)", (member_id, ))
             connection.commit()
             cursor.close()
             connection.close()
@@ -73,10 +76,10 @@ def user_auth():
             payload = decode_token(token)
     
             user_id = payload.get('id')
-            user_name = payload.get('name')
+            user_account = payload.get('account')
             user_email = payload.get('email')
 
-            return jsonify({"data":{'id': user_id, 'name': user_name, 'email': user_email}}), 200
+            return jsonify({"data":{'id': user_id, 'account': user_account, 'email': user_email}}), 200
         except ExpiredSignatureError:
             return ({"error": True, "message": "Token is expired"}),401
         except Exception:

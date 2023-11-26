@@ -1,5 +1,6 @@
 from flask import Blueprint,jsonify,request
 from module.MYSQL import *
+from module.JWT import *
 
 booking = Blueprint('BOOKING', __name__)
 
@@ -17,28 +18,28 @@ def input_booking_information():
             member_id = payload.get('id')
 
         data = request.json
-        # print(data)
+        
         if not data:
             return ({"error": True,"message": "data is not existed"}), 400
 
         # data = request.get_json()
         bookingData = data.get('bookingData')
         bookingTime = data.get('bookingTime')
-
+    
         parking_lot_id = bookingData.get('id')
         parking_lot_name = bookingData.get('name')
         parking_lot_address = bookingData.get('address')
         parking_lot_price = bookingData.get('price')
-        parking_lot_space_obj = bookingData.get('spaces')[0]
-        parking_lot_space_id = parking_lot_space_obj.get('id')
-        parking_lot_space_name = parking_lot_space_obj.get('number')
+        parking_lot_squares_obj = bookingData.get('squares')[0]
+        parking_lot_squares_id = parking_lot_squares_obj.get('id')
+        parking_lot_squares_number = parking_lot_squares_obj.get('square_number')
         
-
+        print(parking_lot_squares_number)
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
         cursor.execute("""
             INSERT INTO consumption(
-                member_id, 
+                member_id,
                 date, 
                 parkinglotdata_id, 
                 parkinglotname, 
@@ -46,19 +47,17 @@ def input_booking_information():
                 square_number, 
                 address,
                 price,
-                starttime,
-                stoptime,
-                payment
+                starttime
             ) 
-            VALUES(%s, CURDATE(), %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (member_id, parking_lot_id, parking_lot_name, parking_lot_space_id, 
-            parking_lot_space_name, parking_lot_address, parking_lot_price, bookingTime, stopTime, payment))
+            VALUES(%s, CURDATE(), %s, %s, %s, %s, %s, %s, %s)
+        """, (member_id, parking_lot_id, parking_lot_name, parking_lot_squares_id, 
+            parking_lot_squares_number, parking_lot_address, parking_lot_price, bookingTime))
         # 更新 parkinglotspace 表中的 status
         cursor.execute("""
             UPDATE parkinglotsquare
             SET status = '使用中'
-            WHERE id = %s
-        """, (parking_lot_space_id,))
+            WHERE parkinglotdata_id = %s AND square_number = %s
+        """, (parking_lot_id, parking_lot_squares_number))
 
         connection.commit()
         cursor.close()
@@ -94,7 +93,7 @@ def get_booking_information():
         )
         cursor.execute(sql_query, (member_id,))
         booking_information_data = cursor.fetchall()
-
+        # print(booking_information_data)
         cursor.close()
         connection.close()
 

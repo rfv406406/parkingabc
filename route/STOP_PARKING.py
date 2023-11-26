@@ -1,5 +1,6 @@
-from flask import Blueprint,jsonify,request
+from flask import *
 from module.MYSQL import *
+from module.JWT import *
 from datetime import datetime
 
 check_out = Blueprint('STOP_PARKING', __name__)
@@ -18,51 +19,70 @@ def input_stopping_data():
             member_id = payload.get('id')
 
         data = request.json
-        # print(data)
+        
         if not data:
             return ({"error": True,"message": "data is not existed"}), 400
         # data = request.get_json()
         stoppingDataId = data.get('stopData')
         stoppingTime = data.get('stopTime')
-
+        # 更新停車時間
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
         cursor.execute("""
             UPDATE consumption
             SET stoptime = %s
-            WHERE id = %s
-        """, (stoppingTime, stoppingDataId))
-
+            WHERE id = %s AND member_id = %s
+        """, (stoppingTime, stoppingDataId, member_id))
+        connection.commit()
+        # 獲取停車data並計算費用
         cursor.execute("""
             SELECT starttime, price, parkinglotdata_id, square_number
             FROM consumption
-            WHERE id = %s
-        """, (stoppingDataId,))
+            WHERE id = %s AND member_id = %s
+        """, (stoppingDataId, member_id))
+        
         row = cursor.fetchone()
+        print(row)
         if row:
             starttime = row['starttime']
             price_per_hour = row['price']
             parkinglotdata_id = row['parkinglotdata_id']
             square_number = row['square_number']
-        
-         # 计算总时间（小时）
+       
+        # 計算總時間和費用
         total_hours = (datetime.strptime(stoppingTime, '%Y-%m-%d %H:%M:%S') - 
                     datetime.strptime(starttime, '%Y-%m-%d %H:%M:%S')).total_seconds() / 3600
 
-        total_hours = float(total_hours)  # 转换为浮点数
-        price_per_hour = float(price_per_hour)  # 同样转换为浮点数
-        # 计算总费用
+        total_hours = float(total_hours)  # 浮點數
+        price_per_hour = float(price_per_hour)  
+        # 計算費用
         total_cost = total_hours * price_per_hour
+        # 開始事務 #保持一致性，以下程序如有一步失敗將會全部跳回
+        # connection.start_transaction()
+        # 更新 consumption 表的 payment
         cursor.execute("""
             UPDATE consumption
-            SET consumption = %s
-            WHERE id = %s
-        """, (total_cost, stoppingDataId))
-
+            SET payment = %s
+            WHERE id = %s AND member_id = %s
+        """, (total_cost, stoppingDataId , member_id))
+        print(total_cost)
+        # 插入交易記錄到 transactions 表
+        order_number = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
+        cursor.execute("""
+            INSERT INTO transactions (order_number, deposit_account_id, Type, Amount, status)
+            VALUES (%s, (SELECT id FROM deposit_account WHERE member_id = %s), 'WITHDRAWAL', %s, '已繳款')
+        """, (order_number, member_id, total_cost))
+        # 更新 deposit_account 表的餘額
+        cursor.execute("""
+            UPDATE deposit_account
+            SET Balance = Balance - %s
+            WHERE member_id = %s
+        """, (total_cost, member_id))
+        # 釋放停車位
         cursor.execute("""
             UPDATE parkinglotsquare
             SET status = NULL
-            WHERE parkinglotdata_id = %s AND number = %s
+            WHERE parkinglotdata_id = %s AND square_number = %s
         """, (parkinglotdata_id, square_number))
 
         connection.commit()

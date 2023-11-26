@@ -176,16 +176,16 @@ function saveToken(token){
 //使用者登入狀態確認
 async function init(){
     const token = localStorage.getItem('Token');
+    // console.log(token)
     if (token == null){
-        if (!localStorage.getItem('redirected')) {
-            localStorage.setItem('redirected', 'true');
+        if (window.location.pathname !== '/') {
             window.location.href = '/';
         }
     }else{
         try{
             const response = await submitToken("/api/user/auth", 'GET', token);
             const data = await handleResponse(response);
-            console.log(data);
+            // console.log(data);
             loginCheck(data)
         }catch(error){
             handleError(error);
@@ -206,14 +206,13 @@ async function submitToken(api, method, token) {
 //確認登入狀態後之事件處理
 function loginCheck(data){
     let signButtonList = document.querySelector('#signin-button-list');
-    console.log(data);
+    // console.log(data);
     if (data !== null) {
         signButtonList.textContent = '登出';
         if (signButtonList.value = '登出'){
             signButtonList.addEventListener('click', logout);
         }
-        
-        console.log(data.data.name)
+        console.log(data)
         // const usernameData = data.data.name;
         // const userName = document.querySelector('#user_name');
         // userName.textContent = usernameData;
@@ -225,7 +224,7 @@ function loginCheck(data){
 //登出
 function logout() {
     localStorage.removeItem('Token');
-    if(window.location.pathname === '/booking') {
+    if(window.location.pathname !== '/') {
         window.location.href = '/'; 
     } else {
         location.reload(); 

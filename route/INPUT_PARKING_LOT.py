@@ -1,5 +1,6 @@
 from flask import Blueprint,jsonify,request
 from module.MYSQL import *
+from module.JWT import *
 from module.S3 import *
 from werkzeug.utils import secure_filename
 import time, re
@@ -50,7 +51,7 @@ def input_parking_lot_information():
                     lat
                 ) 
                 VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (member_id, name, address, near_landmark, opening_time, closing_time, 
+            """, (member_id, name, address, near_landmark, opening_time_am, opening_time_pm, 
                 space_in_out, price, car_width, car_height, lng, lat))
             connection.commit()
             
@@ -88,7 +89,7 @@ def input_parking_lot_information():
                 if key.startswith("parkingSquareImage") and image:
                     # 使用正則表達式提取數字
                     match = re.search(r'parkingSquareImage(\d+)', key)
-                    parkinglotspace = int(match.group(1)) if match else 1
+                    parkinglotsquare_id = int(match.group(1)) if match else 1
 
                     filename = secure_filename(image.filename)
                     key = f"{str(int(time.time()))}-{filename}"
@@ -137,10 +138,10 @@ def input_parking_lot_information():
                 parking_lot_data["images"] = [image["image"] for image in images]
                 
                 # 获取空间信息
-                cursor.execute("SELECT id, number, status FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
-                spaces = cursor.fetchall()
+                cursor.execute("SELECT id, square_number, status FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
+                squares = cursor.fetchall()
                 parking_lot_data["squares"] = [{"id": square["id"], "square_number": square["square_number"], "status": square["status"]} for square in squares]
-                print(squares)
+                # print(squares)
             cursor.close()
             connection.close()
 

@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 def create_token(user_data):
     payload = {
         'id': user_data['id'],
-        'name': user_data['name'],
+        'account': user_data['account'],
         'email': user_data['email'],
         'exp': datetime.utcnow() + timedelta(days=7)
     }

@@ -39,17 +39,20 @@ async function returnBookingData(){
         const response = await showBookingDataOnParkingPage();
         const data = await handleResponse(response);
         console.log(data);
-        const lastItem = data.data[data.data.length - 1];
-        console.log(lastItem);
-        renderParkingPage(lastItem)
+        renderParkingPage(data)
     }catch(error){
         handleError(error);
     }
 }
+returnBookingData()
 
 async function showBookingDataOnParkingPage(){
+    const token = localStorage.getItem('Token');
     const response = await fetch("/api/get_booking_information", {
         method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
     });
     return response;
 }
@@ -66,6 +69,7 @@ async function passBookingData(bookingData, bookingTime){
 }
 
 async function inputBookingDataToDB(bookingData, bookingTime){
+    const token = localStorage.getItem('Token');
     const bookingInformationData = {
         bookingData: bookingData,
         bookingTime: bookingTime
@@ -73,6 +77,7 @@ async function inputBookingDataToDB(bookingData, bookingTime){
     const response = await fetch("/api/input_booking_information", {
         method: 'POST',
         headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(bookingInformationData), 
@@ -112,11 +117,11 @@ function parkingLotInformationTable(locationData){
     }
 };
 
-function renderParkingPage(lastItem){
-    document.querySelector('#packing-page-parking-lot-id').textContent = lastItem.id;
-    document.querySelector('#packing-page-parking-lot-name').textContent = lastItem.parkinglotname;
-    document.querySelector('#packing-page-parking-lot-address').textContent = lastItem.address;
-    document.querySelector('#packing-page-parking-lot-space-number').textContent = lastItem.parkinglotspacename;
-    document.querySelector('#packing-page-parking-lot-price').textContent = lastItem.price;
-    document.querySelector('#packing-page-parking-lot-start-time').textContent = lastItem.starttime;
+function renderParkingPage(data){
+    document.querySelector('#packing-page-parking-lot-id').textContent = data.data[0].id;
+    document.querySelector('#packing-page-parking-lot-name').textContent = data.data[0].parkinglotname;
+    document.querySelector('#packing-page-parking-lot-address').textContent = data.data[0].address;
+    document.querySelector('#packing-page-parking-lot-space-number').textContent = data.data[0].square_number;
+    document.querySelector('#packing-page-parking-lot-price').textContent = data.data[0].price;
+    document.querySelector('#packing-page-parking-lot-start-time').textContent = data.data[0].starttime;
 };

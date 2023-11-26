@@ -5,19 +5,19 @@ SHOW TABLES;
 
 SELECT * FROM parkinglotdata;
 SELECT * FROM parkinglotimage;
-SELECT * FROM parkinglotspace;
-SELECT * FROM parkingspaceimage;
-SELECT * FROM consumption;
+SELECT * FROM parkinglotsquare;
+SELECT * FROM parkingsquareimage;
 SELECT * FROM member;
 SELECT * FROM car;
 SELECT * FROM car_image;
 SELECT * FROM deposit_account;
 SELECT * FROM transactions;
+SELECT * FROM consumption;
 
 DROP TABLE parkinglotdata;
 DROP TABLE parkinglotimage;
-DROP TABLE parkinglotspace;
-DROP TABLE parkingspaceimage;
+DROP TABLE parkinglotsquare;
+DROP TABLE parkingsquareimage;
 DROP TABLE consumption;
 DROP TABLE member;
 DROP TABLE car;
@@ -88,13 +88,12 @@ CREATE TABLE car_image(
 CREATE TABLE deposit_account(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
     member_id VARCHAR(255) NOT NULL,
-    Balance  BIGINT NOT NULL DEFAULT 0,
-    deposit_time DATETIME DEFAULT CURRENT_TIMESTAMP
+    Balance  BIGINT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE transactions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    order_number BIGINT NOT NULL,
+    order_number VARCHAR(255) NOT NULL,
     deposit_account_id INT NOT NULL,
     Type ENUM('DEPOSIT', 'WITHDRAWAL') NOT NULL,
     Amount BIGINT NOT NULL,
