@@ -7,6 +7,8 @@ function startTimer(updateDisplayCallback, elapsedTime = 0) {
     // 存儲開始時間
     localStorage.setItem("timerStart", now - elapsedTime);
 
+    toggleStopButtonReload();
+
     // 設置計時器
     let timer = elapsedTime;
     timerInterval = setInterval(() => {
@@ -49,6 +51,30 @@ function stopTimer() {
     localStorage.removeItem("timerStart");
 }
 
+function toggleStopButtonReload() {
+    const stopButton = document.getElementById('parking-stop-button');
+    const cancelMessage = document.getElementById('cancel-message');
+    const bookingTime = parseInt(localStorage.getItem('timerStart'), 10);
+    console.log(bookingTime)
+
+    if (bookingTime) {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const timeElapsed = currentTime - bookingTime;
+
+        if (timeElapsed < 30) { // under 5 mins
+            stopButton.textContent = '取消預約';
+            cancelMessage.textContent = '5分鐘內可免費取消';
+
+            setTimeout(() => {
+                stopButton.textContent = '結帳'; 
+                cancelMessage.textContent = '';
+            }, (30 - timeElapsed) * 1000);
+        }
+    }else{
+        console.log("no timer in localStorage")
+    }
+};
+
 buttonParkingStop = document.querySelector('#parking-stop-button');
 
 
@@ -58,7 +84,13 @@ buttonParkingStop.addEventListener('click', async function() {
     let ParkingStopTime = await getCurrentDateTime();
     await passParkingStopData(parkingLotIdText, ParkingStopTime); // 将 formData 传递给 passData 函数并等待其执行完成   
     await fetchData();
+    await returnBookingData();
     stopTimer();
+    // toggleClass('#packing-page-container', 'packing-page-container-toggled');
+    // toggleClass('#packing-page-black-back', 'black-back-toggled');  
+    // removeClass('#menuContent', ['menuContent_toggled']);  
+    alert('感謝您的消費')
+    location.reload();
 });
 
 async function passParkingStopData(parkingLotIdText, ParkingStopTime){

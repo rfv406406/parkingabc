@@ -78,8 +78,9 @@ def user_auth():
             user_id = payload.get('id')
             user_account = payload.get('account')
             user_email = payload.get('email')
+            user_status = payload.get('status')
 
-            return jsonify({"data":{'id': user_id, 'account': user_account, 'email': user_email}}), 200
+            return jsonify({"data":{'id': user_id, 'account': user_account, 'email': user_email, 'status': user_status}}), 200
         except ExpiredSignatureError:
             return ({"error": True, "message": "Token is expired"}),401
         except Exception:

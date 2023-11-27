@@ -1,6 +1,7 @@
-from flask import Blueprint,jsonify,request
+from flask import *
 from module.MYSQL import *
 from module.JWT import *
+from datetime import datetime
 
 booking = Blueprint('BOOKING', __name__)
 
@@ -34,13 +35,14 @@ def input_booking_information():
         parking_lot_squares_id = parking_lot_squares_obj.get('id')
         parking_lot_squares_number = parking_lot_squares_obj.get('square_number')
         
-        print(parking_lot_squares_number)
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
+        order_number = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
+        print(member_id)
         cursor.execute("""
             INSERT INTO consumption(
+                order_number,
                 member_id,
-                date, 
                 parkinglotdata_id, 
                 parkinglotname, 
                 parkinglotsquare, 
@@ -49,8 +51,8 @@ def input_booking_information():
                 price,
                 starttime
             ) 
-            VALUES(%s, CURDATE(), %s, %s, %s, %s, %s, %s, %s)
-        """, (member_id, parking_lot_id, parking_lot_name, parking_lot_squares_id, 
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (order_number, member_id, parking_lot_id, parking_lot_name, parking_lot_squares_id, 
             parking_lot_squares_number, parking_lot_address, parking_lot_price, bookingTime))
         # 更新 parkinglotspace 表中的 status
         cursor.execute("""
@@ -58,6 +60,12 @@ def input_booking_information():
             SET status = '使用中'
             WHERE parkinglotdata_id = %s AND square_number = %s
         """, (parking_lot_id, parking_lot_squares_number))
+
+        cursor.execute("""
+            UPDATE member
+            SET status = '使用中'
+            WHERE id = %s
+        """, (member_id, ))
 
         connection.commit()
         cursor.close()
@@ -89,17 +97,21 @@ def get_booking_information():
         sql_query = (
             "SELECT id, member_id, date, parkinglotdata_id, parkinglotname, parkinglotsquare, "
             "square_number, address, price, starttime, stoptime, payment "
-            "FROM consumption WHERE member_id = %s"
+            "FROM consumption WHERE member_id = %s AND stoptime IS NULL"
         )
         cursor.execute(sql_query, (member_id,))
         booking_information_data = cursor.fetchall()
         # print(booking_information_data)
         cursor.close()
         connection.close()
-
-        return_data = {
-            "data": booking_information_data
-        }
+        if booking_information_data:
+            return_data = {
+                "data": booking_information_data
+            }
+        else:
+            return_data = {
+                "data": "目前尚無停車資訊"
+            }
         return jsonify(return_data), 200
     except mysql.connector.Error as e:
         if cursor:

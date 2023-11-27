@@ -31,6 +31,32 @@
     background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
 }
 
+.packing-page-information{
+    /* width: 100%; */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    gap: 10px;
+}
+
+.packing-page-information-toggled{
+    display: flex;
+}
+
+.packing-page-information-none{
+    /* width: 100%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    height:40vh;
+}
+
+.packing-page-information-none-toggled{
+    display: none;
+}
+
 .packing-page-container-input-box{
     display:flex;
     justify-content: center;

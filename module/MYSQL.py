@@ -17,5 +17,5 @@ config = {
     # "database":"Stage3",
 }
 con =  pooling.MySQLConnectionPool(pool_name = "mypool",
-                              pool_size = 10,
+                              pool_size = 20,
                               **config)

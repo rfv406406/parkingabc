@@ -114,6 +114,7 @@ clickButton('#selector','/selector')
 clickButton('#car_page','/car_page')
 clickButton('#id','/id')
 clickButton('#deposit-and-pay-page-button','/deposit_and_pay_page')
+clickButton('#cash-record-page-button','/cash_flow_record')
 
 
 //parking_lot-information-container go up顯示

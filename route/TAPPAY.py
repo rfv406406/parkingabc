@@ -1,7 +1,7 @@
 from flask import *
 from module.MYSQL import *
 from module.JWT import *
-from module.GETDEPOSITACCOUNTID import *
+from module.GET_DEPOSIT_ACCOUNT_ID import *
 import os, requests
 
 tappay = Blueprint('TAPPAY', __name__)

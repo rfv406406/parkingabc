@@ -1,15 +1,14 @@
-// ----------------------------------------------------------------------
 let bookingLocationData;
 
 buttonBooking = document.querySelector('#button-parking-booking')
 buttonReservation = document.querySelector('#button-parking-reservation')
 
 buttonBooking.addEventListener('click', async function() {
-    let bookingData = bookingLocationData; // 等待 packingData 函数完成并获取其返回值
+    let bookingData = bookingLocationData; // return data get
     let bookingTime = await getCurrentDateTime();
     // console.log(bookingData)
     // console.log(bookingTime)
-    await passBookingData(bookingData, bookingTime); // 将 formData 传递给 passData 函数并等待其执行完成
+    await passBookingData(bookingData, bookingTime); 
     await returnBookingData()
     fetchData()
     toggleClass('#packing-page-container', 'packing-page-container-toggled');
@@ -39,7 +38,7 @@ async function returnBookingData(){
         const response = await showBookingDataOnParkingPage();
         const data = await handleResponse(response);
         console.log(data);
-        renderParkingPage(data)
+        await renderParkingPage(data)
     }catch(error){
         handleError(error);
     }
@@ -117,7 +116,12 @@ function parkingLotInformationTable(locationData){
     }
 };
 
-function renderParkingPage(data){
+async function renderParkingPage(data){
+    if (data.data == '目前尚無停車資訊'){
+        return
+    }
+    toggleClass('#packing-page-information', 'packing-page-information-toggled'); 
+    toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
     document.querySelector('#packing-page-parking-lot-id').textContent = data.data[0].id;
     document.querySelector('#packing-page-parking-lot-name').textContent = data.data[0].parkinglotname;
     document.querySelector('#packing-page-parking-lot-address').textContent = data.data[0].address;

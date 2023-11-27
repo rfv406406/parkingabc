@@ -4,12 +4,12 @@
                 <div>停車頁面</div>
                 <button class="close" id="close-packing-page"><img src="../static/IMAGE/close.png"></button>
             </div>
-            <div class="signin-form" id="signin-form">
+            <div class="packing-page-information" id="packing-page-information">
                 <!-- <div class="parking_lot-image">
                     <div class="image"><img id="parking-lot-image"></div>
                     <div class="pot_container"></div>
                 </div> -->
-                <div class="packing-page-container-input-box">
+                <div class="packing-page-container-input-box" style="display: none;">
                     <div class="consistent-text">ID：</div>
                     <div id="packing-page-parking-lot-id"class="text">123停車場</div>
                 </div>
@@ -26,18 +26,25 @@
                     <div class="text" id="packing-page-parking-lot-space-number">123停車場</div>
                 </div>
                 <div class="packing-page-container-input-box">
-                    <div class="consistent-text">價格：</div>
+                    <div class="consistent-text">每小時價格：</div>
                     <div id="packing-page-parking-lot-price"class="text">123停車場</div>
                 </div>
                 <div class="packing-page-container-input-box">
-                    <div class="consistent-text">停車時間：</div>
+                    <div class="consistent-text">開始時間：</div>
                     <div id="packing-page-parking-lot-start-time"class="text">123停車場</div>
                 </div>
                 <div class="packing-page-container-input-box">
-                    <div class="consistent-text" id="timerDisplay">0</div>
+                    <div class="consistent-text" id="timerDisplay"></div>
                     <!-- <button id="startTimer"></button> -->
                 </div>
                 <button class="signin-button" id="parking-stop-button">結帳</button>
+                <div class="packing-page-container-input-box">
+                    <div class="consistent-text" id="cancel-message"></div>
+                    <!-- <button id="startTimer"></button> -->
+                </div>
+            </div>
+            <div class="packing-page-information-none" id="packing-page-information-none">
+                <div>目前尚無停車資訊</div>
             </div>
             <div class="footer"></div>
         </div>

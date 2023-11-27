@@ -18,12 +18,12 @@ DROP TABLE parkinglotdata;
 DROP TABLE parkinglotimage;
 DROP TABLE parkinglotsquare;
 DROP TABLE parkingsquareimage;
-DROP TABLE consumption;
 DROP TABLE member;
 DROP TABLE car;
 DROP TABLE car_image;
 DROP TABLE deposit_account;
 DROP TABLE transactions;
+DROP TABLE consumption;
 
 DROP DATABASE parkingabc;
 
@@ -35,6 +35,7 @@ CREATE TABLE member(
     email TEXT NOT NULL,
     account TEXT NOT NULL,
     password TEXT NOT NULL,
+    status VARCHAR(255),
     RegistrationDate DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,7 +48,7 @@ CREATE TABLE parkinglotdata(
     openingTime TEXT NOT NULL,
     closingTime TEXT NOT NULL,
     spaceInOut TEXT NOT NULL,
-    price VARCHAR(255) NOT NULL,
+    price BIGINT,
     widthLimit VARCHAR(255) NOT NULL,
 	heightLimit VARCHAR(255) NOT NULL,
     lng VARCHAR(255),
@@ -103,15 +104,18 @@ CREATE TABLE transactions (
 
 CREATE TABLE consumption(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    member_id BIGINT,
     date DATE NOT NULL DEFAULT (CURDATE()),
+    member_id BIGINT,
+    order_number VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
     parkinglotdata_id BIGINT,
     parkinglotname VARCHAR(255),
     parkinglotsquare BIGINT,
     square_number VARCHAR(255),
-    address VARCHAR(255) NOT NULL,
+    car_board VARCHAR(255),
     price VARCHAR(255) NOT NULL,
     starttime VARCHAR(255),
     stoptime VARCHAR(255),
-    payment BIGINT
+    payment BIGINT,
+    income BIGINT
 );

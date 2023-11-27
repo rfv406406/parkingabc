@@ -77,11 +77,13 @@ function createInfoWindow(location) {
 //產稱自定義marker
 function createMarker(location) {
     const latLng = new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng));
-    let labelContent = location.price + "元";  // 默认显示价格
+    let labelContent;
 
     // 检查是否存在停车空间和第一个空间的状态
-    if (location.spaces && location.spaces.every(space => space.status)) {
+    if (location.squares && location.squares.every(square => square.status)) {
         labelContent = "使用中";
+    }else{
+        labelContent = location.price + "元";
     }
 
     const marker = new markerWithLabel.MarkerWithLabel({
@@ -100,7 +102,6 @@ function createMarker(location) {
             anchor: new google.maps.Point(25, 50)
         }
     });
-
     return marker;
 }
 
