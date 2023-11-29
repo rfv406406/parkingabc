@@ -111,8 +111,11 @@ function depositData(prime) {
         .then(handleResponse)
         .then(data => {
             if(data.data.payment.message === "付款成功"){
-                // let orderNumber = data.data.number;
-                // window.location.href = `/thankyou?number=${orderNumber}`;
+                const paySuccess = document.getElementById('pay-success');
+                paySuccess.textContent = '感謝您的加值!'
+                setTimeout(function() {
+                    window.location.href = '/';
+                }, 2000);
             }else{
                 alert('付款失敗')
             }
@@ -142,7 +145,6 @@ function depositData(prime) {
 
 function handleResponse(response) {
     if (!response.ok) {
-        // 直接将响应对象作为错误的一部分抛出
         throw response;
     }
     return response.json();

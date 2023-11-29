@@ -10,7 +10,7 @@ booking = Blueprint('BOOKING', __name__)
 def input_booking_information():
     try:
         auth_header = request.headers.get('Authorization')
-        # print(auth_header)
+     
         if auth_header is None:
             return ({"error": True,"message": "please sign in"}), 403
         else:
@@ -26,40 +26,42 @@ def input_booking_information():
         # data = request.get_json()
         bookingData = data.get('bookingData')
         bookingTime = data.get('bookingTime')
-    
+        carBoardSelected = data.get('carBoardSelected')
+        squareNumber = data.get('squareNumber')
+        print(squareNumber)
         parking_lot_id = bookingData.get('id')
         parking_lot_name = bookingData.get('name')
         parking_lot_address = bookingData.get('address')
         parking_lot_price = bookingData.get('price')
-        parking_lot_squares_obj = bookingData.get('squares')[0]
-        parking_lot_squares_id = parking_lot_squares_obj.get('id')
-        parking_lot_squares_number = parking_lot_squares_obj.get('square_number')
+        # parking_lot_squares_obj = bookingData.get('squares')[0]
+        # parking_lot_squares_id = parking_lot_squares_obj.get('id')
+        # parking_lot_squares_number = parking_lot_squares_obj.get('square_number')
         
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
         order_number = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
-        print(member_id)
+     
         cursor.execute("""
             INSERT INTO consumption(
                 order_number,
                 member_id,
                 parkinglotdata_id, 
                 parkinglotname, 
-                parkinglotsquare, 
                 square_number, 
                 address,
                 price,
-                starttime
+                starttime,
+                car_board
             ) 
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (order_number, member_id, parking_lot_id, parking_lot_name, parking_lot_squares_id, 
-            parking_lot_squares_number, parking_lot_address, parking_lot_price, bookingTime))
+        """, (order_number, member_id, parking_lot_id, parking_lot_name,
+            squareNumber, parking_lot_address, parking_lot_price, bookingTime, carBoardSelected))
         # 更新 parkinglotspace 表中的 status
         cursor.execute("""
             UPDATE parkinglotsquare
             SET status = '使用中'
             WHERE parkinglotdata_id = %s AND square_number = %s
-        """, (parking_lot_id, parking_lot_squares_number))
+        """, (parking_lot_id, squareNumber))
 
         cursor.execute("""
             UPDATE member
@@ -83,7 +85,7 @@ def input_booking_information():
 def get_booking_information():
     try:
         auth_header = request.headers.get('Authorization')
-        # print(auth_header)
+       
         if auth_header is None:
             return ({"error": True,"message": "please sign in"}), 403
         else:
@@ -101,7 +103,7 @@ def get_booking_information():
         )
         cursor.execute(sql_query, (member_id,))
         booking_information_data = cursor.fetchall()
-        # print(booking_information_data)
+     
         cursor.close()
         connection.close()
         if booking_information_data:

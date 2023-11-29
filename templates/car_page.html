@@ -13,12 +13,12 @@
         <header class="plate-board-container-header" id="plate-board-container-header">
             <div class="text">上傳車車編號與圖片</div>
             </br>
-            車牌編號：<input type="text" name="message_content" class="message_content" placeholder="輸入車牌編號">
+            車牌編號：<input type="text" name="message_content" class="message_content" id="plate-board-number" placeholder="ex.AAA-1234">
             <form>
                 <label for="file">上傳車車圖片檔案</label>
-                <input type="file" id="file" name="file">
+                <input type="file" id="car-img-file" name="file" multiple>
                 </br>
-                <input type="submit" id="data_submit" value="送出">
+                <input type="submit" id="plate-board-data-submit" value="送出">
             </form>
         </header>
 
@@ -38,6 +38,7 @@
         <button class="edit-button" id="plate-board-edit-button">編輯</button>
     </div>
     {% include 'foot.html' %}
+    <script src="../static/JS/car_page.js"></script>
     <script src="../static/JS/base.js"></script>
 </body>
 </html>

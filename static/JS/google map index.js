@@ -5,7 +5,9 @@ async function fetchData(){
         const response = await getData();
         const data = await handleResponse(response);
         console.log(data);
-        displayMarkers(data);
+        await displayMarkers(data);
+        let cashPoint = await getMemberStatus();
+        showCashPointOnMenu(cashPoint);
     }catch(error){
         await handleError(error);
     }
@@ -29,34 +31,31 @@ async function handleError(error) {
     console.error('Backend could got problems', error);
 }
 // ----------------------------------------------------------------------
-
+let markers = []; 
 //顯示marker
-function displayMarkers(dataObject) {
+async function displayMarkers(dataObject) {
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
     // 確保 dataObject 中有 data 屬性並且是一個數組
     if (dataObject && Array.isArray(dataObject.data)) {
         dataObject.data.forEach(location => {
             // 使用 location 中的 lat 和 lng 屬性來設置標記的位置
             const latLng = new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng));
             const marker = createMarker(location);
-            // const marker = new google.maps.Marker({
-            //     position: latLng,
-            //     map: map,
-            //     title: location.name
-            // });
-
-            // 為標記添加信息窗口，顯示更多信息
+            // 為標記添加訊息窗口，顯示更多訊息
             const infoWindow = createInfoWindow(location);
 
-            marker.addListener('click', () => {
-                calculateAndDisplayRoute(directionsService, directionsRenderer, currentPosition, latLng);
+            marker.addListener('click', async function() {
                 infoWindow.open(map, marker);//???
                 setupAppear(marker, [{ elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-appear'}
                   ]);
                 const locationData = findDataByLatLng(location.lat, location.lng, dataObject.data);
                 console.log(locationData)
                 parkingLotInformationTable(locationData);
+                await calculateAndDisplayRoute(directionsService, directionsRenderer, currentPosition, latLng);
                 getBookingInformation(locationData);
             });
+            markers.push(marker);
         });
     }
 };
@@ -78,18 +77,16 @@ function createInfoWindow(location) {
 function createMarker(location) {
     const latLng = new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng));
     let labelContent;
-
     // 检查是否存在停车空间和第一个空间的状态
     if (location.squares && location.squares.every(square => square.status)) {
         labelContent = "使用中";
     }else{
         labelContent = location.price + "元";
     }
-
     const marker = new markerWithLabel.MarkerWithLabel({
         position: latLng,
         clickable: true,
-        draggable: true,
+        draggable: false,
         map: map,
         labelContent: labelContent,
         labelAnchor: new google.maps.Point(-20, -45),
@@ -97,7 +94,7 @@ function createMarker(location) {
         labelStyle: { opacity: 1.0 },
         icon: {
             url: getIconUrl(location.price),
-            scaledSize: new google.maps.Size(50, 50),
+            scaledSize: new google.maps.Size(60, 50),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(25, 50)
         }
@@ -116,7 +113,7 @@ function getIconUrl(price) {
     }
 }
  //最短路徑
-function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
+ async function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
     directionsService.route({
         origin: new google.maps.LatLng(origin.lat, origin.lng),
         destination: destination,
@@ -126,12 +123,17 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, origin,
             directionsRenderer.setDirections(response);
         } else {
             window.alert('Directions request failed due to ' + status);
-        }
+        };
     });
-}
+};
 
 function findDataByLatLng(lat, lng, data) {
     // 在 data 中查找與給定經緯度匹配的條目
     return data.find(item => item.lat === lat && item.lng === lng);
-}
-  
+};
+
+function showCashPointOnMenu(cashPoint){
+    const cashBar = document.getElementById('cash-point')
+    cashBar.textContent = '目前點數:'+cashPoint.data[0].Balance+'點';
+};
+

@@ -51,7 +51,23 @@
     height: 100px;
     margin:auto;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
+    gap: 22px;
+    color: #666;
+    font-family: Noto Sans TC;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 13.3px;
+}
+
+.pay-success{
+    display: flex;
+    width: 90%;
+    height: 100%;
+    margin:auto;
+    flex-direction: column;
+    align-items: center;
     gap: 22px;
     color: #666;
     font-family: Noto Sans TC;

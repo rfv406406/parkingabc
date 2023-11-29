@@ -31,13 +31,13 @@
     display: flex;
     justify-content: center;
     text-align: center;
-    color: #59ea35;
+    color: #00000084;
     background-color: #f4efef;
     font-family: Roboto, Arial, sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
-    width: 40px;
+    width: 50px;
     height: 30px;
     padding: 2px;
     border: 1px solid #999;

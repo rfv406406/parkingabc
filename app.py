@@ -7,6 +7,8 @@ from route.SIGN_SYSTEM import sign_system
 from route.STOP_PARKING import check_out
 from route.TAPPAY import tappay
 from route.GET_CASH_RECORD import cash_record
+from route.CAR_PAGE import car_board
+from route.MEMBER_DATA_API import member_data
 
 app=Flask(__name__)
 
@@ -19,6 +21,8 @@ app.register_blueprint(sign_system)
 app.register_blueprint(check_out)
 app.register_blueprint(tappay)
 app.register_blueprint(cash_record)
+app.register_blueprint(car_board)
+app.register_blueprint(member_data)
 
 @app.route("/")
 def index():

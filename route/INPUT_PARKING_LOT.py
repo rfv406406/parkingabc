@@ -123,10 +123,12 @@ def input_parking_lot_information():
             cursor = connection.cursor(dictionary=True)
             # 获取基本的停车场数据
             sql_query = (
-                "SELECT id, member_id, name, landmark, address, openingTime, closingTime, "
-                "spaceInOut, price, lat, lng, widthLimit, heightLimit "
-                "FROM parkinglotdata"
+                "SELECT p.id, p.member_id, p.name, p.landmark, p.address, p.openingTime, p.closingTime, "
+                "p.spaceInOut, p.price, p.lat, p.lng, p.widthLimit, p.heightLimit, m.cellphone "
+                "FROM parkinglotdata p "
+                "JOIN member m ON p.member_id = m.id"
             )
+
             cursor.execute(sql_query)
             parking_lot_datas = cursor.fetchall()
 

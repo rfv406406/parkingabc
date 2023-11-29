@@ -120,4 +120,5 @@ async function inputParkingStopDataToDB(parkingLotIdText, ParkingStopTime){
     });
     console.log(response)
     return response;
-}
+};
+

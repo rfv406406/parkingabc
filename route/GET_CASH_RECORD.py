@@ -25,15 +25,55 @@ def get_cash_record():
         transactions_data = cursor.fetchall()
 
         # 从 consumption 表查询
-        cursor.execute("SELECT * FROM consumption WHERE member_id = %s", (member_id,))
-        consumption_data = cursor.fetchall()
+        cursor.execute("""
+            SELECT
+                id,
+                date,
+                member_id,
+                order_number,
+                address,
+                parkinglotdata_id,
+                parkinglotname,
+                parkinglotsquare,
+                square_number,
+                car_board,
+                price,
+                starttime,
+                stoptime,
+                payment
+            FROM consumption
+            WHERE member_id = %s
+        """, (member_id,))
+        consumption_payment_data = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT
+                id,
+                date,
+                member_id,
+                order_number,
+                address,
+                parkinglotdata_id,
+                parkinglotname,
+                parkinglotsquare,
+                square_number,
+                car_board,
+                price,
+                starttime,
+                stoptime,
+                income
+            FROM consumption
+            WHERE member_id = %s
+        """, (member_id,))
+        consumption_income_data = cursor.fetchall()
 
         cursor.close()
         connection.close()
 
         return_data = {
             'transactions': transactions_data if transactions_data else "no transactions data found",
-            'consumption': consumption_data if consumption_data else "no consumption data found"
+            'consumption_payment': consumption_payment_data if consumption_payment_data else "no consumption_payment data found",
+            'consumption_income': consumption_income_data if consumption_income_data else "no consumption_income data found"
         }
         
         return jsonify(return_data), 200

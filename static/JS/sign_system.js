@@ -232,3 +232,90 @@ function logout() {
 }
 //F5
 window.addEventListener('load', init);
+
+
+
+//使用者登入狀態for booking
+async function loggingCheck(){
+    const token = localStorage.getItem('Token');
+    // console.log(token)
+    if (token == null){
+        const alertContent = document.getElementById("alert-content")
+        alertContent.textContent = '請先登入以使用完整功能';
+        return false; // 終止其他函式執行
+    }
+    return true; // 繼續執行其他函式
+};
+
+//使用者停車狀態for booking
+async function memberStatus(){
+    let parkingStatus = await getMemberStatus()
+    let memberCar = await returnCarBoardData()
+    
+    if (memberCar.data[0].carboard_unmber == null){
+        const alertContent = document.getElementById("alert-content")
+        alertContent.textContent = '請先登記車輛!';
+        toggleClass('#alert-page-container', 'alert-page-container-toggled');
+        toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
+        return false;
+    }
+    if (parkingStatus.data[0].status !== null){
+        const alertContent = document.getElementById("alert-content")
+        alertContent.textContent = '您目前已經在停車囉';
+        toggleClass('#alert-page-container', 'alert-page-container-toggled');
+        toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
+        return false;
+    }
+    if (parkingStatus.data[0].Balance <= 0){
+        const alertContent = document.getElementById("alert-content")
+        alertContent.innerHTML = '<p class="full-capacity-message">餘額不足，請儲值</p>';
+        toggleClass('#alert-page-container', 'alert-page-container-toggled');
+        toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
+        return false; 
+    }
+    return true;
+};
+
+//連接後端登入API
+async function getMemberStatus() {
+    const token = localStorage.getItem('Token');
+    try{
+        const response = await getMemberDataApi("/api/get_member_data", "GET", token);
+        const data = await handleSignResponse(response);
+        console.log(data)
+        return data
+    }catch(error){
+        handleSignError(error);
+    }
+}
+//送出表單到後端
+async function getMemberDataApi(api, method, token) {
+    const response = fetch(api, {
+        method: method,
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    });
+   return response;
+}
+
+async function handleSignResponse(response) {
+    if (!response.ok) {
+        // 直接将响应对象作为错误的一部分抛出
+        throw response;
+    }
+    return response.json();
+}
+
+async function handleSignError(response) {
+    console.error('Backend could got problems', response);
+
+    let errorMessage = "未知錯誤";
+    if (response && response.json) {
+        // 从响应对象中解析错误信息
+        const data = await response.json();
+        errorMessage = data.message || errorMessage;
+    }
+    console.log(errorMessage);
+    displaySignSystemResponse({ message: errorMessage });
+}

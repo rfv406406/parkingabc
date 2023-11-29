@@ -2,19 +2,74 @@ let bookingLocationData;
 
 buttonBooking = document.querySelector('#button-parking-booking')
 buttonReservation = document.querySelector('#button-parking-reservation')
+carBoardCheckedButton = document.querySelector('#car-board-checked-button')
 
 buttonBooking.addEventListener('click', async function() {
-    let bookingData = bookingLocationData; // return data get
-    let bookingTime = await getCurrentDateTime();
-    // console.log(bookingData)
-    // console.log(bookingTime)
-    await passBookingData(bookingData, bookingTime); 
-    await returnBookingData()
-    fetchData()
+    let isTokenChecked = await loggingCheck();
+    if (!isTokenChecked) {
+        return; 
+    };
+    let isMemberStatusChecked = await memberStatus();
+    if (!isMemberStatusChecked) {
+        return; 
+    };
+    let isSquareChecked = await squareChecking();
+    if (!isSquareChecked) {
+        return; 
+    };
+    await returnCarBoardData();
     toggleClass('#packing-page-container', 'packing-page-container-toggled');
     toggleClass('#packing-page-black-back', 'black-back-toggled');  
+    toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
+    toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
+});
+
+carBoardCheckedButton.addEventListener('click', async function() {
+    let isSquareChecked = await carBoardChecking();
+    if (!isSquareChecked) {
+        return; 
+    };
+    let squareNumber = document.getElementById('data-type-selector').value
+    let carBoardSelected = document.getElementById('car-board-number-selector').value
+    let bookingData = bookingLocationData; // return data get
+    let bookingTime = await getCurrentDateTime();
+    console.log(bookingData)
+    // console.log(bookingTime)
+    await passBookingData(bookingData, bookingTime, carBoardSelected, squareNumber); 
+    await returnBookingData()
+    await fetchData()
+    toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
+    toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
+    // toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
     startTimer(updateTimerDisplay);   
 });
+
+async function squareChecking(){
+    let selector = document.getElementById('data-type-selector');
+    // 檢查選擇器是否有值
+    if (selector.value === "") {
+        const alertContent = document.getElementById("alert-content")
+        alertContent.textContent = '請選擇車位編號';
+        toggleClass('#alert-page-container', 'alert-page-container-toggled');
+        toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
+        return false; // 終止其他函式執行
+    }
+    return true; // 繼續執行其他函式
+};
+
+async function carBoardChecking(){
+    let selector = document.getElementById('car-board-number-selector');
+    // 檢查選擇器是否有值
+    if (selector.value === "") {
+        const alertContent = document.getElementById("alert-content")
+        alertContent.textContent = '請選擇車牌';
+        toggleClass('#alert-page-container', 'alert-page-container-toggled');
+        toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
+        return false; 
+    }
+    return true; 
+};
+
 //停車資料取得
 async function getBookingInformation(locationData){
     console.log(locationData)
@@ -38,7 +93,7 @@ async function returnBookingData(){
         const response = await showBookingDataOnParkingPage();
         const data = await handleResponse(response);
         console.log(data);
-        await renderParkingPage(data)
+        renderParkingPage(data)
     }catch(error){
         handleError(error);
     }
@@ -56,9 +111,9 @@ async function showBookingDataOnParkingPage(){
     return response;
 }
 
-async function passBookingData(bookingData, bookingTime){
+async function passBookingData(bookingData, bookingTime, carBoardSelected, squareNumber){
     try{
-        const response = await inputBookingDataToDB(bookingData, bookingTime);
+        const response = await inputBookingDataToDB(bookingData, bookingTime ,carBoardSelected, squareNumber);
         const data = await handleResponse(response);
         console.log(data);
         // await fetchData();
@@ -67,11 +122,13 @@ async function passBookingData(bookingData, bookingTime){
     }
 }
 
-async function inputBookingDataToDB(bookingData, bookingTime){
+async function inputBookingDataToDB(bookingData, bookingTime ,carBoardSelected, squareNumber){
     const token = localStorage.getItem('Token');
     const bookingInformationData = {
         bookingData: bookingData,
-        bookingTime: bookingTime
+        bookingTime: bookingTime,
+        carBoardSelected: carBoardSelected,
+        squareNumber: squareNumber
     };
     const response = await fetch("/api/input_booking_information", {
         method: 'POST',
@@ -106,22 +163,55 @@ function parkingLotInformationTable(locationData){
     document.querySelector('#parking-lot-price').textContent = locationData.price + '元' || '';
     document.querySelector('#parking-lot-width').textContent = locationData.widthLimit + 'm' || '';
     document.querySelector('#parking-lot-height').textContent = locationData.heightLimit + 'm'|| '';
-    const spacesWithEmptyStatus = locationData.spaces ? locationData.spaces.filter(space => !space.status).length : 0;
-    const totalSpaces = locationData.spaces ? locationData.spaces.length : 0;
-    document.querySelector('#parking-space-total-number').textContent = `${spacesWithEmptyStatus} / ${totalSpaces} 位`;    const parkingLotImageElement = document.querySelector('#parking-lot-image');
+    document.querySelector('#parking-lot-holder-phone').textContent = '連絡電話:'+locationData.cellphone || '連絡電話:'+'無';
+    let squaresWithEmptyStatus = locationData.squares ? locationData.squares.filter(square => !square.status).length : 0;
+    let totalSquares = locationData.squares ? locationData.squares.length : 0;
+    document.querySelector('#parking-space-total-number').textContent = `${squaresWithEmptyStatus} / ${totalSquares} 位`;    
+    const parkingLotImageElement = document.querySelector('#parking-lot-image');
     if (locationData.images && locationData.images[0]) {
         parkingLotImageElement.src = locationData.images[0];
     } else {
-        parkingLotImageElement.src = ''; // 或設置為一個預設圖片的路徑
-    }
+        parkingLotImageElement.src = ''; // 預設圖片
+    };
+    let select = document.getElementById('data-type-selector');
+    const defaultOption = select.querySelector('option[value=""][disabled]');
+    select.innerHTML = '';
+    select.appendChild(defaultOption.cloneNode(true));
+
+    locationData.squares.forEach(function(square) {
+        if (square.status === null) {
+            // 检查是否已经存在具有相同内容的 option
+            let exists = Array.from(select.options).some(function(option) {
+                return option.textContent === square.square_number;
+            });
+    
+            // 如果不存在，则创建并添加新的 option
+            if (!exists) {
+                let option = document.createElement('option');
+                option.textContent = square.square_number;
+                select.appendChild(option);
+            }
+        }
+    });
+    updateParkingAvailability(locationData)
 };
 
-async function renderParkingPage(data){
+function updateParkingAvailability(locationData) {
+    const allOccupied = locationData.squares.every(square => square.status !== null);
+
+    const buttonContainer = document.querySelector('.button-container');
+
+    if (allOccupied) {
+        buttonContainer.innerHTML = '<p class="full-capacity-message">目前客滿</p>';
+    }
+}
+
+function renderParkingPage(data){
     if (data.data == '目前尚無停車資訊'){
         return
     }
-    toggleClass('#packing-page-information', 'packing-page-information-toggled'); 
     toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
+    toggleClass('#packing-page-information', 'packing-page-information-toggled'); 
     document.querySelector('#packing-page-parking-lot-id').textContent = data.data[0].id;
     document.querySelector('#packing-page-parking-lot-name').textContent = data.data[0].parkinglotname;
     document.querySelector('#packing-page-parking-lot-address').textContent = data.data[0].address;
@@ -129,3 +219,46 @@ async function renderParkingPage(data){
     document.querySelector('#packing-page-parking-lot-price').textContent = data.data[0].price;
     document.querySelector('#packing-page-parking-lot-start-time').textContent = data.data[0].starttime;
 };
+
+async function returnCarBoardData(){
+    try{
+        const response = await getCarBoardData();
+        const data = await handleResponse(response);
+        console.log(data);
+        await carBoardNumberToSelector(data);
+        return data;
+    }catch(error){
+        handleError(error);
+    }
+}
+
+async function carBoardNumberToSelector(data){
+    let select = document.getElementById('car-board-number-selector');
+
+    // 遍历 data 数组
+    data.data.forEach(function(item) {
+        // 检查是否已经存在具有相同内容的 option
+        let exists = Array.from(select.options).some(function(option) {
+            return option.textContent === item.carboard_unmber;
+        });
+
+        // 如果不存在，则创建并添加新的 option
+        if (!exists) {
+            let option = document.createElement('option');
+            option.textContent = item.carboard_unmber; // 设置当前元素的 carboard_unmber 值
+            select.appendChild(option);
+        }
+    });
+}
+
+async function getCarBoardData(){
+    const token = localStorage.getItem('Token');
+    const response = await fetch("/api/input_car_board_data", {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    return response;
+  }
+  

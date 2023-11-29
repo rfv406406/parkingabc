@@ -20,7 +20,7 @@ function setupToggle(buttonSelector, toggles) {
 function setupToggleNotButtonElements(element, toggles) {
   document.querySelector(element).addEventListener('click', function(event) {
       // 檢查點擊的目標是否不是按鈕
-      if (!event.target.matches('button')) {
+      if (!event.target.matches('button')&&!event.target.matches('#data-type-selector')) {
         toggles.forEach(function(toggle) {
           toggleClass(toggle.elementSelector, toggle.classToToggle);
         });
@@ -29,10 +29,10 @@ function setupToggleNotButtonElements(element, toggles) {
 }
 
 // 事件監聽設置的通用函式
-function setupAppear(Selector, toggles) {
-  Selector.addListener('click', function() {
+async function setupAppear(Selector, toggles) {
+  Selector.addListener('click',function() {
       toggles.forEach(function(toggle) {
-      toggleClass(toggle.elementSelector, toggle.classToToggle);
+        toggleClass(toggle.elementSelector, toggle.classToToggle);
     });
   });
 }
@@ -136,5 +136,14 @@ setupToggle('#parking-page-button-list', [
 setupRemoveButton('#close-packing-page', [
   { elementSelector: '#packing-page-container', css: ['packing-page-container-toggled'] },
   { elementSelector: '#packing-page-black-back', css: ['black-back-toggled'] },
-  { elementSelector: '#menuContent', css: ['menuContent_toggled'] }
+  { elementSelector: '#menuContent', css: ['menuContent_toggled'] },
+  { elementSelector: '#packing-page-information-none', css: ['packing-page-information-none-toggled'] },
+  { elementSelector: '#packing-page-car-board-selected', css: ['packing-page-car-board-selected-toggled'] },
+  { elementSelector: '.parking_lot-information-container', css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
+]);
+
+//alert_page none顯示
+setupRemoveButton('#alert-content-checked-button', [
+  { elementSelector: '#alert-page-container', css: ['alert-page-container-toggled'] },
+  { elementSelector: '#alert-page-black-back', css: ['alert-page-black-back-toggled'] },
 ]);

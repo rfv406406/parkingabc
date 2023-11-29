@@ -1,5 +1,19 @@
+.alert-page-black-back {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+}
 
-.packing-page-container{
+.alert-page-black-back-toggled{
+    display:block;
+}
+
+.alert-page-container{
     width:340px;
     /* height:100%; */
     display:none;
@@ -16,11 +30,11 @@
     z-index: 1000; /* 確保在其他元素之上 */
 }
 
-.packing-page-container-toggled{
+.alert-page-container-toggled{
     display:block;
 }
 
-.packing-page-container .header{
+.alert-page-container .header{
     /* width:100%; */
     height:20px;
     border-radius: 12px 12px 0 0;
@@ -31,65 +45,32 @@
     background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
 }
 
-.packing-page-information{
+.alert-page-information{
     /* width: 100%; */
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     padding: 5px;
     gap: 10px;
 }
 
-.packing-page-information-toggled{
-    display: flex;
-}
-
-.packing-page-information-none{
+.alert-page-information-none{
     /* width: 100%; */
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 5px;
-    height:40vh;
-}
-
-.packing-page-information-none-toggled{
-    display: none;
-}
-
-
-.packing-page-car-board-selected{
-    /* width: 100%; */
-    display: none;
-    flex-direction: column;
     align-items: center;
     padding: 5px;
     height:20vh;
+    font-size: 30px;
 }
 
-.packing-page-car-board-selected-toggled{
-    display: flex;
-}
-
-.packing-page-container-input-box{
-    display:flex;
-    justify-content: center;
-    width:100%;
-    height:auto;
-}
-
-.packing-page-container-input-box .consistent-text{
-    font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
-    line-height: 1.6;
-}
-
-.packing-page-container-input-box .text{
-    font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
-    line-height: 1.6;
+.alert-page-information-none-toggled{
+    display: none;
 }
 
 
-.packing-page-container .footer {
+
+.alert-page-container .footer {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -97,4 +78,15 @@
     height: 30px;
     background: linear-gradient(270deg, #0E578D 0%, #6AB 100%);
     border-radius: 0 0 12px 12px;
+}
+
+.alert-button{
+    width: 100px;
+    height: 40px;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    border-radius: 12px;
 }
