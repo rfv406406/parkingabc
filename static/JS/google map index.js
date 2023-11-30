@@ -146,3 +146,11 @@ document.getElementById('returnToCurrentPosition').addEventListener('click', fun
         console.log('當前位置未知');
     }
 });
+
+let satelliteButton = document.querySelector('button[aria-label="顯示衛星圖"]');
+
+// 檢查元素是否存在，然後進行操作
+if (satelliteButton) {
+    // 隱藏按鈕
+    satelliteButton.style.display = 'none';
+}

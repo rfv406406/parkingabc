@@ -23,9 +23,10 @@
         <div class="map-container">
             <div class="map "id="map"></div>
             <div class="search-bar">
-                <input id="searchInput">
+                <input id="searchInput" placeholder="你想停哪邊?">
             </div>
             <button class="returnToCurrentPosition" id="returnToCurrentPosition"><img src="../static/IMAGE/middle.png"></button>
+            <button class="search-goal-button" id="search-goal-button"><img src="../static/IMAGE/search.png"></button>
             {% include 'parking_lot_booking.html' %}
         </div>
     </main>
@@ -43,7 +44,8 @@
             map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: 23.553118, lng: 121.0211024},
                 zoom: 7,
-                heading: 90
+                heading: 90,
+                // mapTypeControl: false
             });
             // map.addListener("zoom_changed", function() {
             //     var newZoom = map.getZoom();
@@ -82,7 +84,6 @@
                     lng: position.coords.longitude
                 };
                 console.log("目前位置: ", currentPosition);
-                map.setCenter(currentPosition);
 
                 // 如果marker已经存在，更新它的位置
                 if (!marker) {
@@ -104,21 +105,38 @@
         }
 
         async function initializeAutocomplete(currentPosition) {
-            const autocomplete = new google.maps.places.Autocomplete(
-                document.getElementById('searchInput'), {
-                    bounds: {
-                        east: currentPosition.lng + 0.001,
-                        west: currentPosition.lng - 0.001,
-                        south: currentPosition.lat - 0.001,
-                        north: currentPosition.lat + 0.001,
-                    },
-                    strictBounds: false,
-                }
-            );
-            return autocomplete
-            // 這裡可以添加其他關於 autocomplete 的設定或事件監聽器
-        };
+            const input = document.getElementById('searchInput');
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                bounds: {
+                    east: currentPosition.lng + 0.001,
+                    west: currentPosition.lng - 0.001,
+                    south: currentPosition.lat - 0.001,
+                    north: currentPosition.lat + 0.001,
+                },
+                strictBounds: false,
+            });
 
+            // // 監聽 place_changed 事件
+            // autocomplete.addListener('place_changed', function() {
+            //     var place = autocomplete.getPlace();
+            //     if (!place.geometry) {
+            //         // 使用者輸入的地址沒有回傳有效的地點資料
+            //         console.log("Returned place contains no geometry");
+            //         return;
+            //     }
+
+            //     // 執行額外的操作，例如中心地圖到該地點、顯示資訊視窗等
+            //     // 例如: map.setCenter(place.geometry.location);
+            //     searchbarControl(place);
+            // });
+
+            return autocomplete;
+        }
+    // function searchbarControl(place) {
+    //     // 在這裡添加您的自定義代碼
+    //     // 您可以訪問 place 物件來獲取選擇的地址的詳細資訊
+    //     console.log(place);
+    // }
         async function setupAutocompleteListener(map, currentPosition) {
             let autocomplete = await initializeAutocomplete(currentPosition);
             autocomplete.addListener('place_changed', function() {

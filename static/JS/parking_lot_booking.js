@@ -52,6 +52,7 @@ carBoardCheckedButton.addEventListener('click', async function() {
     if (!isSquareChecked) {
         return; 
     };
+    toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
     let squareNumber = document.getElementById('data-type-selector').value
     let carBoardSelected = document.getElementById('car-board-number-selector').value
     let bookingData = bookingLocationData; // return data get
@@ -61,8 +62,7 @@ carBoardCheckedButton.addEventListener('click', async function() {
     await passBookingData(bookingData, bookingTime, carBoardSelected, squareNumber); 
     await returnBookingData()
     await fetchData()
-    toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
-    toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
+    // toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
     // toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
     startTimer(updateTimerDisplay);   
 });
@@ -233,7 +233,9 @@ function renderParkingPage(data){
     if (data.data == '目前尚無停車資訊'){
         return
     }
-    toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
+    let element = document.querySelector('.packing-page-information-none');
+    element.style.display = 'none'
+    // toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
     toggleClass('#packing-page-information', 'packing-page-information-toggled'); 
     document.querySelector('#packing-page-parking-lot-id').textContent = data.data[0].id;
     document.querySelector('#packing-page-parking-lot-name').textContent = data.data[0].parkinglotname;

@@ -88,6 +88,24 @@
     line-height: 1.6;
 }
 
+.selector {
+    width: 120px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+    border-radius: 12px;
+    background: #fefefe;
+    margin: 20px auto 20px auto;
+    color: #1E1E1E;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+}
 
 .packing-page-container .footer {
     display: flex;
