@@ -46,4 +46,4 @@ def deposit_and_pay_page():
 def cash_flow_record():
     return render_template("cash_flow_record.html")
 
-app.run(debug=True, host="0.0.0.0", port=5000)
+app.run(debug=True, host="0.0.0.0", port=4000)
