@@ -44,7 +44,7 @@ async function displayMarkers(dataObject) {
             const marker = createMarker(location);
             // 為標記添加訊息窗口，顯示更多訊息
             const infoWindow = createInfoWindow(location);
-
+        
             marker.addListener('click', async function() {
                 infoWindow.open(map, marker);//???
                 setupAppear(marker, [{ elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-appear'}
@@ -105,15 +105,16 @@ function createMarker(location) {
   //依照價錢分顏色
 function getIconUrl(price) {
     if (price <= 25) {
-        return '../static/IMAGE/greenlable.png'; // 低价位图标
+        return '../static/IMAGE/greenlable.png'; 
     } else if (price <= 50) {
-        return '../static/IMAGE/orangelable.png'; // 中价位图标
+        return '../static/IMAGE/orangelable.png'; 
     } else {
-        return '../static/IMAGE/redlable.png'; // 高价位图标
+        return '../static/IMAGE/redlable.png'; 
     }
 }
  //最短路徑
  async function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
+    console.log(origin)
     directionsService.route({
         origin: new google.maps.LatLng(origin.lat, origin.lng),
         destination: destination,
@@ -136,4 +137,12 @@ function showCashPointOnMenu(cashPoint){
     const cashBar = document.getElementById('cash-point')
     cashBar.textContent = '目前點數:'+cashPoint.data[0].Balance+'點';
 };
-
+//返回中心點
+document.getElementById('returnToCurrentPosition').addEventListener('click', function() {
+    if (currentPosition) {
+        map.setCenter(currentPosition);
+        map.setZoom(15);
+    } else {
+        console.log('當前位置未知');
+    }
+});

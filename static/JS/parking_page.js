@@ -62,7 +62,11 @@ function toggleStopButtonReload() {
         const timeElapsed = currentTime - bookingTime;
 
         if (timeElapsed < 30) { // under 5 mins
-            stopButton.textContent = '取消預約';
+            if (lastClickedButton === 'reservation') {
+                stopButton.textContent = '取消預約';
+            } else if (lastClickedButton === 'booking') {
+                stopButton.textContent = '取消停車';
+            }
             cancelMessage.textContent = '5分鐘內可免費取消';
 
             setTimeout(() => {
@@ -82,16 +86,21 @@ buttonParkingStop.addEventListener('click', async function() {
     const parkingLotIdElement = document.querySelector('#packing-page-parking-lot-id');
     const parkingLotIdText = parkingLotIdElement.textContent;
     let ParkingStopTime = await getCurrentDateTime();
-    await passParkingStopData(parkingLotIdText, ParkingStopTime); // 将 formData 传递给 passData 函数并等待其执行完成   
+    await passParkingStopData(parkingLotIdText, ParkingStopTime); 
     await fetchData();
     await returnBookingData();
     stopTimer();
-    // toggleClass('#packing-page-container', 'packing-page-container-toggled');
-    // toggleClass('#packing-page-black-back', 'black-back-toggled');  
-    // removeClass('#menuContent', ['menuContent_toggled']);  
-    alert('感謝您的消費')
+    removeClass('#packing-page-container', ['packing-page-container-toggled'])
+    await thankMessage()
     location.reload();
 });
+
+async function thankMessage(){
+    const alertContent = document.getElementById("alert-content")
+    alertContent.textContent = '感謝您的消費';
+    toggleClass('#alert-page-container', 'alert-page-container-toggled');
+    toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
+};
 
 async function passParkingStopData(parkingLotIdText, ParkingStopTime){
     try{

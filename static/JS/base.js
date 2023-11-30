@@ -1,9 +1,18 @@
 // 通用函式來切換類
 function toggleClass(elementSelector, classToToggle) {
   let element = document.querySelector(elementSelector);
+  console.log("Toggling class on:", elementSelector);
   if (element) {
     element.classList.toggle(classToToggle);
+    console.log("Class after toggle:", element.classList);
   };
+};
+// 複數通用函式來切換類
+function toggleClasses(elementSelector, classToToggle) {
+  let elements = document.querySelectorAll(elementSelector);
+  elements.forEach(element => {
+    element.classList.toggle(classToToggle);
+  });
 };
 
 // 事件監聽設置的通用函式
@@ -81,7 +90,12 @@ setupToggle('#signin-button-list', [
 
 setupToggle('#go-signon', [
   { elementSelector: '#signin-container', classToToggle: 'signin-container-toggled' },
-  { elementSelector: '#signon-container', classToToggle: 'signon-container-toggled' }
+  { elementSelector: '#signon-container', classToToggle: 'signup-container-toggled' }
+]);
+
+setupToggle('#return-signin', [
+  { elementSelector: '#signin-container', classToToggle: 'signin-container-toggled' },
+  { elementSelector: '#signon-container', classToToggle: 'signup-container-toggled' }
 ]);
 
 setupToggle('#close-signin', [
@@ -91,7 +105,7 @@ setupToggle('#close-signin', [
 ]);
 
 setupToggle('#close-signon', [
-  { elementSelector: '#signon-container', classToToggle: 'signon-container-toggled' },
+  { elementSelector: '#signon-container', classToToggle: 'signup-container-toggled' },
   { elementSelector: '#black-back', classToToggle: 'black-back-toggled' },
   { elementSelector: '#menuContent', classToToggle: 'menuContent_toggled' }
 ]);
@@ -137,7 +151,7 @@ setupRemoveButton('#close-packing-page', [
   { elementSelector: '#packing-page-container', css: ['packing-page-container-toggled'] },
   { elementSelector: '#packing-page-black-back', css: ['black-back-toggled'] },
   { elementSelector: '#menuContent', css: ['menuContent_toggled'] },
-  { elementSelector: '#packing-page-information-none', css: ['packing-page-information-none-toggled'] },
+  // { elementSelector: '#packing-page-information-none', css: ['packing-page-information-none-toggled'] },
   { elementSelector: '#packing-page-car-board-selected', css: ['packing-page-car-board-selected-toggled'] },
   { elementSelector: '.parking_lot-information-container', css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
 ]);

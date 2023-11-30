@@ -1,10 +1,33 @@
 let bookingLocationData;
+let lastClickedButton = '';
 
 buttonBooking = document.querySelector('#button-parking-booking')
 buttonReservation = document.querySelector('#button-parking-reservation')
 carBoardCheckedButton = document.querySelector('#car-board-checked-button')
 
+buttonReservation.addEventListener('click', async function() {
+    lastClickedButton = 'reservation';
+    let isTokenChecked = await loggingCheck();
+    if (!isTokenChecked) {
+        return; 
+    };
+    let isMemberStatusChecked = await memberStatus();
+    if (!isMemberStatusChecked) {
+        return; 
+    };
+    let isSquareChecked = await squareChecking();
+    if (!isSquareChecked) {
+        return; 
+    };
+    await returnCarBoardData();
+    toggleClass('#packing-page-container', 'packing-page-container-toggled');
+    toggleClass('#packing-page-black-back', 'black-back-toggled');  
+    toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
+    toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
+});
+
 buttonBooking.addEventListener('click', async function() {
+    lastClickedButton = 'booking';
     let isTokenChecked = await loggingCheck();
     if (!isTokenChecked) {
         return; 

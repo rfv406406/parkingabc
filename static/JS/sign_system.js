@@ -181,12 +181,13 @@ async function init(){
         if (window.location.pathname !== '/') {
             window.location.href = '/';
         }
+        toggleClasses('.list', 'list-toggled');
     }else{
         try{
             const response = await submitToken("/api/user/auth", 'GET', token);
             const data = await handleResponse(response);
             // console.log(data);
-            loginCheck(data)
+            await loginCheck(data)
         }catch(error){
             handleError(error);
         }
@@ -204,20 +205,15 @@ async function submitToken(api, method, token) {
 }
 
 //確認登入狀態後之事件處理
-function loginCheck(data){
-    let signButtonList = document.querySelector('#signin-button-list');
+async function loginCheck(data){
+    let signOutButtonList = document.querySelector('#signout-button-list');
     // console.log(data);
     if (data !== null) {
-        signButtonList.textContent = '登出';
-        if (signButtonList.value = '登出'){
-            signButtonList.addEventListener('click', logout);
-        }
-        console.log(data)
-        // const usernameData = data.data.name;
-        // const userName = document.querySelector('#user_name');
-        // userName.textContent = usernameData;
+        console.log(data);   
+        signOutButtonList.addEventListener('click', logout);
+        toggleClass('#signin-button-list', 'list-sign-in-toggled');
+        toggleClass('#signout-button-list', 'list-sign-out-toggled'); 
     } else {
-        signButtonList.textContent = '';
         logout();
     }
 }
@@ -242,6 +238,8 @@ async function loggingCheck(){
     if (token == null){
         const alertContent = document.getElementById("alert-content")
         alertContent.textContent = '請先登入以使用完整功能';
+        toggleClass('#alert-page-container', 'alert-page-container-toggled');
+        toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
         return false; // 終止其他函式執行
     }
     return true; // 繼續執行其他函式
@@ -268,7 +266,7 @@ async function memberStatus(){
     }
     if (parkingStatus.data[0].Balance <= 0){
         const alertContent = document.getElementById("alert-content")
-        alertContent.innerHTML = '<p class="full-capacity-message">餘額不足，請儲值</p>';
+        alertContent.textContent = '餘額不足，請儲值';
         toggleClass('#alert-page-container', 'alert-page-container-toggled');
         toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
         return false; 
