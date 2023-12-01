@@ -250,7 +250,7 @@ async function memberStatus(){
     let parkingStatus = await getMemberStatus()
     let memberCar = await returnCarBoardData()
     
-    if (memberCar.data[0].carboard_unmber == null){
+    if (memberCar.data[0] == null){
         const alertContent = document.getElementById("alert-content")
         alertContent.textContent = '請先登記車輛!';
         toggleClass('#alert-page-container', 'alert-page-container-toggled');

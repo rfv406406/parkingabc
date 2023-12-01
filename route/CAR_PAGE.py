@@ -85,16 +85,11 @@ def input_car_board_data():
                 
             cursor.close()
             connection.close()
-
+            print(carboard_number_datas)
             if carboard_number_datas is not None:  # Check if parking_lot_datas is not None
                 return_data = {
                     "data": carboard_number_datas
                 }
-            else:  # This will execute if parking_lot_datas is None
-                return_data = {
-                    "data": "no data found"
-                }
-
             return jsonify(return_data), 200
         except mysql.connector.Error as e:
             if cursor:
