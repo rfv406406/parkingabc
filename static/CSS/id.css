@@ -3,10 +3,12 @@
     align-items: center;
     padding: 10px;
     width:100%;
+    max-width: 1200px;
     height: 100%; /* vh 替換為您希望的百分比 */
     background-color: #F5FBFF;
     /* margin: auto; */
     box-sizing: border-box;
+    margin: auto;
 }
 
 .information-container{
