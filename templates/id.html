@@ -15,10 +15,10 @@
             <button class="close" id="close-information"><img src="../static/IMAGE/close.png"></button>
         </div>
         <form class="information-form" id="information-form">
-            <div class="input-box">
+            <!-- <div class="input-box">
                 <label for="account" class="consistent-text">帳號：</label>
                 <input type="text" id="account-information" name="account-signon" class="text" placeholder="請輸入帳號">
-            </div>
+            </div> -->
             <div class="input-box">
                 <label for="password" class="consistent-text">密碼：</label>
                 <input type="text" id="password-information" name="password-signon" class="text" placeholder="請輸入密碼">
@@ -36,11 +36,12 @@
                 <input type="text" id="birthday-information" name="birthday" class="text" placeholder="請輸入出生年月分">
             </div>
             <div class="input-box">
-                <label for="callphone" class="consistent-text">手機：</label>
-                <input type="text" id="callphone-information" name="callphone" class="text" placeholder="請輸入手機號碼">
+                <label for="callPhone" class="consistent-text">手機：</label>
+                <input type="text" id="callPhone-information" name="callPhone" class="text" placeholder="請輸入手機號碼">
             </div>
-            <button class="storage-button" id="storage-button" type="button">儲存</button>
+            <button class="storage-button" id="id_page_storage-button" type="button">儲存</button>
         </form>
+        <div class="id-edit-success-message" id="id-edit-success-message"></div>
         <div class="footer"></div>
     </div>
     <div class="information-page" id="information-page">
@@ -48,40 +49,37 @@
             <div>帳戶資訊</div>
         </div>
         <div class="information-table" id="information-table">
-            <div class="table">
-                <label for="account" class="consistent-text">帳號：</label>
-                <div class="infor-data">rfv406406</div>
-            </div>
-            <div class="separator"></div>
-            <div class="table">
-                <label for="password" class="consistent-text">密碼：</label>
-                <div class="infor-data">12345678</div>
-            </div>
-            <div class="separator"></div>
-            <div class="table">
-                <label for="name" class="consistent-text">姓名：</label>
-                <div class="infor-data">康智偉</div>
-            </div>
-            <div class="separator"></div>
-            <div class="table">
-                <label for="e-mail" class="consistent-text">e-mail：</label>
-                <div class="infor-data">rfv406406@gamil.com</div>
-            </div>
-            <div class="separator"></div>
-            <div class="table">
-                <label for="birthday" class="consistent-text">生日：</label>
-                <div class="infor-data">1911.01.10</div>
-            </div>
-            <div class="separator"></div>
-            <div class="table">
-                <label for="callphone" class="consistent-text">手機：</label>
-                <div class="infor-data">0987654321</div>
-            </div>
-            <div class="separator"></div>
-            <button class="edit-button" id="edit-button">編輯</button>
+            <table>
+              <tr>
+                <th class="consistent-text">會員編號：</th>
+                <td class="infor-data" id="id_page_id_number">rfv406406</td>
+              </tr>
+              <tr>
+                <th class="consistent-text">帳號：</th>
+                <td class="infor-data" id="id_page_account">rfv406406</td>
+              </tr>
+              <tr>
+                <th class="consistent-text">姓名：</th>
+                <td class="infor-data" id="id_page_name">康智偉</td>
+              </tr>
+              <tr>
+                <th class="consistent-text">e-mail：</th>
+                <td class="infor-data" id="id_page_e-mail">rfv406406@gmail.com</td>
+              </tr>
+              <tr>
+                <th class="consistent-text">生日：</th>
+                <td class="infor-data" id="id_page_birthday">1911.01.10</td>
+              </tr>
+              <tr>
+                <th class="consistent-text">手機：</th>
+                <td class="infor-data" id="id_page_phone">0987654321</td>
+              </tr>
+            </table>
+            <button class="edit-button" id="id_page_edit-button">編輯</button>
         </div>
     </div>
     {% include 'foot.html' %}
+    <script src="../static/JS/google map index.js"></script>
     <script src="../static/JS/id.js"></script>
     <script src="../static/JS/base.js"></script>
 </body>

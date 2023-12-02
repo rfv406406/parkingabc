@@ -9,6 +9,7 @@
 </head>
 <body>
     {% include 'nav.html' %} {% include 'sign_system.html' %}
+    <main class="main">
     <div class="parking-lot-page" id="parking-lot-page">
         <div class="information-page-header">
             <div>出租停車場</div>
@@ -24,53 +25,52 @@
     <div class="parking-lot-information-page" id="parking-lot-information-page">
         <div class="information-page-header">
             <div>停車場資訊</div>
-            <button class="close" id="parking-lot-information-page-close"><img src="../static/IMAGE/close.png"></button>
+            <button class="parking-lot-information-page-close" id="parking-lot-information-page-close"><img src="../static/IMAGE/close.png"></button>
         </div>
         <div class="separator"></div>
         <div class="information-table" id="information-table">
-            <div class="table">
-                <label for="account" class="consistent-text">名稱：</label>
-                <div class="infor-data" id="parking-lot-name">123停車場</div>
-            </div>
-            <div class="table">
-                <label for="password" class="consistent-text">地址：</label>
-                <div class="infor-data" id="parking-lot-address">新北市泰山區福興三街186號9樓</div>
-            </div>
-            <div class="table">
-                <label for="name" class="consistent-text">附近地標：</label>
-                <div class="infor-data" id="parking-lot-near-landmark">靠近新光三越旁的台北火車站</div>
-            </div>
-            <div class="table">
-                <label for="e-mail" class="consistent-text">開放時間：</label>
-                <div class="infor-data" id="parking-lot-opening-time">08:00~19:00</div>
-            </div>
-            <div class="table">
-                <label for="birthday" class="consistent-text">空間位置：</label>
-                <div class="infor-data" id="parking-lot-in-out">室外含遮雨棚</div>
-            </div>
-            <div class="table">
-                <label for="callphone" class="consistent-text">價格：</label>
-                <div class="infor-data" id="parking-lot-price">100元</div>
-            </div>
-            <div class="table">
-                <label for="callphone" class="consistent-text">車寬限制：</label>
-                <div class="infor-data" id="parking-lot-width">2.0 m</div>
-            </div>
-            <div class="table">
-                <label for="callphone" class="consistent-text">車高限制：</label>
-                <div class="infor-data" id="parking-lot-height">2.0 m</div>
-            </div>
-            <div class="table">
-                <label for="callphone" class="consistent-text">車位數量：</label>
-                <div class="infor-data" id="parking-space-total-number">1 位</div>
-            </div>
-            <div class="input-box-container" id="car-board-container">
-                <div class="input-box">
-                    <div class="consistent-text">車位編號：</div>
-                    <button class="infor-data" id="parking-lot-square-page-go-button">ASD-1234</button>
-                </div>
-            </div>
-            <div class="separator"></div>
+            <table>
+                <tr>
+                    <th class="consistent-text">名稱：</th>
+                    <td class="infor-data" id="parking-lot-name">123停車場</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">地址：</th>
+                    <td class="infor-data" id="parking-lot-address">新北市泰山區福興三街186號9樓</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">附近地標：</th>
+                    <td class="infor-data" id="parking-lot-near-landmark">靠近新光三越旁的台北火車站</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">開放時間：</th>
+                    <td class="infor-data" id="parking-lot-opening-time">08:00~19:00</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">空間位置：</th>
+                    <td class="infor-data" id="parking-lot-in-out">室外含遮雨棚</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">價格：</th>
+                    <td class="infor-data" id="parking-lot-price">100元</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">車寬限制：</th>
+                    <td class="infor-data" id="parking-lot-width">2.0 m</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">車高限制：</th>
+                    <td class="infor-data" id="parking-lot-height">2.0 m</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">車位數量：</th>
+                    <td class="infor-data" id="parking-space-total-number">1 位</td>
+                </tr>
+                <tr>
+                    <th class="consistent-text">車位編號：</th>
+                    <td><button class="infor-data" id="parking-lot-square-page-go-button">ASD-1234</button></td>
+                </tr>
+            </table>
             <button class="edit-button" id="parking-lot-information-page-edit-button">編輯</button>
         </div>
     </div>
@@ -124,10 +124,10 @@
                 </div>
                 <div class="input-box">
                     <label for="parking-square-image" class="consistent-text">車位圖片：</label>
-                    <input type="file" id="parking-square-image-input" name="parkingSquareImage" class="text" multiple>
+                    <input type="file" id="parking-square-image-input" name="parkingSquareImage" class="text">
                 </div>
             </div>
-            <button type="button" id="add-input-car-space-container-button">增加欄位</button>
+            <button type="button" class="add-input-car-space-container-button" id="add-input-car-space-container-button">增加欄位</button>
             <button class="storage-button" id="parking-lot-information-container-storage-button" type="button">儲存</button>
         </form>
         <div class="footer"></div>
@@ -135,15 +135,16 @@
     <div class="parking-lot-square-page" id="parking-lot-square-page">
         <div class="information-header">
             <div>停車位資訊</div>
-            <button class="close" id="parking-lot-square-page-close"><img src="../static/IMAGE/close.png"></button>
+            <button class="close"  id="parking-lot-square-page-close"><img src="../static/IMAGE/close.png"></button>
         </div>
         <div class="parking-lot-square-table" id="parking-lot-square-table">
                 <div class="image"><img src="../static/IMAGE/noimage.png"></div>
-                <div class="infor-data">ASD-1234</div>
-                <div class="infor-data">停車場一樓，靠電梯右側第一個車位</div>
+                <div class="text">ASD-1234</div>
+                <div class="text">停車場一樓，靠電梯右側第一個車位</div>
         </div>
         <div class="footer"></div>
     </div>
+    </main>
     {% include 'foot.html' %}
     <script src="../static/JS/sign_system.js"></script>
     <script src="../static/JS/base.js"></script>

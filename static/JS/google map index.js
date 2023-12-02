@@ -147,4 +147,34 @@ document.getElementById('returnToCurrentPosition').addEventListener('click', fun
     }
 });
 
-
+document.getElementById('search-goal-button').addEventListener('click', function() {
+    let blackBackBackground = document.querySelector('.black-back-background');
+    let searchBar = document.querySelector('.search-bar');
+  
+    if (!blackBackBackground) {
+        blackBackBackground = document.createElement('div');
+        blackBackBackground.classList.add('black-back-background');
+        blackBackBackground = document.createElement('div');
+        blackBackBackground.classList.add('black-back');
+        blackBackBackground.style.position = 'fixed';
+        blackBackBackground.style.top = '0';
+        blackBackBackground.style.left = '0';
+        blackBackBackground.style.width = '100%';
+        blackBackBackground.style.height = '100%';
+        blackBackBackground.style.backgroundColor = 'rgba(0, 0, 0, 0.25)';
+        blackBackBackground.style.zIndex = '100';
+        blackBackBackground.style.display = 'block';
+        document.body.appendChild(blackBackBackground);
+        if (searchBar) {
+          searchBar.style.display = 'block';
+      }
+        // 為新創建的 blackBackBackground 添加點擊事件監聽器
+        blackBackBackground.addEventListener('click', function() {
+            document.body.removeChild(blackBackBackground);
+            if (searchBar) {
+                searchBar.style.display = 'none';
+            }
+        });
+    }
+    
+  });

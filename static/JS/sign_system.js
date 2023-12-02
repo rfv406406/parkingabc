@@ -310,7 +310,6 @@ async function handleSignError(response) {
 
     let errorMessage = "未知錯誤";
     if (response && response.json) {
-        // 从响应对象中解析错误信息
         const data = await response.json();
         errorMessage = data.message || errorMessage;
     }

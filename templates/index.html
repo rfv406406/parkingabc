@@ -99,7 +99,7 @@
                 console.error("Error watching position: " + error.message);
             }, {
                 enableHighAccuracy: true,
-                maximumAge: 10000, // 每秒更新位置
+                maximumAge: 1000000000, // 每秒更新位置
                 timeout: 30000
             });
         }
