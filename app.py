@@ -10,6 +10,7 @@ from route.GET_CASH_RECORD import cash_record
 from route.CAR_PAGE import car_board
 from route.MEMBER_DATA_API import member_data
 from route.GET_ID_PAGE_DATA import id_data
+from route.PARKING_LOT_PAGE import parking_lot_page
 
 app=Flask(__name__)
 
@@ -25,6 +26,7 @@ app.register_blueprint(cash_record)
 app.register_blueprint(car_board)
 app.register_blueprint(member_data)
 app.register_blueprint(id_data)
+app.register_blueprint(parking_lot_page)
 
 @app.route("/")
 def index():

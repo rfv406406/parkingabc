@@ -27,7 +27,9 @@ def user():
             connection.commit()
             cursor.close()
             connection.close()
-            return jsonify({"ok":True}), 200
+            response = make_response(jsonify({"ok": True}), 200)
+            response.set_cookie('registrationCompleted', 'true', max_age=60*5)  # Cookie 有效期5分钟
+            return response
         else:
             cursor.close()
             connection.close()

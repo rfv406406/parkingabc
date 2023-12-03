@@ -114,7 +114,7 @@ function displayRecords(records, dataType) {
     container.innerHTML = ''; // 清空现有内容
 
     if (records.length === 0) {
-        container.innerHTML = '<div>查無數據</div>';
+        container.innerHTML = '<div>沒有停車場資料</div>';
         return;
     }
 

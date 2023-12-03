@@ -22,12 +22,13 @@ setupToggle('#plate-board-edit-button', [
   ]);
 // ----------------------------------------------------------------------------------
 initCarPage();
-
+let memberCarData;
 async function initCarPage(){
     try{
         const response = await getCarBoardData();
         const data = await handleResponse(response);
-        console.log(data);
+        memberCarData = data;
+        addCarInDiv(data)
     }catch(error){
         await handleError(error);
     }
@@ -51,11 +52,39 @@ carBoardDataStorage.addEventListener('click', async function(event) {
   event.preventDefault();
   let formData = await packingCarBoardData(); // 等待 packingData 函数完成并获取其返回值
   await passCarBoardData(formData); // 将 formData 传递给 passData 函数并等待其执行完成
+  initCarPage();
+});
+
+//刪除停車場資料
+document.querySelector('#parking-lot-container').addEventListener('click', async function(event) {
+  if (event.target.matches('.parking-lot-delete-button')) {
+      event.preventDefault();
+
+      let carTable = event.target.closest('.parking-lot-page-table');
+
+      if (carTable) {
+          const cartBoardNumber = carTable.querySelector('.parking-lot-information-page-go-button').textContent;
+          const carData = memberCarData.data.find(lot => lot.carboard_unmber === cartBoardNumber); 
+          console.log(carData)
+          try{
+              const response = await deleteCarData(carData);
+              const data = await handleResponse(response);
+              console.log(data)
+              initCarPage();
+          }catch(error){
+              await handleError(error);
+          }
+      }
+  }
 });
 
 async function getCarBoardInformation(){
   let boardNumber = document.querySelector('#plate-board-number').value;
-  
+  if(boardNumber == ''){
+    let message = document.querySelector('#car-page-message')
+    message.textContent = '請輸入車牌'
+    return
+  }
   let carImgArray = [];
   let img = document.querySelector('#car-img-file').files
 
@@ -126,4 +155,62 @@ async function handleResponse(response) {
 
 async function handleError(error) {
   console.error('Backend could got problems', error);
+}
+
+function addCarInDiv(data) {
+  const container = document.getElementById('parking-lot-container'); 
+  container.innerHTML = ''; 
+  if(data.data.length == 0){
+      container.textContent = '目前無登記的車牌';
+      return;
+  }
+
+  data.data.forEach(item => {
+      const parkingLotDiv = document.createElement('div');
+      parkingLotDiv.className = 'parking-lot-page-table';
+
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'parking-lot-information-page-go-button';
+      nameDiv.textContent = item.carboard_unmber;
+      parkingLotDiv.appendChild(nameDiv);
+
+      const imageDiv = document.createElement('div');
+      imageDiv.className = 'image';
+      const img = document.createElement('img');
+      img.src = item.images && item.images.length > 0 ? item.images[0] : '../static/IMAGE/noimage.png';
+      imageDiv.appendChild(img);
+      parkingLotDiv.appendChild(imageDiv);
+
+      // 创建初始隐藏的删除按钮
+      const deleteButton = document.createElement('button');
+      deleteButton.type = 'button';
+      deleteButton.className = 'parking-lot-delete-button';
+      deleteButton.textContent = '刪除';
+      deleteButton.style.display = 'none'; // 初始时隐藏
+      parkingLotDiv.appendChild(deleteButton);
+
+      // 点击 parking-lot-page-table 时切换删除按钮的显示
+      parkingLotDiv.addEventListener('click', function() {
+          deleteButton.style.display = deleteButton.style.display === 'none' ? 'block' : 'none';
+      });
+
+      container.appendChild(parkingLotDiv);
+
+      const separator = document.createElement('div');
+      separator.className = 'separator';
+      container.appendChild(separator);
+  });
+}
+
+async function deleteCarData(data){
+  const token = localStorage.getItem('Token');
+  const response = await fetch("/api/input_car_board_data", {
+      method: 'DELETE',
+      headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data), 
+  });
+  return response;
 }

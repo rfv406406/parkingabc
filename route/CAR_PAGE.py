@@ -7,7 +7,7 @@ import time
 
 car_board = Blueprint('CAR_PAGE', __name__)
 
-@car_board.route("/api/input_car_board_data", methods = ["GET","POST"])
+@car_board.route("/api/input_car_board_data", methods = ["GET","POST","DELETE"])
 
 def input_car_board_data():
     if request.method == "POST":
@@ -97,3 +97,37 @@ def input_car_board_data():
             if connection:
                 connection.close()
             return jsonify({"error": True, "message": "databaseError"}), 500
+    if request.method == "DELETE":
+        try:
+            auth_header = request.headers.get('Authorization')
+            if auth_header is None:
+                return jsonify({"error": True, "message": "Please sign in"}), 403
+            else:
+                token = auth_header.split(' ')[1]
+                payload = decode_token(token)
+                member_id = payload.get('id')
+
+            data = request.json
+            car_id = data.get('id')  # 从请求中获取停车场数据的ID
+
+            connection = con.get_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            cursor.execute("DELETE FROM car_image WHERE car_id = %s", (car_id,))
+
+            # 最后删除 parkinglotdata 本身
+            cursor.execute("DELETE FROM car WHERE id = %s AND member_id = %s", (car_id, member_id))
+
+            connection.commit()  # 确保提交事务以保存更改
+
+            cursor.close()
+            connection.close()
+
+            return jsonify({"message": "deleted successfully"}), 200
+
+        except mysql.connector.Error as e:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+            return jsonify({"error": True, "message": "Database error"}), 500

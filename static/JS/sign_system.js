@@ -173,62 +173,6 @@ function signinForfailure(signinAlert, data) {
 function saveToken(token){
     localStorage.setItem('Token', token);
 }
-//使用者登入狀態確認
-async function init(){
-    const token = localStorage.getItem('Token');
-    // console.log(token)
-    if (token == null){
-        if (window.location.pathname !== '/') {
-            window.location.href = '/';
-        }
-        toggleClasses('.list', 'list-toggled');
-    }else{
-        try{
-            const response = await submitToken("/api/user/auth", 'GET', token);
-            const data = await handleResponse(response);
-            // console.log(data);
-            await loginCheck(data)
-        }catch(error){
-            handleError(error);
-        }
-    }
-}
-
-async function submitToken(api, method, token) {
-    const response = fetch(api, {
-        method: method,
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    });
-   return response;
-}
-
-//確認登入狀態後之事件處理
-async function loginCheck(data){
-    let signOutButtonList = document.querySelector('#signout-button-list');
-    // console.log(data);
-    if (data !== null) {
-        console.log(data);   
-        signOutButtonList.addEventListener('click', logout);
-        toggleClass('#signin-button-list', 'list-sign-in-toggled');
-        toggleClass('#signout-button-list', 'list-sign-out-toggled'); 
-    } else {
-        logout();
-    }
-}
-//登出
-function logout() {
-    localStorage.removeItem('Token');
-    if(window.location.pathname !== '/') {
-        window.location.href = '/'; 
-    } else {
-        location.reload(); 
-    }
-}
-//F5
-window.addEventListener('load', init);
-
 
 
 //使用者登入狀態for booking

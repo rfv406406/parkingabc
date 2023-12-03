@@ -1,3 +1,35 @@
+// 事件監聽設置的通用函式//排除按鈕
+function setupToggleNotButtonElements(element, toggles) {
+    document.querySelector(element).addEventListener('click', function(event) {
+        // 檢查點擊的目標是否不是按鈕
+        if (!event.target.matches('button')&&!event.target.matches('#data-type-selector')) {
+          toggles.forEach(function(toggle) {
+            toggleClass(toggle.elementSelector, toggle.classToToggle);
+          });
+        }
+    });
+  }
+
+  // 事件監聽設置的通用函式 //非元件類
+function setupRemove(Selector, elementSelectorANDcss) {
+    Selector.addListener('click', function() {
+      elementSelectorANDcss.forEach(item => {
+        removeClass(item.elementSelector, item.css);
+    });
+  });
+  }
+
+//parking_lot-information-container go up顯示
+setupToggleNotButtonElements('.parking_lot-information-container', [
+    { elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-toggled' }
+  ]);
+  
+  setupRemove(map, [
+    { elementSelector: '.parking_lot-information-container', 
+    css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
+  ]);
+//   -------------------------------------------------------------------------------------------
+
 let bookingLocationData;
 let lastClickedButton = '';
 

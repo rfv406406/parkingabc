@@ -88,6 +88,9 @@ idPageStorageButton.addEventListener('click', InputIdPageData);
 async function InputIdPageData(){
   try{
       const response = await inputIdDataToDB();
+      if (!response) {
+          return;
+      }
       const data = await handleResponse(response);
       console.log(data);
       idEditMessage(data)

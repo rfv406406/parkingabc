@@ -1,3 +1,45 @@
+// 事件監聽設置的通用函式
+function setupToggle(buttonSelector, toggles) {
+    document.querySelector(buttonSelector).addEventListener('click', function(event) {
+      event.preventDefault();
+      toggles.forEach(function(toggle) {
+        toggleClass(toggle.elementSelector, toggle.classToToggle);
+      });
+    });
+  };
+
+  // 事件監聽設置的通用函式 
+function setupRemoveButton(Selector, elementSelectorANDcss) {
+    let element = document.querySelector(Selector);
+    element.addEventListener('click', function() {
+      elementSelectorANDcss.forEach(item => {
+        removeClass(item.elementSelector, item.css);
+    });
+  });
+  }
+  
+  //parking_page block顯示
+setupToggle('#parking-page-button-list', [
+    { elementSelector: '#packing-page-container', classToToggle: 'packing-page-container-toggled' },
+    { elementSelector: '#packing-page-black-back', classToToggle: 'black-back-toggled' }
+  ]);
+  
+  setupRemoveButton('#close-packing-page', [
+    { elementSelector: '#packing-page-container', css: ['packing-page-container-toggled'] },
+    { elementSelector: '#packing-page-black-back', css: ['black-back-toggled'] },
+    { elementSelector: '#menuContent', css: ['menuContent_toggled'] },
+    // { elementSelector: '#packing-page-information-none', css: ['packing-page-information-none-toggled'] },
+    { elementSelector: '#packing-page-car-board-selected', css: ['packing-page-car-board-selected-toggled'] },
+    { elementSelector: '.parking_lot-information-container', css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
+  ]);
+
+  //alert_page none顯示
+setupRemoveButton('#alert-content-checked-button', [
+    { elementSelector: '#alert-page-container', css: ['alert-page-container-toggled'] },
+    { elementSelector: '#alert-page-black-back', css: ['alert-page-black-back-toggled'] },
+  ]);
+//   ---------------------------------------------------------------------------------------
+
 let timerInterval; // 用于保存计时器引用的全局变量
 
 function startTimer(updateDisplayCallback, elapsedTime = 0) {

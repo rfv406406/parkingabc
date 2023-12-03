@@ -6,8 +6,6 @@ async function fetchData(){
         const data = await handleResponse(response);
         console.log(data);
         await displayMarkers(data);
-        let cashPoint = await getMemberStatus();
-        showCashPointOnMenu(cashPoint);
     }catch(error){
         await handleError(error);
     }
@@ -133,10 +131,6 @@ function findDataByLatLng(lat, lng, data) {
     return data.find(item => item.lat === lat && item.lng === lng);
 };
 
-function showCashPointOnMenu(cashPoint){
-    const cashBar = document.getElementById('cash-point')
-    cashBar.textContent = '目前點數:'+cashPoint.data[0].Balance+'點';
-};
 //返回中心點
 document.getElementById('returnToCurrentPosition').addEventListener('click', function() {
     if (currentPosition) {
@@ -147,7 +141,9 @@ document.getElementById('returnToCurrentPosition').addEventListener('click', fun
     }
 });
 
-document.getElementById('search-goal-button').addEventListener('click', function() {
+document.getElementById('search-goal-button').addEventListener('click',openSearchBar);
+
+function openSearchBar(){
     let blackBackBackground = document.querySelector('.black-back-background');
     let searchBar = document.querySelector('.search-bar');
   
@@ -177,4 +173,15 @@ document.getElementById('search-goal-button').addEventListener('click', function
         });
     }
     
-  });
+  }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 檢查是否為首次訪問
+    if (!sessionStorage.getItem('firstVisitExecuted')) {
+        // 執行您希望在首次訪問時執行的操作
+        openSearchBar();
+
+        // 設置 session 標記，以便下次不再執行
+        sessionStorage.setItem('firstVisitExecuted', 'true');
+    }
+});

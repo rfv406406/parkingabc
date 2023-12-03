@@ -2,6 +2,7 @@
     margin: auto;
     width: 90%;
     overflow: hidden;
+    margin-top: 2%;
 }
 
 
@@ -15,9 +16,10 @@
     border: 1px solid #d4d6d7;
     box-sizing: border-box;
     margin-bottom: 10px;
+    flex-wrap: wrap;
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 800px) {
     .plate-board-information {
         display: flex;
         justify-content: space-between;

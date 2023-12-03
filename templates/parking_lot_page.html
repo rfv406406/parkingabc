@@ -16,11 +16,13 @@
             <button class="close" id="parking-lot-page-increase">新增</button>
         </div>
         <div class="separator"></div>
-        <div class="parking-lot-page-table" id="parking-lot-page-table">
-            <div class="image"><img src="../static/IMAGE/noimage.png"></div>
-            <button type="button" class="parking-lot-information-page-go-button" id="parking-lot-information-page-go-button">123停車場</button>
-        </div>
-        <div class="separator"></div>
+        <div id="parking-lot-container">
+            <div class="parking-lot-page-table" id="parking-lot-page-table">
+                <div class="image"><img src="../static/IMAGE/noimage.png"></div>
+                <div class="parking-lot-information-page-go-button" id="parking-lot-information-page-go-button">123停車場</div>
+            </div>
+            <div class="separator"></div>
+        </div>    
     </div>
     <div class="parking-lot-information-page" id="parking-lot-information-page">
         <div class="information-page-header">
@@ -30,6 +32,10 @@
         <div class="separator"></div>
         <div class="information-table" id="information-table">
             <table>
+                <tr style="display:none">
+                    <th class="consistent-text">ID：</th>
+                    <td class="infor-data" id="parking-lot-id">123停車場</td>
+                </tr>
                 <tr>
                     <th class="consistent-text">名稱：</th>
                     <td class="infor-data" id="parking-lot-name">123停車場</td>
@@ -80,12 +86,16 @@
             <button class="close" id="parking-lot-information-container-close"><img src="../static/IMAGE/close.png"></button>
         </div>
         <form class="information-form" id="information-form">
+            <div style="display:none" class="input-box">
+                <label for="parking-lot-name" class="consistent-text">*ID：</label>
+                <input type="text" id="parking-lot-id-input" name="parking-lot-name-input" class="text" placeholder="請輸入ID">
+            </div>
             <div class="input-box">
-                <label for="parking-lot-name" class="consistent-text">名稱：</label>
+                <label for="parking-lot-name" class="consistent-text">*名稱：</label>
                 <input type="text" id="parking-lot-name-input" name="parking-lot-name-input" class="text" placeholder="請輸入名稱">
             </div>
             <div class="input-box">
-                <label for="parking-lot-address" class="consistent-text">地址：</label>
+                <label for="parking-lot-address" class="consistent-text">*地址：</label>
                 <input type="text" id="parking-lot-address-input" name="parking-lot-address-input" class="text" placeholder="請輸入地址">
             </div>
             <div class="input-box">
@@ -93,11 +103,11 @@
                 <input type="text" id="parking-lot-near-input" name="parking-lot-near-input" class="text" placeholder="請輸入地標">
             </div>
             <div class="input-box">
-                <label for="parking-lot-image" class="consistent-text">上傳圖片：</label>
+                <label for="parking-lot-image" class="consistent-text">*上傳圖片：</label>
                 <input type="file" id="parking-lot-image-input" name="parking-lot-image-input" class="text" multiple>
             </div>
             <div class="input-box">
-                <label for="parking-lot-opening-time" class="consistent-text">開放時間：</label>
+                <label for="parking-lot-opening-time" class="consistent-text">*開放時間：</label>
                 <input type="time" id="parking-lot-opening-time-am-input" name="parking-lot-opening-time-input" class="text-time" min="00:00" max="24:00" placeholder="08:00">
                 <input type="time" id="parking-lot-closing-time-pm-input" name="parking-lot-closing-time-input" class="text-time" min="00:00" max="24:00" placeholder="18:00">
             </div>
@@ -106,30 +116,31 @@
                 <input type="text" id="parking-lot-in-out-input" name="parking-lot-in-out-input" class="text" placeholder="室內、室外、室外含遮蔽">
             </div>
             <div class="input-box">
-                <label for="parking-lot-price" class="consistent-text">價格：</label>
+                <label for="parking-lot-price" class="consistent-text">*價格：</label>
                 <input type="number" id="parking-lot-price-input" name="parking-lot-price-input" class="text" placeholder="請輸入價格">
             </div>
             <div class="input-box">
-                <label for="parking-lot-width" class="consistent-text">車寬限制：</label>
+                <label for="parking-lot-width" class="consistent-text">*車寬限制：</label>
                 <input type="number" id="parking-lot-width-input" name="parking-lot-width-input" class="text" placeholder="請輸入寬度">
             </div>
             <div class="input-box">
-                <label for="parking-lot-height" class="consistent-text">車高限制：</label>
+                <label for="parking-lot-height" class="consistent-text">*車高限制：</label>
                 <input type="number" id="parking-lot-height-input" name="parking-lot-height-input" class="text" placeholder="請輸入高度">
             </div>
             <div class="input-box-container" id="input-car-space-container">
                 <div class="input-box">
-                    <label for="parking-lot-number" class="consistent-text">車位編號：</label>
+                    <label for="parking-lot-number" class="consistent-text">*車位編號：</label>
                     <input type="text" id="parking-lot-number-input" name="parkingSquareNumber" class="text" placeholder="請輸入車位編號">
                 </div>
-                <div class="input-box">
-                    <label for="parking-square-image" class="consistent-text">車位圖片：</label>
+                <div style="display:none" class="input-box">
+                    <label for="parking-square-image" class="consistent-text">*車位圖片：</label>
                     <input type="file" id="parking-square-image-input" name="parkingSquareImage" class="text">
                 </div>
             </div>
             <button type="button" class="add-input-car-space-container-button" id="add-input-car-space-container-button">增加欄位</button>
             <button class="storage-button" id="parking-lot-information-container-storage-button" type="button">儲存</button>
         </form>
+        <div class="parking-lot-storage-success-message" id="parking-lot-storage-success-message"></div>
         <div class="footer"></div>
     </div>
     <div class="parking-lot-square-page" id="parking-lot-square-page">
@@ -149,5 +160,6 @@
     <script src="../static/JS/sign_system.js"></script>
     <script src="../static/JS/base.js"></script>
     <script src="../static/JS/parking_lot_page.js"></script>
+    <script src="../static/JS/parking_lot_page2.js"></script>
 </body>
 </html>

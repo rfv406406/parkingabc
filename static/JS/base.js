@@ -130,35 +130,110 @@ clickButton('#id','/id')
 clickButton('#deposit-and-pay-page-button','/deposit_and_pay_page')
 clickButton('#cash-record-page-button','/cash_flow_record')
 
+//使用者登入狀態確認
+async function init(){
+  const token = localStorage.getItem('Token');
+  // console.log(token)
+  if (token == null){
+      if (window.location.pathname !== '/') {
+          window.location.href = '/';
+      }
+      toggleClasses('.list', 'list-toggled');
+  }else{
+      try{
+          const response = await submitToken("/api/user/auth", 'GET', token);
+          const data = await handleResponse(response);
+          let cashPoint = await getMemberStatus();
+          showCashPointOnMenu(cashPoint);
+          // console.log(data);
+          await loginCheck(data)
+      }catch(error){
+          handleError(error);
+      }
+  }
+}
 
-//parking_lot-information-container go up顯示
-setupToggleNotButtonElements('.parking_lot-information-container', [
-  { elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-toggled' }
-]);
+function showCashPointOnMenu(cashPoint){
+  const cashBar = document.getElementById('cash-point')
+  cashBar.textContent = '目前點數:'+cashPoint.data[0].Balance+'點';
+};
 
-setupRemove(map, [
-  { elementSelector: '.parking_lot-information-container', 
-  css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
-]);
+async function submitToken(api, method, token) {
+  const response = fetch(api, {
+      method: method,
+      headers: {
+          'Authorization': `Bearer ${token}`,
+      }
+  });
+ return response;
+}
 
-//parking_page block顯示
-setupToggle('#parking-page-button-list', [
-  { elementSelector: '#packing-page-container', classToToggle: 'packing-page-container-toggled' },
-  { elementSelector: '#packing-page-black-back', classToToggle: 'black-back-toggled' }
-]);
+//連接後端登入API
+async function getMemberStatus() {
+  const token = localStorage.getItem('Token');
+  try{
+      const response = await getMemberDataApi("/api/get_member_data", "GET", token);
+      const data = await handleResponse(response);
+      console.log(data)
+      return data
+  }catch(error){
+      handleError(error);
+  }
+}
+//送出表單到後端
+async function getMemberDataApi(api, method, token) {
+  const response = fetch(api, {
+      method: method,
+      headers: {
+          'Authorization': `Bearer ${token}`,
+      }
+  });
+ return response;
+}
 
-setupRemoveButton('#close-packing-page', [
-  { elementSelector: '#packing-page-container', css: ['packing-page-container-toggled'] },
-  { elementSelector: '#packing-page-black-back', css: ['black-back-toggled'] },
-  { elementSelector: '#menuContent', css: ['menuContent_toggled'] },
-  // { elementSelector: '#packing-page-information-none', css: ['packing-page-information-none-toggled'] },
-  { elementSelector: '#packing-page-car-board-selected', css: ['packing-page-car-board-selected-toggled'] },
-  { elementSelector: '.parking_lot-information-container', css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
-]);
+//確認登入狀態後之事件處理
+async function loginCheck(data){
+  let signOutButtonList = document.querySelector('#signout-button-list');
+  // console.log(data);
+  if (data !== null) {
+      console.log(data);   
+      signOutButtonList.addEventListener('click', logout);
+      toggleClass('#signin-button-list', 'list-sign-in-toggled');
+      toggleClass('#signout-button-list', 'list-sign-out-toggled'); 
+  } else {
+      logout();
+  }
+}
+//登出
+function logout() {
+  localStorage.removeItem('Token');
+  if(window.location.pathname !== '/') {
+      window.location.href = '/'; 
+  } else {
+      location.reload(); 
+  }
+}
 
-//alert_page none顯示
-setupRemoveButton('#alert-content-checked-button', [
-  { elementSelector: '#alert-page-container', css: ['alert-page-container-toggled'] },
-  { elementSelector: '#alert-page-black-back', css: ['alert-page-black-back-toggled'] },
-]);
+async function handleResponse(response) {
+  if (!response.ok) {
+      throw new Error('Get null from backend');
+  }
+  return response.json();
+}
 
+async function handleError(error) {
+  console.error('Backend could got problems', error);
+}
+//F5
+window.addEventListener('load', init);
+
+//註冊後車牌頁面導向
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.cookie.includes('registrationCompleted=true')) {
+      const alertContent = document.getElementById("alert-content")
+      alertContent.textContent = '請先前往"你的車車"頁面，登入至少一個車牌才可以使用停車服務喔!';
+      toggleClass('#alert-page-container', 'alert-page-container-toggled');
+      toggleClass('#alert-page-black-back', 'alert-page-black-back-toggled');
+      document.cookie = 'registrationCompleted=false; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  }
+});
