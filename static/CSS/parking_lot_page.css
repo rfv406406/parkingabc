@@ -1,6 +1,5 @@
 .main{
     display:flex;
-    flex-direction: column;
     align-items: flex-start;
     padding: 10px;
     width:100%;
@@ -9,8 +8,16 @@
     background-color: #F5FBFF;
     box-sizing: border-box;
     margin: auto;
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    position: relative;
+    gap:10px;
 }
+
+@media(max-width: 600px) {
+    .main{
+        flex-direction: column;
+    }
+    }
 
 .parking-lot-information-container{
     width:70%;

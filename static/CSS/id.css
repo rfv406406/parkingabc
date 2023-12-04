@@ -86,6 +86,13 @@
     font-family: 'Noto Sans TC', sans-serif; /* 選擇支持中文標點的字體 */
     line-height: 1.6;
     font-size: 20px;
+    flex: 0.6;
+}
+
+@media(max-width: 600px) {
+    .information-container .text{
+        flex: 0.8;
+    }
 }
 
 .information-container .consistent-text{
