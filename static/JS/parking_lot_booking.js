@@ -263,21 +263,24 @@ function updateParkingAvailability(locationData) {
 
 //輪播圖
 function rotationImg(data) {
-    console.log(data)
     let buttonRight = document.getElementById("button-img-right");
     let buttonLeft = document.getElementById("button-img-left");
     let currentImageIndex = 0;
-    let imageDiv = document.querySelector('#parking-lot-image');
+    let imageDiv = document.querySelector('#parking_lot-image-container');
     let imageURL = data.images;
     let potContainer = document.querySelector(".pot_container");
 
     for (let i = 0; i < imageURL.length; i++) {
+        let newDiv = document.createElement("div");
+        newDiv.classList.add("image");
+
         let pot = document.createElement("div");
-        pot.classList.add("pot")
+        pot.classList.add("pot");
         
         let img = document.createElement("img");
         img.src = imageURL[i];
-        imageDiv.appendChild(img);
+        newDiv.appendChild(img);
+        imageDiv.appendChild(newDiv);
     
         potContainer.appendChild(pot)
     }
