@@ -92,6 +92,38 @@
     z-index: 2;
 }
 
+.img_container .pot_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    gap: 12px;
+    z-index: 2;
+}
+
+.pot_container .pot{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 12px;
+    width: 12px;
+    background-color: #FFF;
+    border-radius: 50%;
+}
+
+.pot_container .potpot{
+    height: 11px;
+    width: 11px;
+    background-color: #000;
+    border: 1px solid;
+    border-radius: 50%;
+    border-color: #FFF;
+}
+
 .parking_lot-information .button{
     width:100px;
     height:40px;

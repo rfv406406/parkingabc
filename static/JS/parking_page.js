@@ -60,12 +60,21 @@ function startTimer(updateDisplayCallback, elapsedTime = 0) {
 }
 
 function getElapsedTime() {
-    const startTime = parseInt(localStorage.getItem("timerStart"), 10);
-    const now = Math.floor(Date.now() / 1000); // 當前時間的Unix時間戳（秒）
-    return now - startTime; // 返回已經過去的時間（秒）
-};
+    const storedStartTime = localStorage.getItem("timerStart");
+    const startTime = parseInt(storedStartTime, 10);
+    if (isNaN(startTime)) {
+        // 如果 localStorage 中没有有效的 startTime，假设计时器刚开始
+        const now = Math.floor(Date.now() / 1000);
+        localStorage.setItem("timerStart", now);
+        return 0;
+    }
+    const now = Math.floor(Date.now() / 1000);
+    return now - startTime;
+}
 
-startTimer(updateTimerDisplay, getElapsedTime());
+window.addEventListener('load', () => {
+    startTimer(updateTimerDisplay, getElapsedTime());
+});
 
 function updateTimerDisplay(timerValue) {
     // 如果 timerValue 不是数字，设置为 0

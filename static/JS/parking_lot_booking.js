@@ -139,7 +139,6 @@ async function getCurrentDateTime() {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
@@ -222,12 +221,14 @@ function parkingLotInformationTable(locationData){
     let squaresWithEmptyStatus = locationData.squares ? locationData.squares.filter(square => !square.status).length : 0;
     let totalSquares = locationData.squares ? locationData.squares.length : 0;
     document.querySelector('#parking-space-total-number').textContent = `${squaresWithEmptyStatus} / ${totalSquares} 位`;    
-    const parkingLotImageElement = document.querySelector('#parking-lot-image');
-    if (locationData.images && locationData.images[0]) {
-        parkingLotImageElement.src = locationData.images[0];
-    } else {
-        parkingLotImageElement.src = ''; // 預設圖片
-    };
+    
+    // const parkingLotImageElement = document.querySelector('#parking-lot-image');
+    // if (locationData.images && locationData.images[0]) {
+    //     parkingLotImageElement.src = locationData.images[0];
+    // } else {
+    //     parkingLotImageElement.src = ''; // 預設圖片
+    // };
+    
     let select = document.getElementById('data-type-selector');
     const defaultOption = select.querySelector('option[value=""][disabled]');
     select.innerHTML = '';
@@ -235,12 +236,10 @@ function parkingLotInformationTable(locationData){
 
     locationData.squares.forEach(function(square) {
         if (square.status === null) {
-            // 检查是否已经存在具有相同内容的 option
+            // 是否存在相同選項
             let exists = Array.from(select.options).some(function(option) {
                 return option.textContent === square.square_number;
             });
-    
-            // 如果不存在，则创建并添加新的 option
             if (!exists) {
                 let option = document.createElement('option');
                 option.textContent = square.square_number;
@@ -249,6 +248,7 @@ function parkingLotInformationTable(locationData){
         }
     });
     updateParkingAvailability(locationData)
+    rotationImg(locationData)
 };
 
 function updateParkingAvailability(locationData) {
@@ -259,6 +259,61 @@ function updateParkingAvailability(locationData) {
     if (allOccupied) {
         buttonContainer.innerHTML = '<p class="full-capacity-message">目前客滿</p>';
     }
+}
+
+//輪播圖
+function rotationImg(data) {
+    console.log(data)
+    let buttonRight = document.getElementById("button-img-right");
+    let buttonLeft = document.getElementById("button-img-left");
+    let currentImageIndex = 0;
+    let imageDiv = document.querySelector('#parking-lot-image');
+    let imageURL = data.images;
+    let potContainer = document.querySelector(".pot_container");
+
+    for (let i = 0; i < imageURL.length; i++) {
+        let pot = document.createElement("div");
+        pot.classList.add("pot")
+        
+        let img = document.createElement("img");
+        img.src = imageURL[i];
+        imageDiv.appendChild(img);
+    
+        potContainer.appendChild(pot)
+    }
+
+    let pot = document.querySelectorAll(".pot")
+    let images = imageDiv.querySelectorAll('.image');
+    let potpot = document.createElement("div");
+    let potpotlength = 0
+    potpot.classList.add("potpot")
+    pot[potpotlength].appendChild(potpot)
+    
+    buttonRight.onclick = function () {
+        if (currentImageIndex < images.length - 1) {
+            currentImageIndex++;
+            potpotlength++;
+            pot[potpotlength].appendChild(potpot);
+        } else {
+            currentImageIndex = 0; // return first
+            potpotlength = 0;
+            pot[potpotlength].appendChild(potpot);
+        }
+        imageDiv.scrollLeft = images[currentImageIndex].offsetLeft;
+    };
+
+    buttonLeft.onclick = function () {
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            potpotlength--;
+            pot[potpotlength].appendChild(potpot);
+        } else {
+            currentImageIndex = images.length - 1; // last pic
+            potpotlength = pot.length - 1;
+            pot[potpotlength].appendChild(potpot);
+        }
+        imageDiv.scrollLeft = images[currentImageIndex].offsetLeft;
+    };    
 }
 
 function renderParkingPage(data){
@@ -292,17 +347,13 @@ async function returnCarBoardData(){
 async function carBoardNumberToSelector(data){
     let select = document.getElementById('car-board-number-selector');
 
-    // 遍历 data 数组
     data.data.forEach(function(item) {
-        // 检查是否已经存在具有相同内容的 option
         let exists = Array.from(select.options).some(function(option) {
             return option.textContent === item.carboard_unmber;
         });
-
-        // 如果不存在，则创建并添加新的 option
         if (!exists) {
             let option = document.createElement('option');
-            option.textContent = item.carboard_unmber; // 设置当前元素的 carboard_unmber 值
+            option.textContent = item.carboard_unmber; 
             select.appendChild(option);
         }
     });
