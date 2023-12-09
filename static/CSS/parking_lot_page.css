@@ -72,6 +72,7 @@
     font-weight: 500;
     line-height: 150%; /* 24px */
     border-radius: 12px;
+    cursor: pointer;
 }
 
 .information-header .close img{
@@ -175,6 +176,7 @@
     border-radius: 12px;
     margin-top: 20px;
     margin-bottom: 20px;
+    cursor: pointer;
 }
 
 .parking-lot-storage-success-message{
@@ -196,6 +198,7 @@
     font-weight: 500;
     line-height: 150%; /* 24px */
     border-radius: 12px;
+    cursor: pointer;
 }
 
 .parking-lot-information-container .footer{
@@ -301,6 +304,7 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
+        cursor: pointer;
     }
 }
 
@@ -333,6 +337,7 @@
     border-radius: 4px;
     background-color: #fefefe;
     border: transparent;
+    cursor: pointer;
 }
 
 .parking-lot-information-page .edit-button{
@@ -346,6 +351,7 @@
     line-height: 150%; /* 24px */
     border-radius: 12px;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .parking-lot-information-page-close{
@@ -448,6 +454,7 @@
     border-radius: 4px;
     margin-right: auto;
     border: #edecec solid 1px;
+    cursor: pointer;
 }
 
 @media(max-width: 600px) {
@@ -501,6 +508,7 @@
     font-weight: 500;
     line-height: 150%; /* 24px */
     border-radius: 12px;
+    cursor: pointer;
 }
 
 

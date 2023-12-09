@@ -114,6 +114,7 @@
     font-weight: 500;
     line-height: 150%; /* 24px */
     border-radius: 12px;
+    cursor: pointer;
 }
 
 .information-container .footer{
@@ -206,6 +207,7 @@
     line-height: 150%; /* 24px */
     border-radius: 12px;
     margin-top: 10px;
+    cursor: pointer;
 }
 /* 媒体查询，当屏幕宽度小于某个值时，改变布局 */
 @media(max-width: 800px) {
@@ -235,6 +237,7 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
+        cursor: pointer;
     }
 }
 

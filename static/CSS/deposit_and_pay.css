@@ -105,4 +105,5 @@
     font-weight: 400;
     line-height: 16px;
     white-space: nowrap; 
+    cursor: pointer;
 }

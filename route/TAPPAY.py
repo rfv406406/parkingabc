@@ -15,7 +15,7 @@ def api_pay():
             return ({"error": True,"message": "please signin"}), 403
         token = auth_header.split(' ')[1]
         payload = decode_token(token)
-        member_id = payload.get('id')
+        member_id = payload['id']
         if not payload:
             return ({"error": True,"message": "please signin"}), 403
         

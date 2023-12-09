@@ -19,22 +19,24 @@ def input_car_board_data():
             else:
                 token = auth_header.split(' ')[1]
                 payload = decode_token(token)
-                member_id = payload.get('id')
+                member_id = payload['id']
             
             if not request.form:
                 return ({"error": True,"message": "data is not existed"}), 400
             
             boardNumber = request.form.get('boardNumber')
+            print(boardNumber)
             # 更新停車時間
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
             cursor.execute("""
-                INSERT INTO car (member_id, carboard_unmber)
+                INSERT INTO car (member_id, carboard_number)
                 VALUES (%s, %s);
             """, (member_id, boardNumber))
             connection.commit()
             car_images = request.files.getlist('img')
             car_id = cursor.lastrowid
+            print(car_id)
             for image in car_images:
                 if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
                     filename = secure_filename(image.filename)
@@ -69,7 +71,7 @@ def input_car_board_data():
             else:
                 token = auth_header.split(' ')[1]
                 payload = decode_token(token)
-                member_id = payload.get('id')
+                member_id = payload['id']
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
@@ -105,7 +107,7 @@ def input_car_board_data():
             else:
                 token = auth_header.split(' ')[1]
                 payload = decode_token(token)
-                member_id = payload.get('id')
+                member_id = payload['id']
 
             data = request.json
             car_id = data.get('id')  # 从请求中获取停车场数据的ID

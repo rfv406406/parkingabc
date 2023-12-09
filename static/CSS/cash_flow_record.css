@@ -54,6 +54,7 @@ select:hover {
 select:focus {
     outline: none; /* 移除焦點時的藍色輪廓 */
     border-color: #555; /* 焦點時的邊框顏色 */
+    cursor: pointer;
 }
 
 /* 選項樣式 */

@@ -32,6 +32,7 @@ body{
     justify-content: center;
     align-items: center;
     width: 115px;
+    cursor: pointer;
 }
 
 .logo{
@@ -85,6 +86,7 @@ body{
     font-weight: 500;
     line-height: 150%; /* 24px */
     border-radius: 12px;
+    cursor: pointer;
 }
 
 .footer {
@@ -137,6 +139,11 @@ body{
     height:30px;
     background: #fefefe;
     margin-bottom: 1px;
+    cursor: pointer;
+}
+
+.list-sign-in:hover{
+    background-color: #edecec;
 }
 
 .list-sign-in-toggled{
@@ -151,6 +158,11 @@ body{
     height:30px;
     background: #fefefe;
     margin-bottom: 1px;
+    cursor: pointer;
+}
+
+.list-sign-out:hover{
+    background-color: #edecec;
 }
 
 .list-sign-out-toggled{
@@ -165,6 +177,11 @@ body{
     height:30px;
     background: #fefefe;
     margin-bottom: 1px;
+    cursor: pointer;
+}
+
+.list:hover{
+    background-color: #edecec;
 }
 
 .list-toggled{
@@ -228,6 +245,7 @@ body{
     font-weight: 500;
     line-height: 150%; /* 24px */
     border-radius: 12px;
+    cursor: pointer;
 }
 
 .close img{
@@ -272,6 +290,7 @@ body{
     font-style: normal;
     font-weight: 500;
     border-radius: 12px;
+    cursor: pointer;
 }
 
 .signon-go-container, .signin-return-container{

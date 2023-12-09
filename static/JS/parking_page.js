@@ -42,38 +42,40 @@ setupRemoveButton('#alert-content-checked-button', [
 
 let timerInterval; // 用于保存计时器引用的全局变量
 
-function startTimer(updateDisplayCallback, elapsedTime = 0) {
-    // 獲取當前時間的Unix時間戳（秒）
+function startTimer(updateDisplayCallback) {
     const now = Math.floor(Date.now() / 1000);
+    let storedStartTime = localStorage.getItem("timerStart");
 
-    // 存儲開始時間
-    localStorage.setItem("timerStart", now - elapsedTime);
-
+    // 如果没有存储的开始时间，则设置现在为开始时间
+    if (!storedStartTime) {
+        localStorage.setItem("timerStart", now);
+    }
     toggleStopButtonReload();
-
-    // 設置計時器
-    let timer = elapsedTime;
+    // 计算已经过去的时间并开始计时
+    let elapsedTime = now - parseInt(localStorage.getItem("timerStart"), 10);
     timerInterval = setInterval(() => {
-        timer++;
-        updateDisplayCallback(timer);
+        elapsedTime++;
+        updateDisplayCallback(elapsedTime);
     }, 1000);
 }
-
 function getElapsedTime() {
     const storedStartTime = localStorage.getItem("timerStart");
     const startTime = parseInt(storedStartTime, 10);
+    const now = Math.floor(Date.now() / 1000);
     if (isNaN(startTime)) {
         // 如果 localStorage 中没有有效的 startTime，假设计时器刚开始
-        const now = Math.floor(Date.now() / 1000);
-        localStorage.setItem("timerStart", now);
+        // const now = Math.floor(Date.now() / 1000);
+        // localStorage.setItem("timerStart", now);
         return 0;
     }
-    const now = Math.floor(Date.now() / 1000);
+    // const now = Math.floor(Date.now() / 1000);
     return now - startTime;
 }
 
 window.addEventListener('load', () => {
-    startTimer(updateTimerDisplay, getElapsedTime());
+    if (localStorage.getItem("timerStart")) {
+        startTimer(updateTimerDisplay);
+    }
 });
 
 function updateTimerDisplay(timerValue) {

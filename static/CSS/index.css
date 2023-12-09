@@ -32,14 +32,14 @@
 .labels {
     display: flex;
     justify-content: center;
-    text-align: center;
+    align-items: center;
     color: #00000084;
     background-color: #f4efef;
     font-family: Roboto, Arial, sans-serif;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: bold;
     text-align: center;
-    width: 50px;
+    width: 54px;
     height: 30px;
     padding: 2px;
     border: 1px solid #999;
@@ -95,6 +95,7 @@
     align-items: center; /* 垂直居中 */
     justify-content: center; /* 水平居中 */
     padding: 0; /* 移除內邊距 */
+    cursor: pointer;
 }
 
 .search-goal-button img{
@@ -102,8 +103,10 @@
     height: 20px; /* 控制圖片的高度 */
     object-fit: contain; /* 確保圖片保持其比例 */
     background-color: transparent;
+    cursor: pointer;
 }
 
 .search-goal-button {
     background-color: #f8f8f8; /* 鼠標懸停時的背景顏色變化 */
+    cursor: pointer;
 }

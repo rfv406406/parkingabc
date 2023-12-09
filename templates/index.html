@@ -39,6 +39,7 @@
         let directionsService;
         let directionsRenderer;
         let infoWindow;
+        let newZoom;
 
         async function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -47,10 +48,10 @@
                 heading: 90,
                 // mapTypeControl: false
             });
-            // map.addListener("zoom_changed", function() {
-            //     var newZoom = map.getZoom();
-            //     console.log("新的縮放等級是：", newZoom);
-            // });
+            map.addListener("zoom_changed", function() {
+                let newZoom = map.getZoom();
+                console.log("目前縮放等級是：", newZoom);
+            });
             navigator.geolocation.getCurrentPosition(async function(position){
                 currentPosition = {
                     lat: position.coords.latitude,
@@ -72,7 +73,7 @@
         function returnToCurrentPositionAndZoomIn() {
             if (currentPosition) {
                 map.setCenter(currentPosition);
-                map.setZoom(15);
+                map.setZoom(20);
                 removeClass('.parking_lot-information-container',['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'])
             }
         }

@@ -16,7 +16,7 @@ def get_member_data():
         else:
             token = auth_header.split(' ')[1]
             payload = decode_token(token)
-            member_id = payload.get('id')
+            member_id = payload['id']
 
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)

@@ -34,23 +34,21 @@ let markers = [];
 async function displayMarkers(dataObject) {
     markers.forEach(marker => marker.setMap(null));
     markers = [];
-    // 確保 dataObject 中有 data 屬性並且是一個數組
+
     if (dataObject && Array.isArray(dataObject.data)) {
         dataObject.data.forEach(location => {
-            // 使用 location 中的 lat 和 lng 屬性來設置標記的位置
-            const latLng = new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng));
             const marker = createMarker(location);
-            // 為標記添加訊息窗口，顯示更多訊息
             const infoWindow = createInfoWindow(location);
         
             marker.addListener('click', async function() {
-                infoWindow.open(map, marker);//???
-                setupAppear(marker, [{ elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-appear'}
-                  ]);
+                infoWindow.open(map, marker);
+                setupAppear(marker, [{ elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-appear'}]);
                 const locationData = findDataByLatLng(location.lat, location.lng, dataObject.data);
-                console.log(locationData)
+                // console.log(locationData)
                 parkingLotInformationTable(locationData);
-                await calculateAndDisplayRoute(directionsService, directionsRenderer, currentPosition, latLng);
+                // 直接传递包含纬度和经度的 location 对象
+                await calculateAndDisplayRoute(directionsService, directionsRenderer, currentPosition, locationData);
+                // console.log(location.lat)
                 getBookingInformation(locationData);
             });
             markers.push(marker);
@@ -73,7 +71,7 @@ function createInfoWindow(location) {
 
 //產稱自定義marker
 function createMarker(location) {
-    const latLng = new google.maps.LatLng(parseFloat(location.lat), parseFloat(location.lng));
+    const latLng = {lat: parseFloat(location.lat), lng: parseFloat(location.lng)};
     let labelContent;
     // 检查是否存在停车空间和第一个空间的状态
     if (location.squares && location.squares.every(square => square.status)) {
@@ -87,7 +85,7 @@ function createMarker(location) {
         draggable: false,
         map: map,
         labelContent: labelContent,
-        labelAnchor: new google.maps.Point(-20, -45),
+        labelAnchor: new google.maps.Point(-22, -44),
         labelClass: "labels",
         labelStyle: { opacity: 1.0 },
         icon: {
@@ -112,10 +110,11 @@ function getIconUrl(price) {
 }
  //最短路徑
  async function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
-    console.log(origin)
+    // console.log(origin)
     directionsService.route({
-        origin: new google.maps.LatLng(origin.lat, origin.lng),
-        destination: destination,
+        origin: { lat: origin.lat, lng: origin.lng },
+        destination: { lat: parseFloat(destination.lat),
+            lng: parseFloat(destination.lng) },
         travelMode: 'DRIVING'
     }, (response, status) => {
         if (status === 'OK') {

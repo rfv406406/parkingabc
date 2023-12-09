@@ -110,7 +110,27 @@ setupToggle('#close-signon', [
   { elementSelector: '#menuContent', classToToggle: 'menuContent_toggled' }
 ]);
 
-//turn to parking_lot_page
+// 事件监听设置的通用函数
+function removeClassOnClickOutside(targetSelector, toggleSelector, classesToRemove) {
+  document.addEventListener('click', function(event) {
+      let targetElement = document.querySelector(targetSelector);
+      let toggleElement = document.querySelector(toggleSelector);
+
+      // 检查点击事件是否发生在目标元素或其子元素上，以及切换元素或其子元素上
+      if (targetElement && !targetElement.contains(event.target) &&
+          (!toggleElement || !toggleElement.contains(event.target))) {
+          // 如果点击事件发生在目标元素和切换元素外部，则移除类
+          classesToRemove.forEach(cssClass => {
+              targetElement.classList.remove(cssClass);
+          });
+      }
+  });
+}
+
+// 使用函数移除 'menuContent_toggled' 类
+removeClassOnClickOutside('#menuContent', '#menu', ['menuContent_toggled']);
+
+//turn to other pages
 function turnPage(renderTemplate){
   window.location.href = renderTemplate;
 }

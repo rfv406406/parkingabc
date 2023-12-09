@@ -19,7 +19,7 @@ def edit_input_parking_lot_information():
             else:
                 token = auth_header.split(' ')[1]
                 payload = decode_token(token)
-                member_id = payload.get('id')
+                member_id = payload['id']
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
@@ -67,7 +67,7 @@ def edit_input_parking_lot_information():
             else:
                 token = auth_header.split(' ')[1]
                 payload = decode_token(token)
-                member_id = payload.get('id')
+                member_id = payload['id']
 
             data = request.json
             parkinglotdata_id = data.get('id')  # 从请求中获取停车场数据的ID
@@ -114,7 +114,7 @@ def edit_input_parking_lot_information():
             else:
                 token = auth_header.split(' ')[1]
                 payload = decode_token(token)
-                member_id = payload.get('id')
+                member_id = payload['id']
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)

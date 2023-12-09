@@ -64,7 +64,7 @@ document.querySelector('#parking-lot-container').addEventListener('click', async
 
       if (carTable) {
           const cartBoardNumber = carTable.querySelector('.parking-lot-information-page-go-button').textContent;
-          const carData = memberCarData.data.find(lot => lot.carboard_unmber === cartBoardNumber); 
+          const carData = memberCarData.data.find(lot => lot.carboard_number === cartBoardNumber); 
           console.log(carData)
           try{
               const response = await deleteCarData(carData);
@@ -171,7 +171,7 @@ function addCarInDiv(data) {
 
       const nameDiv = document.createElement('div');
       nameDiv.className = 'parking-lot-information-page-go-button';
-      nameDiv.textContent = item.carboard_unmber;
+      nameDiv.textContent = item.carboard_number;
       parkingLotDiv.appendChild(nameDiv);
 
       const imageDiv = document.createElement('div');

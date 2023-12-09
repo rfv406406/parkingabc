@@ -24,10 +24,10 @@ setupToggleNotButtonElements('.parking_lot-information-container', [
     { elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-toggled' }
   ]);
   
-  setupRemove(map, [
-    { elementSelector: '.parking_lot-information-container', 
-    css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
-  ]);
+setupRemove(map, [
+{ elementSelector: '.parking_lot-information-container', 
+css: ['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'] }
+]);
 //   -------------------------------------------------------------------------------------------
 
 let bookingLocationData;
@@ -96,7 +96,7 @@ carBoardCheckedButton.addEventListener('click', async function() {
     await fetchData()
     // toggleClass('#packing-page-information-none', 'packing-page-information-none-toggled'); 
     // toggleClass('#packing-page-car-board-selected', 'packing-page-car-board-selected-toggled');
-    startTimer(updateTimerDisplay);   
+    startTimer(updateTimerDisplay);  
 });
 
 async function squareChecking(){
@@ -266,41 +266,51 @@ function rotationImg(data) {
     let buttonRight = document.getElementById("button-img-right");
     let buttonLeft = document.getElementById("button-img-left");
     let currentImageIndex = 0;
-    let imageDiv = document.querySelector('#parking_lot-image-container');
-    let imageURL = data.images;
-    let potContainer = document.querySelector(".pot_container");
+    let imageDiv = document.querySelector('#parking_lot_image_container');
+
+    imageDiv.innerHTML = '';
+
+    let potContainer = document.createElement("div");
+    potContainer.classList.add("pot_container");
+    imageDiv.appendChild(potContainer);
+
+    let imageURL;
+    if (data.images.length > 0) {
+        imageURL = data.images;
+    } else {
+        imageURL = ['https://d1hxt3hn1q2xo2.cloudfront.net/1702149637-20210325-121559_U7321_M680292_0f7b.jpg'];
+    }
 
     for (let i = 0; i < imageURL.length; i++) {
         let newDiv = document.createElement("div");
         newDiv.classList.add("image");
-
+        
         let pot = document.createElement("div");
         pot.classList.add("pot");
+        potContainer.appendChild(pot);
         
         let img = document.createElement("img");
         img.src = imageURL[i];
         newDiv.appendChild(img);
         imageDiv.appendChild(newDiv);
-    
-        potContainer.appendChild(pot)
     }
 
     let pot = document.querySelectorAll(".pot")
     let images = imageDiv.querySelectorAll('.image');
-    let potpot = document.createElement("div");
-    let potpotlength = 0
-    potpot.classList.add("potpot")
-    pot[potpotlength].appendChild(potpot)
+    let pot2 = document.createElement("div");
+    pot2.classList.add("pot_pot");
+    let pot2length = 0;
+    pot[pot2length].appendChild(pot2);
     
     buttonRight.onclick = function () {
         if (currentImageIndex < images.length - 1) {
             currentImageIndex++;
-            potpotlength++;
-            pot[potpotlength].appendChild(potpot);
+            pot2length++;
+            pot[pot2length].appendChild(pot2);
         } else {
             currentImageIndex = 0; // return first
-            potpotlength = 0;
-            pot[potpotlength].appendChild(potpot);
+            pot2length = 0;
+            pot[pot2length].appendChild(pot2);
         }
         imageDiv.scrollLeft = images[currentImageIndex].offsetLeft;
     };
@@ -308,12 +318,12 @@ function rotationImg(data) {
     buttonLeft.onclick = function () {
         if (currentImageIndex > 0) {
             currentImageIndex--;
-            potpotlength--;
-            pot[potpotlength].appendChild(potpot);
+            pot2length--;
+            pot[pot2length].appendChild(pot2);
         } else {
             currentImageIndex = images.length - 1; // last pic
-            potpotlength = pot.length - 1;
-            pot[potpotlength].appendChild(potpot);
+            pot2length = pot.length - 1;
+            pot[pot2length].appendChild(pot2);
         }
         imageDiv.scrollLeft = images[currentImageIndex].offsetLeft;
     };    
@@ -352,11 +362,11 @@ async function carBoardNumberToSelector(data){
 
     data.data.forEach(function(item) {
         let exists = Array.from(select.options).some(function(option) {
-            return option.textContent === item.carboard_unmber;
+            return option.textContent === item.carboard_number;
         });
         if (!exists) {
             let option = document.createElement('option');
-            option.textContent = item.carboard_unmber; 
+            option.textContent = item.carboard_number; 
             select.appendChild(option);
         }
     });

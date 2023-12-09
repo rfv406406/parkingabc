@@ -66,4 +66,5 @@ input[type=range]{
     font-style: normal;
     font-weight: 500;
     line-height: 150%; /* 24px */
+    cursor: pointer;
 }
