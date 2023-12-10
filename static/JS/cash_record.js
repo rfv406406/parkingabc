@@ -145,7 +145,7 @@ function displayRecords(records, dataType) {
                 htmlContent = `<div class="plate-board-information">
                                <div>日期: ${record.date}</div>
                                <div>停車場: ${record.parkinglotname}</div>
-                               <div>車位編號: ${record.parkinglotsquare}</div>
+                               <div>車牌編號: ${record.car_board}</div>
                                <div>停車時間: ${record.starttime}</div>
                                <div>結束時間: ${record.stoptime}</div>
                                <div>收入: ${record.income}${'元'}</div>
