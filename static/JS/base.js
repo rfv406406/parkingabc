@@ -4,7 +4,7 @@ function toggleClass(elementSelector, classToToggle) {
   // console.log("Toggling class on:", elementSelector);
   if (element) {
     element.classList.toggle(classToToggle);
-    // console.log("Class after toggle:", element.classList);
+    console.log('setupAppear executed');
   };
 };
 // 複數通用函式來切換類
@@ -38,10 +38,14 @@ function setupToggleNotButtonElements(element, toggles) {
 }
 
 // 事件監聽設置的通用函式
-async function setupAppear(Selector, toggles) {
-  Selector.addListener('click',function() {
-      toggles.forEach(function(toggle) {
-        toggleClass(toggle.elementSelector, toggle.classToToggle);
+function setupAppear(toggles) {
+  toggles.forEach(function(toggle) {
+    const elements = document.querySelectorAll(toggle.elementSelector);
+    elements.forEach(function(element) {
+      // 只有当元素不包含指定的类时，才执行切换操作
+      if (!element.classList.contains(toggle.classToToggle)) {
+        element.classList.toggle(toggle.classToToggle);
+      }
     });
   });
 }

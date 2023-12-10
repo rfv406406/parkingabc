@@ -41,13 +41,13 @@ async function displayMarkers(dataObject) {
             const infoWindow = createInfoWindow(location);
         
             marker.addListener('click', async function() {
-                infoWindow.open(map, marker);
-                setupAppear(marker, [{ elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-appear'}]);
                 const locationData = findDataByLatLng(location.lat, location.lng, dataObject.data);
+                await calculateAndDisplayRoute(directionsService, directionsRenderer, currentPosition, locationData);
+                setupAppear([{ elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-appear'}]);
+                infoWindow.open(map, marker);
                 // console.log(locationData)
                 parkingLotInformationTable(locationData);
                 // 直接传递包含纬度和经度的 location 对象
-                await calculateAndDisplayRoute(directionsService, directionsRenderer, currentPosition, locationData);
                 // console.log(location.lat)
                 getBookingInformation(locationData);
             });
@@ -109,19 +109,23 @@ function getIconUrl(price) {
     }
 }
  //最短路徑
- async function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
-    // console.log(origin)
-    directionsService.route({
-        origin: { lat: origin.lat, lng: origin.lng },
-        destination: { lat: parseFloat(destination.lat),
-            lng: parseFloat(destination.lng) },
-        travelMode: 'DRIVING'
-    }, (response, status) => {
-        if (status === 'OK') {
-            directionsRenderer.setDirections(response);
-        } else {
-            window.alert('Directions request failed due to ' + status);
-        };
+// 最短路徑
+async function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
+    directionsRenderer.setOptions({preserveViewport: true});
+    return new Promise((resolve, reject) => {
+        directionsService.route({
+            origin: { lat: origin.lat, lng: origin.lng },
+            destination: { lat: parseFloat(destination.lat), lng: parseFloat(destination.lng) },
+            travelMode: 'DRIVING'
+        }, (response, status) => {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(response);
+                resolve(response); // 路徑計算成功，解決 Promise
+            } else {
+                window.alert('Directions request failed due to ' + status);
+                reject(status); // 路徑計算失敗，拒絕 Promise
+            };
+        });
     });
 };
 
