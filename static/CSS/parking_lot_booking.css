@@ -10,7 +10,6 @@
     /* overflow: hidden; */
     cursor: pointer;
     transition: height 0.5s; /* 使用 transform 实现过渡效果 */
-    cursor: pointer; /* 手型光标表示整个容器可拖动 */
     overflow: auto; /* 如果内容超出自身高度，则显示滚动条 */
 }
 
@@ -221,7 +220,9 @@
     font-style: normal;
     font-weight: 500;
     line-height: 150%;
+    cursor: pointer;
 }
+
 
 .parking_lot-information .separator {
     width: 100%;
