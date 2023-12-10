@@ -44,7 +44,7 @@ with open(NTC_PARKING_path, "r", encoding="utf-8") as file:
         # 插入數據到資料庫
         sql = """
         INSERT INTO parkinglotdata (member_id, name, address, landmark, openingTime, closingTime, spaceInOut, price, widthLimit, heightLimit, lng, lat) 
-        VALUES (2, %s, %s, '無', '00:00', '24:00', '室內', %s, 2, 2, %s, %s)
+        VALUES (1, %s, %s, '無', '00:00', '24:00', '室內', %s, 2, 2, %s, %s)
         """
         cursor.execute(sql, (name, address, price, lon, lat))
 
@@ -81,7 +81,7 @@ with open(TC_PARKING_path, 'r', encoding='utf-8') as file:
         # 插入數據到資料庫
         sql = """
         INSERT INTO parkinglotdata (member_id, name, address, landmark, openingTime, closingTime, spaceInOut, price, widthLimit, heightLimit, lng, lat) 
-        VALUES (2, %s, %s, '無', '00:00', '24:00', '室內', %s, 2, 2, %s, %s)
+        VALUES (1, %s, %s, '無', '00:00', '24:00', '室內', %s, 2, 2, %s, %s)
         """
         cursor.execute(sql, (name, address, price, lon, lat))
 

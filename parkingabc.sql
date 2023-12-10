@@ -29,14 +29,14 @@ CREATE TABLE `car` (
   `member_id` varchar(255) NOT NULL,
   `carboard_number` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+); 
 
 CREATE TABLE `car_image` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `car_id` varchar(255) NOT NULL,
   `car_image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `consumption` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -55,14 +55,14 @@ CREATE TABLE `consumption` (
   `payment` bigint DEFAULT NULL,
   `income` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `deposit_account` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `member_id` varchar(255) NOT NULL,
   `Balance` bigint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `member` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -75,7 +75,7 @@ CREATE TABLE `member` (
   `status` varchar(255) DEFAULT NULL,
   `RegistrationDate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `parkinglotdata` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -92,14 +92,14 @@ CREATE TABLE `parkinglotdata` (
   `lng` varchar(255) DEFAULT NULL,
   `lat` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `parkinglotimage` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `parkinglotdata_id` bigint DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `parkinglotsquare` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -107,14 +107,14 @@ CREATE TABLE `parkinglotsquare` (
   `square_number` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `parkingsquareimage` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `parkinglotsquare_id` bigint DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 CREATE TABLE `transactions` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -125,7 +125,7 @@ CREATE TABLE `transactions` (
   `status` varchar(255) NOT NULL,
   `transactions_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 
 
