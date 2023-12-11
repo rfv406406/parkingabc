@@ -41,31 +41,38 @@ document.getElementById('data-type-selector').addEventListener('change', functio
 document.getElementById('time-range-selector').addEventListener('change', function() {
     filterAndDisplayRecords(cashRecords);});
 
-function filterAndDisplayRecords(data) {
-    const dataTypeSelector = document.getElementById('data-type-selector');
-    const timeRange = document.getElementById('time-range-selector').value;
-
-    // 將select選項的值映射到對應的數據鍵
-    const dataTypeMapping = {
-        'type1': 'transactions',
-        'type2': 'consumption_payment',
-        'type3': 'consumption_income'
-    };
-
-    let selectedDataType = dataTypeMapping[dataTypeSelector.value];
-    let relevantData = data[selectedDataType] || []; // 使用 || [] 確保在數據為undefined時返回空數組
-
-    if (selectedDataType === 'transactions') {
-        relevantData = relevantData.filter(record => record.Type === 'DEPOSIT');
+    function filterAndDisplayRecords(data) {
+        const dataTypeSelector = document.getElementById('data-type-selector');
+        const timeRange = document.getElementById('time-range-selector').value;
+    
+        // 将 select 选项的值映射到对应的数据键
+        const dataTypeMapping = {
+            'type1': 'transactions',
+            'type2': 'consumption_payment',
+            'type3': 'consumption_income'
+        };
+    
+        let selectedDataType = dataTypeMapping[dataTypeSelector.value];
+        let relevantData = data[selectedDataType];
+    
+        // 确保 relevantData 是一个数组
+        if (!Array.isArray(relevantData)) {
+            relevantData = [];
+        }
+    
+        // 特定条件下的过滤
+        if (selectedDataType === 'transactions') {
+            relevantData = relevantData.filter(record => record.Type === 'DEPOSIT');
+        }
+    
+        // 根据选择的时间范围过滤数据
+        let filteredRecords = relevantData.filter(record => {
+            return matchesTimeRange(record, timeRange);
+        });
+    
+        // 动态生成 HTML 内容
+        displayRecords(filteredRecords, selectedDataType);
     }
-
-    // 根據選擇的時間範圍過濾數據
-    let filteredRecords = relevantData.filter(record => {
-        return matchesTimeRange(record, timeRange);
-    });
-    // 動態生成HTML內容
-    displayRecords(filteredRecords, selectedDataType);
-}
 
 function matchesTimeRange(record, timeRange) {
     let recordDate;
@@ -114,7 +121,7 @@ function displayRecords(records, dataType) {
     container.innerHTML = ''; // 清空现有内容
 
     if (records.length === 0) {
-        container.innerHTML = '<div>沒有停車場資料</div>';
+        container.innerHTML = '<div>沒有資料</div>';
         return;
     }
 

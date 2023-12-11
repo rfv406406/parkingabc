@@ -48,22 +48,23 @@ def get_cash_record():
 
         cursor.execute("""
             SELECT
-                id,
-                date,
-                member_id,
-                order_number,
-                address,
-                parkinglotdata_id,
-                parkinglotname,
-                parkinglotsquare,
-                square_number,
-                car_board,
-                price,
-                starttime,
-                stoptime,
-                income
+                consumption.id,
+                consumption.date,
+                consumption.member_id,
+                consumption.order_number,
+                consumption.address,
+                consumption.parkinglotdata_id,
+                consumption.parkinglotname,
+                consumption.parkinglotsquare,
+                consumption.square_number,
+                consumption.car_board,
+                consumption.price,
+                consumption.starttime,
+                consumption.stoptime,
+                consumption.income
             FROM consumption
-            WHERE member_id = %s
+            JOIN parkinglotdata ON consumption.parkinglotdata_id = parkinglotdata.id
+            WHERE parkinglotdata.member_id = %s
         """, (member_id,))
         consumption_income_data = cursor.fetchall()
 
