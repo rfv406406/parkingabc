@@ -94,7 +94,7 @@ Data input into MySQL to provide rental information for users.
 
 ### Parking Demo
 
-If you arrive at the parking lot, use this way to start parking.
+If you arrive at the parking lot, follow the steps to start parking.
 
 <p align="center">
   <img src="readmefile/parking demo.gif" alt="Parking Demo" width="40%"/>
@@ -103,7 +103,7 @@ If you arrive at the parking lot, use this way to start parking.
 
 ## Contact
 
-康智偉 Chih-Wei, KANG
+康智偉 Chih-Wei, Kang
 
 rfv406406@gmail.com
 
