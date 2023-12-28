@@ -39,52 +39,66 @@ To use parking space rental and parking service, you need to log first. Below ar
 
 The backend of the website is built by ```Python Flask``` framework, initially encapsulated in ```Docker``` and then deployed on ```Amazon EC2``` servers, while also configured with ```NGINX``` as a ```reverse proxy```, and utilizing SSL/TLS certificates from ```Let’s Encrypt``` to ensure secure ```HTTPS``` connections. Data is stored in a ```MySQL``` database managed by ```Amazon RDS```, whereas static resources such as images and style sheets are stored on ```Amazon S3```, with content distribution accelerated through ```Amazon CloudFront``` for enhanced access speed.
 
-## Demo GIF
+## Database
 
 Designing by MySQL relational database that conforms to the second normal form and utilizes foreign key constraints to enhance stability.
 
-<img src=readmefile/DBS.png width=100% />
+<img src=readmefile/DBS.png width=80% />
 
-## Features
+## Demo GIF
 
-### Car information input(新創帳號使用者，進行停車服務前請先登記至少一筆車輛資料)
+### Car information input (新創帳號使用者，進行停車服務前請先登記至少一筆車輛資料)
 
-*Users need to input at least one car information for parking service.
+* Users need to input at least one car information for parking service.
 
-![Alt text](<readmefile/input car infor.gif>)
+<p align="center">
+  <img src="readmefile/input car infor.gif" alt="Car Information Input" width="20%"/>
+</p>
 <br/>
 
-### Deposit(請儲值才可以進行停車服務)
+### Deposit (請儲值才可以進行停車服務)
 
-*Users need to deposit. If the cash point is 0 or negative, parking service is forbidden.
-![Alt text](readmefile/deposit.gif)
+* Users need to deposit. If the cash point is 0 or negative, parking service is forbidden.
+
+<p align="center">
+  <img src="readmefile/deposit.gif" alt="Deposit" width="20%"/>
+</p>
 <br/>
 
 ### Location Search
 
-Using the Google Map Apis to provide destination searching.
+Using the Google Map APIs to provide destination searching.
 
-![Alt text](<readmefile/location search.gif>)
+<p align="center">
+  <img src="readmefile/location search.gif" alt="Location Search" width="20%"/>
+</p>
 <br/>
 
 ### Navigation
 
-Google Map Apis to provide navigation service.
+Google Map APIs to provide navigation service.
 
-![Alt text](readmefile/navigation.gif)
+<p align="center">
+  <img src="readmefile/navigation.gif" alt="Navigation" width="20%"/>
+</p>
 <br/>
 
 ### Parking space rental input
 
-Data input MySQL to provide rental information for users.
+Data input into MySQL to provide rental information for users.
 
-![Alt text](<readmefile/input parking space.gif>)
+<p align="center">
+  <img src="readmefile/input parking space.gif" alt="Parking Space Rental Input" width="20%"/>
+</p>
 <br/>
 
 ### Parking Demo
 
-If you arrive parking lot, use this way to start parking.
-![Alt text](<readmefile/parking demo.gif>)
+If you arrive at the parking lot, use this way to start parking.
+
+<p align="center">
+  <img src="readmefile/parking demo.gif" alt="Parking Demo" width="20%"/>
+</p>
 <br/>
 
 ## Contact
