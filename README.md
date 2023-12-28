@@ -52,7 +52,7 @@ Designing by MySQL relational database that conforms to the second normal form a
 * Users need to input at least one car information for parking service.
 
 <p align="center">
-  <img src="readmefile/input car infor.gif" alt="Car Information Input" width="20%"/>
+  <img src="readmefile/input car infor.gif" alt="Car Information Input" width="40%"/>
 </p>
 <br/>
 
@@ -61,7 +61,7 @@ Designing by MySQL relational database that conforms to the second normal form a
 * Users need to deposit. If the cash point is 0 or negative, parking service is forbidden.
 
 <p align="center">
-  <img src="readmefile/deposit.gif" alt="Deposit" width="20%"/>
+  <img src="readmefile/deposit.gif" alt="Deposit" width="40%"/>
 </p>
 <br/>
 
@@ -70,7 +70,7 @@ Designing by MySQL relational database that conforms to the second normal form a
 Using the Google Map APIs to provide destination searching.
 
 <p align="center">
-  <img src="readmefile/location search.gif" alt="Location Search" width="20%"/>
+  <img src="readmefile/location search.gif" alt="Location Search" width="40%"/>
 </p>
 <br/>
 
@@ -79,7 +79,7 @@ Using the Google Map APIs to provide destination searching.
 Google Map APIs to provide navigation service.
 
 <p align="center">
-  <img src="readmefile/navigation.gif" alt="Navigation" width="20%"/>
+  <img src="readmefile/navigation.gif" alt="Navigation" width="40%"/>
 </p>
 <br/>
 
@@ -88,7 +88,7 @@ Google Map APIs to provide navigation service.
 Data input into MySQL to provide rental information for users.
 
 <p align="center">
-  <img src="readmefile/input parking space.gif" alt="Parking Space Rental Input" width="20%"/>
+  <img src="readmefile/input parking space.gif" alt="Parking Space Rental Input" width="40%"/>
 </p>
 <br/>
 
@@ -97,7 +97,7 @@ Data input into MySQL to provide rental information for users.
 If you arrive at the parking lot, use this way to start parking.
 
 <p align="center">
-  <img src="readmefile/parking demo.gif" alt="Parking Demo" width="20%"/>
+  <img src="readmefile/parking demo.gif" alt="Parking Demo" width="40%"/>
 </p>
 <br/>
 
