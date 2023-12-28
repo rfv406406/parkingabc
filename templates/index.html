@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/CSS/base.css">
+    <link rel="stylesheet" href="../static/CSS/index.css">
+    <link rel="stylesheet" href="../static/CSS/id.css">
+    <link rel="stylesheet" href="../static/CSS/plate_board.css">
+    <link rel="stylesheet" href="../static/CSS/parking_lot_booking.css">
+    <link rel="stylesheet" href="../static/CSS/selector.css">
+    <link rel="stylesheet" href="../static/CSS/parking_lot_page.css">
+    <link rel="stylesheet" href="../static/CSS/parking_page.css">
+    <link rel="stylesheet" href="../static/CSS/alert.css">
+    <title>首頁</title>
+</head>
+<body>
+    {% include 'nav.html' %} 
+    {% include 'sign_system.html' %}
+    {% include 'parking_page.html' %}
+    {% include 'alert_page.html' %}
+    <main class="main">
+        <div class="map-container">
+            <div class="map "id="map"></div>
+            <div class="search-bar">
+                <input id="searchInput" placeholder="你想停哪邊?">
+            </div>
+            <button class="returnToCurrentPosition" id="returnToCurrentPosition"><img src="../static/IMAGE/middle.png"></button>
+            <button class="search-goal-button" id="search-goal-button"><img src="../static/IMAGE/search.png"></button>
+        </div>
+        {% include 'parking_lot_booking.html' %}
+    </main>
+    {% include 'foot.html' %}
+    <script>
+        let map;
+        let currentPosition; 
+        let selectedPlace;
+        let marker;
+        let directionsService;
+        let directionsRenderer;
+        let infoWindow;
+        let newZoom;
+
+        async function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 23.553118, lng: 121.0211024},
+                zoom: 7,
+                heading: 90,
+                gestureHandling: 'greedy'
+                // mapTypeControl: false
+            });
+            map.addListener("zoom_changed", function() {
+                let newZoom = map.getZoom();
+                console.log("目前縮放等級是：", newZoom);
+            });
+            navigator.geolocation.getCurrentPosition(async function(position){
+                currentPosition = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+                map.setCenter(currentPosition);
+                map.setZoom(16);
+                await setupAutocompleteListener(map, currentPosition)
+            })
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
+            startTrackingUserPosition();
+
+            // 設置按鈕的事件監聽器
+            document.getElementById('navigation').addEventListener('click', returnToCurrentPositionAndZoomIn);
+        };
+
+        function returnToCurrentPositionAndZoomIn() {
+            if (currentPosition) {
+                map.setCenter(currentPosition);
+                map.setZoom(20);
+                removeClass('.parking_lot-information-container',['parking_lot-information-container-toggled', 'parking_lot-information-container-appear'])
+            }
+        }
+        
+        function startTrackingUserPosition() {
+            navigator.geolocation.watchPosition(function(position) {
+                currentPosition = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                console.log("目前位置: ", currentPosition);
+
+                // 如果marker已经存在，更新它的位置
+                if (!marker) {
+                    marker = new google.maps.Marker({
+                        position: currentPosition,
+                        map: map,
+                        title: "您的位置"
+                    });
+                } else {
+                    marker.setPosition(currentPosition);
+                }
+            }, function(error) {
+                console.error("Error watching position: " + error.message);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 1000000000, // 每秒更新位置
+                timeout: 30000
+            });
+        }
+
+        async function initializeAutocomplete(currentPosition) {
+            const input = document.getElementById('searchInput');
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                bounds: {
+                    east: currentPosition.lng + 0.001,
+                    west: currentPosition.lng - 0.001,
+                    south: currentPosition.lat - 0.001,
+                    north: currentPosition.lat + 0.001,
+                },
+                strictBounds: false,
+            });
+
+            // // 監聽 place_changed 事件
+            // autocomplete.addListener('place_changed', function() {
+            //     var place = autocomplete.getPlace();
+            //     if (!place.geometry) {
+            //         // 使用者輸入的地址沒有回傳有效的地點資料
+            //         console.log("Returned place contains no geometry");
+            //         return;
+            //     }
+
+            //     // 執行額外的操作，例如中心地圖到該地點、顯示資訊視窗等
+            //     // 例如: map.setCenter(place.geometry.location);
+            //     searchbarControl(place);
+            // });
+
+            return autocomplete;
+        }
+    // function searchbarControl(place) {
+    //     // 在這裡添加您的自定義代碼
+    //     // 您可以訪問 place 物件來獲取選擇的地址的詳細資訊
+    //     console.log(place);
+    // }
+        async function setupAutocompleteListener(map, currentPosition) {
+            let autocomplete = await initializeAutocomplete(currentPosition);
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                selectedPlace = {
+                    location: place.geometry.location,
+                    placeId: place.place_id,
+                    name: place.name,
+                    address: place.formatted_address,
+                    rating: place.rating,
+                    phoneNumber: place.formatted_phone_number
+                };
+                map.setCenter(selectedPlace.location);
+
+                if (!marker) {
+                    marker = new google.maps.Marker({ map: map });
+                }
+                marker.setPosition(selectedPlace.location);
+
+                if (!directionsService) {
+                    directionsService = new google.maps.DirectionsService();
+                }
+                if (!directionsRenderer) {
+                    directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+                }
+                directionsRenderer.set('directions', null);
+
+                directionsService.route({
+                    origin: new google.maps.LatLng(currentPosition.lat, currentPosition.lng),
+                    destination: { placeId: selectedPlace.placeId },
+                    travelMode: 'DRIVING',
+                }, function(response, status) {
+                    if (status === 'OK') {
+                        directionsRenderer.setDirections(response);
+                        if (!infoWindow) {
+                            infoWindow = new google.maps.InfoWindow();
+                        }
+                        infoWindow.setContent(
+                            `<h3>${selectedPlace.name}</h3>
+                            <div>地址: ${selectedPlace.address}</div>
+                            <div>電話: ${selectedPlace.phoneNumber}</div>
+                            <div>評分: ${selectedPlace.rating}</div>
+                            <div>開車時間: ${response.routes[0].legs[0].duration.text}</div>`
+                        );
+                        infoWindow.open(map, marker);
+                    }
+                });
+            });
+        }
+        
+    </script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiz02ZEX650VEundSMH87J_fHaDtmMQP8&libraries=places&callback=initMap&region=TW&language=zh-TW"></script>
+    <script src="https://unpkg.com/@googlemaps/markerwithlabel/dist/index.min.js"></script>
+    <script src="../static/JS/google map index.js"></script>
+    <script src="../static/JS/parking_page.js"></script>
+    <script src="../static/JS/parking_lot_booking.js"></script>
+    <script src="../static/JS/sign_system.js"></script>
+    <script src="../static/JS/base.js"></script>
+</body>
+</html>
