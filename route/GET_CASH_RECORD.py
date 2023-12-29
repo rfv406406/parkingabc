@@ -20,11 +20,11 @@ def get_cash_record():
 
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
-        # 从 transactions 表查询
+       
         cursor.execute("SELECT * FROM transactions WHERE deposit_account_id = %s", (get_deposit_account_id(member_id),))
         transactions_data = cursor.fetchall()
 
-        # 从 consumption 表查询
+      
         cursor.execute("""
             SELECT
                 id,

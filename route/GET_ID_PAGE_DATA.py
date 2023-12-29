@@ -106,11 +106,10 @@ def input_booking_information():
             sql_query += "password = %s, "
             params.append(password)
 
-        # 去掉最後的逗號並添加 WHERE 子句
+        # 去掉最後的逗號並添加 WHERE 
         sql_query = sql_query.rstrip(', ') + " WHERE id = %s"
         params.append(member_id)
 
-        # 執行 SQL 語句
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
         cursor.execute(sql_query, tuple(params))

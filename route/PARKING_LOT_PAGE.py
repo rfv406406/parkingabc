@@ -23,18 +23,16 @@ def edit_input_parking_lot_information():
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
-            # 获取基本的停车场数据
             cursor.execute("SELECT * FROM `parkinglotdata` WHERE `member_id` = %s", (member_id,))
             parking_lot_datas = cursor.fetchall()
 
-            # 为每个停车场获取图像和空间信息
             for parking_lot_data in parking_lot_datas:
-                # 获取图像
+     
                 cursor.execute("SELECT image FROM parkinglotimage WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
                 images = cursor.fetchall()
                 parking_lot_data["images"] = [image["image"] for image in images]
                 
-                # 获取空间信息
+      
                 cursor.execute("SELECT id, square_number, status FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
                 squares = cursor.fetchall()
                 parking_lot_data["squares"] = [{"id": square["id"], "square_number": square["square_number"], "status": square["status"]} for square in squares]
@@ -70,12 +68,11 @@ def edit_input_parking_lot_information():
                 member_id = payload['id']
 
             data = request.json
-            parkinglotdata_id = data.get('id')  # 从请求中获取停车场数据的ID
+            parkinglotdata_id = data.get('id')  
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
 
-            # 删除 parkingsquareimage 相关数据
             cursor.execute("""
                 DELETE FROM parkingsquareimage 
                 WHERE parkinglotsquare_id IN (
@@ -84,16 +81,13 @@ def edit_input_parking_lot_information():
                 )
             """, (parkinglotdata_id,))
 
-            # 删除 parkinglotsquare 相关数据
             cursor.execute("DELETE FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parkinglotdata_id,))
 
-            # 删除 parkinglotimage 相关数据
             cursor.execute("DELETE FROM parkinglotimage WHERE parkinglotdata_id = %s", (parkinglotdata_id,))
 
-            # 最后删除 parkinglotdata 本身
             cursor.execute("DELETE FROM parkinglotdata WHERE id = %s AND member_id = %s", (parkinglotdata_id, member_id))
 
-            connection.commit()  # 确保提交事务以保存更改
+            connection.commit()  
 
             cursor.close()
             connection.close()
@@ -151,7 +145,7 @@ def edit_input_parking_lot_information():
             """
             cursor.execute(update_query, (name, address, near_landmark, opening_time_am, opening_time_pm, space_in_out, price, car_width, car_height, lng, lat, parkinglotdata_id, member_id))
             connection.commit()            
-            # 删除 parkingsquareimage 相关数据
+          
             cursor.execute("""
                 DELETE FROM parkingsquareimage 
                 WHERE parkinglotsquare_id IN (
@@ -160,10 +154,10 @@ def edit_input_parking_lot_information():
                 )
             """, (parkinglotdata_id,))
 
-            # 删除 parkinglotsquare 相关数据
+           
             cursor.execute("DELETE FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parkinglotdata_id,))
 
-            # 删除 parkinglotimage 相关数据
+            
             cursor.execute("DELETE FROM parkinglotimage WHERE parkinglotdata_id = %s", (parkinglotdata_id,))
             connection.commit()
 
@@ -175,7 +169,6 @@ def edit_input_parking_lot_information():
                     s3_client.upload_fileobj(image, BUCKET_NAME, key)
                     image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
                     # print(image_url)
-                    # 将 image_url 和 parkinglotdata_id 保存到数据库
                     insert_query = """
                         INSERT INTO parkinglotimage (parkinglotdata_id, image)
                         VALUES (%s, %s);

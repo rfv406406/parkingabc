@@ -44,7 +44,7 @@ def input_car_board_data():
                     s3_client.upload_fileobj(image, BUCKET_NAME, key)
                     image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
                     # print(image_url)
-                    # 将 image_url 和 parkinglotdata_id 保存到数据库
+                    # 將 image_url 和 parkinglotdata_id 保存到DB
                     insert_query = """
                         INSERT INTO car_image (car_id, car_image)
                         VALUES (%s, %s);
@@ -75,12 +75,12 @@ def input_car_board_data():
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
-            # 从 transactions 表查询
+            #  transactions search
             cursor.execute("SELECT * FROM car WHERE member_id = %s", (member_id,))
             carboard_number_datas = cursor.fetchall()
 
             for carboard_number_data in carboard_number_datas:
-                # 获取图像
+                # 獲取圖像
                 cursor.execute("SELECT car_image FROM car_image WHERE car_id = %s", (carboard_number_data["id"],))
                 images = cursor.fetchall()
                 carboard_number_data["images"] = [image["car_image"] for image in images]
@@ -110,18 +110,17 @@ def input_car_board_data():
                 member_id = payload['id']
 
             data = request.json
-            car_id = data.get('id')  # 从请求中获取停车场数据的ID
+            car_id = data.get('id')  # 從停車場中獲取停車場數據的ID
 
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
 
             cursor.execute("DELETE FROM car_image WHERE car_id = %s", (car_id,))
 
-            # 最后删除 parkinglotdata 本身
+            # DELETE parkinglotdata
             cursor.execute("DELETE FROM car WHERE id = %s AND member_id = %s", (car_id, member_id))
 
-            connection.commit()  # 确保提交事务以保存更改
-
+            connection.commit()  
             cursor.close()
             connection.close()
 
