@@ -64,7 +64,7 @@ def input_parking_lot_information():
                     s3_client.upload_fileobj(image, BUCKET_NAME, key)
                     image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
                     # print(image_url)
-                    # 将 image_url 和 parkinglotdata_id 保存到数据库
+                    # 將image_url 和 parkinglotdata_id 存到DB
                     insert_query = """
                         INSERT INTO parkinglotimage (parkinglotdata_id, image)
                         VALUES (%s, %s);
@@ -121,7 +121,6 @@ def input_parking_lot_information():
         try:
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
-            # 获取基本的停车场数据
             sql_query = (
                 "SELECT p.id, p.member_id, p.name, p.landmark, p.address, p.openingTime, p.closingTime, "
                 "p.spaceInOut, p.price, p.lat, p.lng, p.widthLimit, p.heightLimit, m.cellphone "
@@ -132,14 +131,14 @@ def input_parking_lot_information():
             cursor.execute(sql_query)
             parking_lot_datas = cursor.fetchall()
 
-            # 为每个停车场获取图像和空间信息
+            # 為每個停車場獲取圖像和空間訊息
             for parking_lot_data in parking_lot_datas:
-                # 获取图像
+                # get figs
                 cursor.execute("SELECT image FROM parkinglotimage WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
                 images = cursor.fetchall()
                 parking_lot_data["images"] = [image["image"] for image in images]
                 
-                # 获取空间信息
+                # get parking lot data
                 cursor.execute("SELECT id, square_number, status FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
                 squares = cursor.fetchall()
                 parking_lot_data["squares"] = [{"id": square["id"], "square_number": square["square_number"], "status": square["status"]} for square in squares]

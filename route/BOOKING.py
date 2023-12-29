@@ -96,7 +96,7 @@ def get_booking_information():
 
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
-        # 获取基本的停车场数据
+        # 獲取基本停車場數據
         sql_query = (
             "SELECT id, member_id, date, parkinglotdata_id, parkinglotname, parkinglotsquare, "
             "square_number, address, price, starttime, stoptime, payment "

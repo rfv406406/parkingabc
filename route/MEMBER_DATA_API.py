@@ -20,7 +20,6 @@ def get_member_data():
 
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
-        # 获取基本的停车场数据
         sql_query = '''
                     SELECT 
                         member.status,
