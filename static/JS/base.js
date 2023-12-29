@@ -42,7 +42,6 @@ function setupAppear(toggles) {
   toggles.forEach(function(toggle) {
     const elements = document.querySelectorAll(toggle.elementSelector);
     elements.forEach(function(element) {
-      // 只有当元素不包含指定的类时，才执行切换操作
       if (!element.classList.contains(toggle.classToToggle)) {
         element.classList.toggle(toggle.classToToggle);
       }
@@ -114,16 +113,14 @@ setupToggle('#close-signon', [
   { elementSelector: '#menuContent', classToToggle: 'menuContent_toggled' }
 ]);
 
-// 事件监听设置的通用函数
 function removeClassOnClickOutside(targetSelector, toggleSelector, classesToRemove) {
   document.addEventListener('click', function(event) {
       let targetElement = document.querySelector(targetSelector);
       let toggleElement = document.querySelector(toggleSelector);
-
-      // 检查点击事件是否发生在目标元素或其子元素上，以及切换元素或其子元素上
+      // 檢查點擊事件是否發生在目標元素或棋子元素上，以及切換元素或棋子元素上
       if (targetElement && !targetElement.contains(event.target) &&
           (!toggleElement || !toggleElement.contains(event.target))) {
-          // 如果点击事件发生在目标元素和切换元素外部，则移除类
+          // 如果點擊事件發生再目標元素和切換元素外部，則進行移除
           classesToRemove.forEach(cssClass => {
               targetElement.classList.remove(cssClass);
           });

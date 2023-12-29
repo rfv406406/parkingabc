@@ -146,7 +146,7 @@ async function getParkingLotInformation(){
     
     let imgArray = [];
     let img = document.querySelector('#parking-lot-image-input').files
-// 将文件添加到数组中
+
     for (let i = 0; i < img.length; i++) {
     imgArray.push(img[i]);
     }
@@ -168,20 +168,20 @@ async function getParkingLotInformation(){
         name: name,
         address: address,
         nearLandmark: nearLandmark,
-        img: imgArray, // 如果是多文件，則用 img.files
+        img: imgArray, 
         openingTimeAm: openingTimeAm,
         openingTimePm: openingTimePm,
         spaceInOut: spaceInOut,
         price: price,
         carWidth: carWidth,
         carHeight: carHeight,
-        Latitude: location ? location.lat : "", // 如果无法获取则显示空值
-        Longitude: location ? location.lng : "" // 如果无法获取则显示空值
+        Latitude: location ? location.lat : "", 
+        Longitude: location ? location.lng : "" 
     }
 };
 
 async function getLatLonFromAddress(address) {
-    const apiKey = 'AIzaSyCiz02ZEX650VEundSMH87J_fHaDtmMQP8'; // 替换为您的 Google Maps API 密钥
+    const apiKey = 'AIzaSyCiz02ZEX650VEundSMH87J_fHaDtmMQP8'; 
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
 
     try {
@@ -190,7 +190,7 @@ async function getLatLonFromAddress(address) {
 
         if (data.status === 'OK') {
             const location = data.results[0].geometry.location;
-            return location; // { lat: 纬度, lng: 经度 }
+            return location; // { lat, lng }
         } else {
             console.error('Geocoding failed:', data.status);
             return null;
@@ -204,25 +204,24 @@ async function getLatLonFromAddress(address) {
 async function getCarSpaceData() {
     let inputCarSpaceContainer = document.querySelector('#input-car-space-container');
 
-    // 初始化存储结构
+    // 初始化儲存DS
     let organizedData = {
         carSpaceNumber: [],
         carSpaceImage: []
     };
     let isEmptyInputFound = false;
-    // 获取并处理文本输入
+    // 獲取並輸入文本
     let textInputs = inputCarSpaceContainer.querySelectorAll('input[type="text"]');
     textInputs.forEach(input => {
         if (input.value.trim() === "") {
-            isEmptyInputFound = true; // 发现空输入
+            isEmptyInputFound = true; // 空值輸入
             return;
         }
         organizedData.carSpaceNumber.push({ name: input.name, value: input.value });
     });
 
-    if (isEmptyInputFound) return null; // 如果有空输入，返回null
+    if (isEmptyInputFound) return null; 
 
-    // 获取并处理文件输入
     let fileInputs = inputCarSpaceContainer.querySelectorAll('input[type="file"]');
     fileInputs.forEach(input => {
         let files = Array.from(input.files);
@@ -237,11 +236,11 @@ async function packingData(event){
     // event.preventDefault();
     let parkingLotData = await getParkingLotInformation();
     if (!parkingLotData) {
-        return; // 如果 parkingLotData 为空，中断函数
+        return; 
     }
     let carSpaceData = await getCarSpaceData();
     if (!carSpaceData) {
-        return; // 如果 parkingLotData 为空，中断函数
+        return; 
     }
     // console.log(carSpaceData)
     console.log(parkingLotData)
@@ -265,23 +264,19 @@ async function packingData(event){
             formData.append('img', parkingLotData.img[i]);
         }
     } else {
-        // 当数组为空时，添加一个空字符串或 null 作为代替值
         formData.append('img', '');
     }
     
-    // 处理 carSpaceData 中的文本字段
     carSpaceData.carSpaceNumber.forEach(item => {
         formData.append(item.name, item.value);
     });
 
-    // 处理 carSpaceData 中的文件
     carSpaceData.carSpaceImage.forEach(item => {
         if (item.value.length > 0) {
             item.value.forEach(file => {
                 formData.append(item.name, file);
             });
         } else {
-            // 如果没有文件，则添加空值
             formData.append(item.name, '');
         }
     });

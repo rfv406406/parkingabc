@@ -45,7 +45,7 @@ document.getElementById('time-range-selector').addEventListener('change', functi
         const dataTypeSelector = document.getElementById('data-type-selector');
         const timeRange = document.getElementById('time-range-selector').value;
     
-        // 将 select 选项的值映射到对应的数据键
+        // 將 select 選項的值映射到對應的鍵
         const dataTypeMapping = {
             'type1': 'transactions',
             'type2': 'consumption_payment',
@@ -55,22 +55,22 @@ document.getElementById('time-range-selector').addEventListener('change', functi
         let selectedDataType = dataTypeMapping[dataTypeSelector.value];
         let relevantData = data[selectedDataType];
     
-        // 确保 relevantData 是一个数组
+        // 確保 relevantData 是為array
         if (!Array.isArray(relevantData)) {
             relevantData = [];
         }
     
-        // 特定条件下的过滤
+        // filter
         if (selectedDataType === 'transactions') {
             relevantData = relevantData.filter(record => record.Type === 'DEPOSIT');
         }
     
-        // 根据选择的时间范围过滤数据
+        // 根據所選時間過濾data
         let filteredRecords = relevantData.filter(record => {
             return matchesTimeRange(record, timeRange);
         });
     
-        // 动态生成 HTML 内容
+        // 動態生成
         displayRecords(filteredRecords, selectedDataType);
     }
 
@@ -118,7 +118,7 @@ function isThisMonth(date) {
 
 function displayRecords(records, dataType) {
     const container = document.getElementById('plate-board-information');
-    container.innerHTML = ''; // 清空现有内容
+    container.innerHTML = ''; 
 
     if (records.length === 0) {
         container.innerHTML = '<div>沒有資料</div>';
@@ -129,14 +129,14 @@ function displayRecords(records, dataType) {
         let htmlContent = '';
         switch (dataType) {
             case 'transactions':
-                // 假设 transactions 类型的记录需要显示 Amount 和 Type
+                // 假設 transactions 類型的記錄需要顯示 Amount 和 Type
                 htmlContent = `<div class="plate-board-information">
                 <div>日期: ${record.transactions_time}</div>
                 <div>儲值金額: ${record.Amount}${'元'}</div>
                 </div>`;
                 break;
             case 'consumption_payment':
-                // 假设 consumption_payment 类型的记录需要显示不同的字段
+                // 假設 consumption_payment 類型的記錄需要顯示不同的字段
                 htmlContent = `<div class="plate-board-information">
                                <div>日期: ${record.date}</div>
                                <div>車牌: ${record.car_board}</div>
@@ -148,7 +148,7 @@ function displayRecords(records, dataType) {
                                </div>`;
                 break;
             case 'consumption_income':
-                // 假设 consumption_income 类型的记录显示又不同的字段
+                // 假設 consumption_income 類型的記錄顯示又不同的字段
                 htmlContent = `<div class="plate-board-information">
                                <div>日期: ${record.date}</div>
                                <div>停車場: ${record.parkinglotname}</div>

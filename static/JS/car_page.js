@@ -50,8 +50,8 @@ async function getCarBoardData(){
 const carBoardDataStorage = document.querySelector('#plate-board-data-submit')
 carBoardDataStorage.addEventListener('click', async function(event) {
   event.preventDefault();
-  let formData = await packingCarBoardData(); // 等待 packingData 函数完成并获取其返回值
-  await passCarBoardData(formData); // 将 formData 传递给 passData 函数并等待其执行完成
+  let formData = await packingCarBoardData(); 
+  await passCarBoardData(formData); 
   initCarPage();
 });
 
@@ -109,7 +109,7 @@ async function packingCarBoardData(){
           formData.append('img', carBoardData.img[i]);
       }
   } else {
-      // 当数组为空时，添加一个空字符串或 null 作为代替值
+      // 空值時，添加''或 null 作為替代
       formData.append('img', '');
   }
 
@@ -181,15 +181,15 @@ function addCarInDiv(data) {
       imageDiv.appendChild(img);
       parkingLotDiv.appendChild(imageDiv);
 
-      // 创建初始隐藏的删除按钮
+      // 創建初始隱藏的刪除紐
       const deleteButton = document.createElement('button');
       deleteButton.type = 'button';
       deleteButton.className = 'parking-lot-delete-button';
       deleteButton.textContent = '刪除';
-      deleteButton.style.display = 'none'; // 初始时隐藏
+      deleteButton.style.display = 'none'; // 一開始隱藏
       parkingLotDiv.appendChild(deleteButton);
 
-      // 点击 parking-lot-page-table 时切换删除按钮的显示
+      // 點擊 parking-lot-page-table 切換刪除按鈕成顯示
       parkingLotDiv.addEventListener('click', function() {
           deleteButton.style.display = deleteButton.style.display === 'none' ? 'block' : 'none';
       });
