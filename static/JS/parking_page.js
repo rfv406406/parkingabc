@@ -40,18 +40,18 @@ setupRemoveButton('#alert-content-checked-button', [
   ]);
 //   ---------------------------------------------------------------------------------------
 
-let timerInterval; // 用于保存计时器引用的全局变量
+let timerInterval; // 用於保存計時器引用的全局變量
 
 function startTimer(updateDisplayCallback) {
     const now = Math.floor(Date.now() / 1000);
     let storedStartTime = localStorage.getItem("timerStart");
 
-    // 如果没有存储的开始时间，则设置现在为开始时间
+    // 如果沒有儲存的開始時間，則設置現在為開始時間
     if (!storedStartTime) {
         localStorage.setItem("timerStart", now);
     }
     toggleStopButtonReload();
-    // 计算已经过去的时间并开始计时
+    // 計算已經過去的時間並開始計時
     let elapsedTime = now - parseInt(localStorage.getItem("timerStart"), 10);
     timerInterval = setInterval(() => {
         elapsedTime++;
@@ -63,7 +63,7 @@ function getElapsedTime() {
     const startTime = parseInt(storedStartTime, 10);
     const now = Math.floor(Date.now() / 1000);
     if (isNaN(startTime)) {
-        // 如果 localStorage 中没有有效的 startTime，假设计时器刚开始
+        // 如果 localStorage 中沒有有效的 startTime，假設計時器剛開始
         // const now = Math.floor(Date.now() / 1000);
         // localStorage.setItem("timerStart", now);
         return 0;
@@ -79,7 +79,7 @@ window.addEventListener('load', () => {
 });
 
 function updateTimerDisplay(timerValue) {
-    // 如果 timerValue 不是数字，设置为 0
+    // 如果 timerValue 不是數字，設置為 0
     if (isNaN(timerValue)) {
         timerValue = 0;
     }
@@ -100,7 +100,7 @@ function updateTimerDisplay(timerValue) {
 }
 
 function stopTimer() {
-    clearInterval(timerInterval); // 停止计时器
+    clearInterval(timerInterval); 
     localStorage.removeItem("timerStart");
 }
 

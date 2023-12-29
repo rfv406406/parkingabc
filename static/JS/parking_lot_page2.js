@@ -85,7 +85,7 @@ document.getElementById('parking-lot-container').addEventListener('click', funct
 });
 
 function fillParkingLotData(parkingLotData) {
-    // 更新表格中的数据
+    // 更新表格中的數據
     document.getElementById('parking-lot-id').textContent = parkingLotData.id || '無';
     document.getElementById('parking-lot-name').textContent = parkingLotData.name || '無';
     document.getElementById('parking-lot-address').textContent = parkingLotData.address || '無';

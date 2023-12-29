@@ -56,7 +56,7 @@ async function displayMarkers(dataObject) {
     }
 };
 
-// 為標記添加信息窗口，顯示更多信息
+// 為標記添加訊息窗口，顯示更多訊息
 function createInfoWindow(location) {
     return new google.maps.InfoWindow({
         content: `
@@ -73,7 +73,7 @@ function createInfoWindow(location) {
 function createMarker(location) {
     const latLng = {lat: parseFloat(location.lat), lng: parseFloat(location.lng)};
     let labelContent;
-    // 检查是否存在停车空间和第一个空间的状态
+    // 檢查是否存在停車空間和第一個空間的狀態
     if (location.squares && location.squares.every(square => square.status)) {
         labelContent = "使用中";
     }else{
