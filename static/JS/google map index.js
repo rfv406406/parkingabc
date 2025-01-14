@@ -2,53 +2,32 @@ fetchData()
 //調用停車場DB數據
 async function fetchData(){
     try{
-        const response = await getData();
+        const response = await fetchAPI("/api/input_parking_lot_information", null, 'GET');
         const data = await handleResponse(response);
-        console.log(data);
         await displayMarkers(data);
     }catch(error){
-        await handleError(error);
+        handleError(error);
     }
 }
 
-async function getData(){
-    const response = await fetch("/api/input_parking_lot_information", {
-        method: 'GET',
-    });
-    return response;
-}
-
-async function handleResponse(response) {
-    if (!response.ok) {
-        throw new Error('Get null from backend');
-    }
-    return response.json();
-}
-
-async function handleError(error) {
-    console.error('Backend could got problems', error);
-}
 // ----------------------------------------------------------------------
 let markers = []; 
 //顯示marker
-async function displayMarkers(dataObject) {
-    markers.forEach(marker => marker.setMap(null));
+async function displayMarkers(data) {
+    markers.forEach(marker => marker.setMap(null)); //用於將標記從地圖上移除
     markers = [];
-
-    if (dataObject && Array.isArray(dataObject.data)) {
-        dataObject.data.forEach(location => {
+    console.log(data)
+    if (data) {
+        data.data.forEach(location => {
             const marker = createMarker(location);
-            const infoWindow = createInfoWindow(location);
+            // const infoWindow = createInfoWindow(location);
         
             marker.addListener('click', async function() {
-                const locationData = findDataByLatLng(location.lat, location.lng, dataObject.data);
+                const locationData = findDataByLatLng(location.lat, location.lng, data.data);
                 await calculateAndDisplayRoute(directionsService, directionsRenderer, currentPosition, locationData);
                 setupAppear([{ elementSelector: '.parking_lot-information-container', classToToggle: 'parking_lot-information-container-appear'}]);
-                infoWindow.open(map, marker);
-                // console.log(locationData)
+                // infoWindow.open(map, marker);
                 parkingLotInformationTable(locationData);
-                // 直接传递包含纬度和经度的 location 对象
-                // console.log(location.lat)
                 getBookingInformation(locationData);
             });
             markers.push(marker);
@@ -56,25 +35,12 @@ async function displayMarkers(dataObject) {
     }
 };
 
-// 為標記添加訊息窗口，顯示更多訊息
-function createInfoWindow(location) {
-    return new google.maps.InfoWindow({
-        content: `
-            <h3>${location.name}</h3>
-            <p>地址: ${location.address}</p>
-            <p>價格: ${location.price} 元/小時</p>
-            <p>開放時間: ${location.openingTime} - ${location.closingTime}</p>
-            <p>附近地標: ${location.landmark}</p>
-        `
-    });
-};
-
 //產稱自定義marker
 function createMarker(location) {
+    let labelContent = '';
     const latLng = {lat: parseFloat(location.lat), lng: parseFloat(location.lng)};
-    let labelContent;
     // 檢查是否存在停車空間和第一個空間的狀態
-    if (location.squares && location.squares.every(square => square.status)) {
+    if (location.squares && location.squares.every(square => square.status !== '閒置中')) {
         labelContent = "使用中";
     }else{
         labelContent = location.price + "元";
@@ -98,7 +64,7 @@ function createMarker(location) {
     return marker;
 }
 
-  //依照價錢分顏色
+//依照價錢分顏色
 function getIconUrl(price) {
     if (price <= 25) {
         return '../static/IMAGE/greenlable.png'; 
@@ -108,34 +74,15 @@ function getIconUrl(price) {
         return '../static/IMAGE/redlable.png'; 
     }
 }
- //最短路徑
-// 最短路徑
-async function calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
-    directionsRenderer.setOptions({preserveViewport: true});
-    return new Promise((resolve, reject) => {
-        directionsService.route({
-            origin: { lat: origin.lat, lng: origin.lng },
-            destination: { lat: parseFloat(destination.lat), lng: parseFloat(destination.lng) },
-            travelMode: 'DRIVING'
-        }, (response, status) => {
-            if (status === 'OK') {
-                directionsRenderer.setDirections(response);
-                resolve(response); // 路徑計算成功，解決 Promise
-            } else {
-                window.alert('Directions request failed due to ' + status);
-                reject(status); // 路徑計算失敗，拒絕 Promise
-            };
-        });
-    });
-};
 
 function findDataByLatLng(lat, lng, data) {
     // 在 data 中查找與給定經緯度匹配的條目
+    // print(data)
     return data.find(item => item.lat === lat && item.lng === lng);
 };
 
 //返回中心點
-document.getElementById('returnToCurrentPosition').addEventListener('click', function() {
+document.querySelector('#returnToCurrentPosition').addEventListener('click', function() {
     if (currentPosition) {
         map.setCenter(currentPosition);
         map.setZoom(15);
@@ -144,7 +91,7 @@ document.getElementById('returnToCurrentPosition').addEventListener('click', fun
     }
 });
 
-document.getElementById('search-goal-button').addEventListener('click',openSearchBar);
+document.querySelector('#search-goal-button').addEventListener('click',openSearchBar);
 
 function openSearchBar(){
     let blackBackBackground = document.querySelector('.black-back-background');
@@ -183,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!sessionStorage.getItem('firstVisitExecuted')) {
         // 執行您希望在首次訪問時執行的操作
         openSearchBar();
-
         // 設置 session 標記，以便下次不再執行
         sessionStorage.setItem('firstVisitExecuted', 'true');
     }

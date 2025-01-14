@@ -3,23 +3,24 @@ from module.MYSQL import *
 from module.JWT import *
 from module.S3 import *
 from werkzeug.utils import secure_filename
-import time, re
+import time, re, traceback
 
 input_parking_lot = Blueprint('INPUT_PARKING_LOT', __name__)
 
-@input_parking_lot.route("/api/input_parking_lot_information", methods = ["GET","POST"])
+@input_parking_lot.route("/api/input_parking_lot_information", methods = ["GET","POST","PUT","DELETE"])
 
 def input_parking_lot_information():
     if request.method == "POST":
         try:
+            connection = con.get_connection()
+            cursor = connection.cursor(dictionary=True, buffered=True)
+
             auth_header = request.headers.get('Authorization')
-            # print(auth_header)
-            if auth_header is None:
-                return ({"error": True,"message": "please signin"}), 403
+            if auth_header:
+                payload = get_payload(auth_header)
+                member_id = payload['member_id']
             else:
-                token = auth_header.split(' ')[1]
-                payload = decode_token(token)
-                member_id = payload['id']
+                return ({"error": True,"message": "please sign in"}), 403
 
             name = request.form.get('name')
             address = request.form.get('address')
@@ -32,133 +33,179 @@ def input_parking_lot_information():
             car_height = request.form.get('carHeight')
             lng = request.form.get('Longitude')
             lat = request.form.get('Latitude')
-
-            connection = con.get_connection()
-            cursor = connection.cursor(dictionary=True)
-            cursor.execute("""
-                INSERT INTO parkinglotdata(
-                    member_id,
-                    name, 
-                    address, 
-                    landmark, 
-                    openingTime, 
-                    closingTime, 
-                    spaceInOut, 
-                    price, 
-                    widthLimit, 
-                    heightLimit, 
-                    lng, 
-                    lat
-                ) 
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (member_id, name, address, near_landmark, opening_time_am, opening_time_pm, 
-                space_in_out, price, car_width, car_height, lng, lat))
-            connection.commit()
             
+            data = {'name':name, 
+                    'address':address, 
+                    'near_landmark':near_landmark, 
+                    'opening_time_am':opening_time_am, 
+                    'opening_time_pm':opening_time_pm, 
+                    'space_in_out':space_in_out, 
+                    'price':price, 
+                    'car_width':car_width,
+                    'car_height':car_height, 
+                    'lng':lng, 
+                    'lat':lat}
+            
+            for key in data:
+                if data[key] is None:
+                    return jsonify({'error':True, 'message':'DATA LOST'}), 403 
+         
+            parkinglotdata_id = input_parking_lot_informations(cursor, member_id, data)
+
             parking_lot_images = request.files.getlist('img')
-            parkinglotdata_id = cursor.lastrowid
-            for image in parking_lot_images:
-                if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
-                    filename = secure_filename(image.filename)
-                    key = f"{str(int(time.time()))}-{filename}" # 生成檔案名稱
-                    s3_client.upload_fileobj(image, BUCKET_NAME, key)
-                    image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
-                    # print(image_url)
-                    # 將image_url 和 parkinglotdata_id 存到DB
-                    insert_query = """
-                        INSERT INTO parkinglotimage (parkinglotdata_id, image)
-                        VALUES (%s, %s);
-                    """
-                    cursor.execute(insert_query, (parkinglotdata_id, image_url))
-            connection.commit()
-
-
+            if parking_lot_images is None:
+                    return jsonify({'error':True, 'message':'IMAGES DATA LOST'}), 403
+            
+            input_parkinglotimages(cursor, parking_lot_images, parkinglotdata_id, member_id)
             all_text_data = request.form.to_dict()
-            # print(all_text_data)
-            for key, value in all_text_data.items():
-                if key.startswith("parkingSquareNumber"):
-                    insert_query = """
-                            INSERT INTO parkinglotsquare (parkinglotdata_id, square_number)
-                            VALUES (%s, %s);
-                        """
-                    cursor.execute(insert_query, (parkinglotdata_id, value))
-            connection.commit()  
-
-            # all_image_files = request.files.to_dict()
-            for key, image in request.files.items():
-                if key.startswith("parkingSquareImage") and image:
-                    # 使用正則表達式提取數字
-                    match = re.search(r'parkingSquareImage(\d+)', key)
-                    parkinglotsquare_id = int(match.group(1)) if match else 1
-
-                    filename = secure_filename(image.filename)
-                    key = f"{str(int(time.time()))}-{filename}"
-                    
-                    # 假設 s3_client 已經被正確初始化
-                    s3_client.upload_fileobj(image, BUCKET_NAME, key)
-                    image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
-                    print(image_url)
-                    
-                    # 假設 cursor 已經被正確初始化
-                    insert_query = """
-                        INSERT INTO parkingsquareimage (parkinglotsquare_id, image)
-                        VALUES (%s, %s);
-                    """
-                    cursor.execute(insert_query, (parkinglotsquare_id, image_url))
+            input_parkinglotsquare(cursor, all_text_data, parkinglotdata_id)
+            all_image_files = request.files.to_dict()
             connection.commit()      
             
-            cursor.close()
-            connection.close()
             return jsonify({"ok":"True"}), 200
-        except mysql.connector.Error:
+        except mysql.connector.Error as e:
+            print("Database Error", e)
+            if connection:
+                connection.rollback()
+            return jsonify({"error": True, "message": "Database Error"}), 500
+        except Exception as e:
+            traceback.print_exc()
+            print("Internal Server Error", e)
+            if connection:
+                connection.rollback()
+            return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        finally:
             if cursor:
                 cursor.close()
             if connection:
                 connection.close()
-            return jsonify({"error": True,"message": "databaseError"}), 500
-    
+
     if request.method == "GET":
         try:
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
-            sql_query = (
-                "SELECT p.id, p.member_id, p.name, p.landmark, p.address, p.openingTime, p.closingTime, "
-                "p.spaceInOut, p.price, p.lat, p.lng, p.widthLimit, p.heightLimit, m.cellphone "
-                "FROM parkinglotdata p "
-                "JOIN member m ON p.member_id = m.id"
-            )
+                        
+            parkinglotdatas = get_parkinglotdatas(cursor)
 
-            cursor.execute(sql_query)
-            parking_lot_datas = cursor.fetchall()
-
-            # 為每個停車場獲取圖像和空間訊息
-            for parking_lot_data in parking_lot_datas:
-                # get figs
-                cursor.execute("SELECT image FROM parkinglotimage WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
-                images = cursor.fetchall()
-                parking_lot_data["images"] = [image["image"] for image in images]
-                
-                # get parking lot data
-                cursor.execute("SELECT id, square_number, status FROM parkinglotsquare WHERE parkinglotdata_id = %s", (parking_lot_data["id"],))
-                squares = cursor.fetchall()
-                parking_lot_data["squares"] = [{"id": square["id"], "square_number": square["square_number"], "status": square["status"]} for square in squares]
-                # print(squares)
-            cursor.close()
-            connection.close()
-
-            if parking_lot_datas is not None:  # Check if parking_lot_datas is not None
+            if parkinglotdatas:
                 return_data = {
-                    "data": parking_lot_datas
+                    "data": parkinglotdatas
                 }
-            else:  # This will execute if parking_lot_datas is None
+            else: 
                 return_data = {
                     "data": "no data found"
                 }
-            
             return jsonify(return_data), 200
+        
         except mysql.connector.Error as e:
+            print("Database Error", e)
+            return jsonify({"error": True, "message": "Database Error"}), 500
+        except Exception as e:
+            print("Internal Server Error", e)
+            return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        finally:
             if cursor:
                 cursor.close()
             if connection:
                 connection.close()
-            return jsonify({"error": True, "message": "databaseError"}), 500
+    
+    if request.method == "DELETE":
+        try:
+            connection = con.get_connection()
+            connection.start_transaction()
+            cursor = connection.cursor(dictionary=True)
+            
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                payload = get_payload(auth_header)
+                member_id = payload['member_id']
+            else:
+                return jsonify({"error": True,"message": "PLEASE SIGN IN"}), 403
+
+            data = request.json
+            if data:
+                parkinglotdata_id = data
+            else:
+                return jsonify({"error": True, "message": "DATA LOST"}), 403  
+
+            delete_parkinglotdatas(cursor, parkinglotdata_id, member_id)
+                
+            connection.commit()  
+
+            return jsonify({"message": "deleted successfully"}), 200
+        
+        except mysql.connector.Error as e:
+            if connection and connection.is_connected():
+                connection.rollback()
+            print("Database Error", e)
+            return jsonify({"error": True,"message": "DATABASE ERROR"}), 500
+        except Exception as e:
+            if connection and connection.is_connected():
+                connection.rollback()
+            print('Internal Server Error', e)
+            return jsonify({'error':True,'message':'Internal Server Error'}), 500
+        finally:
+            if cursor:
+                cursor.close()
+            if connection and connection.is_connected():
+                connection.close()
+
+    if request.method == "PUT":
+        try:
+            connection = con.get_connection()
+            connection.start_transaction()
+            cursor = connection.cursor(dictionary=True)
+            
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                payload = get_payload(auth_header)
+                member_id = payload['member_id']
+            else:
+                return jsonify({"error": True,"message": "PLEASE SIGN IN"}), 403
+
+            data = request.form
+            parkinglotdata_id = data['id']
+            if data:
+                edit_parkinglotdatas(cursor, data, parkinglotdata_id, member_id)
+            else:
+                return jsonify({"error": True, "message": "DATA LOST"}), 403
+
+            parking_lot_images = request.files.getlist('img')
+            if parking_lot_images:
+                edit_parkinglotimages(cursor, parking_lot_images, parkinglotdata_id, member_id)
+            else:
+                return jsonify({'error': True, 'message': 'DATA LOST'}), 403
+
+            all_text_data = request.form.to_dict()
+            if all_text_data:
+                edit_parkinglotsquare(cursor, all_text_data, parkinglotdata_id, member_id)
+            else:
+                return jsonify({'error': 'True', 'message': 'DATA LOST'})
+
+            parking_square_image = request.files.items()
+            
+            if parking_square_image:
+                edit_parkingsquareimage(cursor, parking_square_image)
+            else:
+                return jsonify({'error': 'True', 'message': 'DATA LOST'})
+
+            connection.commit()      
+            return jsonify({"ok":"True"}), 200
+        except mysql.connector.Error as e:
+            print("Database Error", e)
+            if connection and connection.is_connected():
+                connection.rollback()
+            return jsonify({"error": True, "message": "Database Error"}), 500
+        except Exception as e:
+            print("Internal Server Error", e)
+            if connection and connection.is_connected():
+                connection.rollback()
+            return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+
+      

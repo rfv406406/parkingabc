@@ -465,6 +465,12 @@
 
 .parking-lot-page .parking-lot-delete-button {
     /* 刪除按钮样式 */
+    display: none;
+}
+
+.parking-lot-page .parking-lot-delete-button-toggled {
+    /* 刪除按钮样式 */
+    display: block;
     padding: 5px 10px;
     margin-right: 10px;
     border: none;

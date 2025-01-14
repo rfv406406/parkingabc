@@ -7,8 +7,8 @@ from pyproj import Proj, transform
 import time, re, csv, io, random, json
 
 # 路徑定義
-NTC_PARKING_path = 'parkingabc/data/NTCMSV.csv'
-TC_PARKING_path = "parkingabc/data/TCMSV.json"
+NTC_PARKING_path = "data/NTCMSV.csv"
+TC_PARKING_path = "data/TCMSV.json"
 
 # 定義投影
 proj_twd97 = Proj(init='epsg:3826')
@@ -36,7 +36,7 @@ with open(NTC_PARKING_path, "r", encoding="utf-8") as file:
         TW97X = float(row["TW97X"])
         TW97Y = float(row["TW97Y"])
         lon, lat = transform(proj_twd97, proj_wgs84, TW97X, TW97Y)
-        # 四舍五入到小数点后七位
+        # 四捨五入到後7位
         lon = round(lon, 7)
         lat = round(lat, 7)
         price = random.choice([20, 45, 65])
@@ -53,8 +53,8 @@ with open(NTC_PARKING_path, "r", encoding="utf-8") as file:
         # 為 parkinglotdata_id 生成隨機 1 到 3 筆 square_number 數據
         for i in range(1, random.randint(2, 4)):
             insert_query = """
-                INSERT INTO parkinglotsquare (parkinglotdata_id, square_number)
-                VALUES (%s, %s);
+                INSERT INTO parkinglotsquare (parkinglotdata_id, square_number, status)
+                VALUES (%s, %s, '閒置中');
             """
             cursor.execute(insert_query, (parkinglotdata_id, i))
 
@@ -73,7 +73,7 @@ with open(TC_PARKING_path, 'r', encoding='utf-8') as file:
         TW97X = float(park['tw97x'])
         TW97Y = float(park['tw97y'])
         lon, lat = transform(proj_twd97, proj_wgs84, TW97X, TW97Y)
-        # 四舍五入到小数点后七位
+         # 四捨五入到後7位
         lon = round(lon, 7)
         lat = round(lat, 7)
         price = random.choice([20, 45, 65])
@@ -90,8 +90,8 @@ with open(TC_PARKING_path, 'r', encoding='utf-8') as file:
         # 為 parkinglotdata_id 生成隨機 1 到 3 筆 square_number 數據
         for i in range(1, random.randint(2, 4)):
             insert_query = """
-                INSERT INTO parkinglotsquare (parkinglotdata_id, square_number)
-                VALUES (%s, %s);
+                INSERT INTO parkinglotsquare (parkinglotdata_id, square_number, status)
+                VALUES (%s, %s, '閒置中');
             """
             cursor.execute(insert_query, (parkinglotdata_id, i))
 

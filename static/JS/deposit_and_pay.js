@@ -2,25 +2,25 @@ TPDirect.setupSDK(137033, 'app_g5H5hXkKSIHANVJsYh99hPcebudiWGo3YokDL3zG8kxYMZT4b
 // console.log(TPDirect);
 
 //顯示儲值金額
-document.getElementById('deposit-number').addEventListener('input', function() {
+document.querySelector('#deposit-number').addEventListener('input', function() {
     let inputValue = this.value;
     inputValue = inputValue.replace(/\D/g, '');
-    document.getElementById('total_price').textContent = inputValue;
+    document.querySelector('#total_price').textContent = inputValue;
 });
 
 let fields = {
     number: {
         // css selector
-        element: document.getElementById('card-number'),
+        element: document.querySelector('#card-number'),
         placeholder: '**** **** **** ****'
     },
     expirationDate: {
         // DOM object
-        element: document.getElementById('card-expiration-date'),
+        element: document.querySelector('#card-expiration-date'),
         placeholder: 'MM / YY'
     },
     ccv: {
-        element: document.getElementById('card-ccv'),
+        element: document.querySelector('#card-ccv'),
         placeholder: 'CCV'
     }
 };
@@ -78,7 +78,7 @@ document.querySelector('.pay_button').addEventListener('click', function (event)
 
     if (tappayStatus.canGetPrime === false) {
         alert('請輸入金額及付款資料');
-        return;
+        return null;
     }
     // Get prime
     TPDirect.card.getPrime(function (result) {
@@ -92,7 +92,7 @@ function depositData(prime) {
 
     if (totalPrice=="" || totalPrice==0){
         alert('請輸入金額')
-        return;
+        return null;
     }
 
     const token = localStorage.getItem('Token');
@@ -111,7 +111,7 @@ function depositData(prime) {
         .then(handleResponse)
         .then(data => {
             if(data.data.payment.message === "付款成功"){
-                const paySuccess = document.getElementById('pay-success');
+                const paySuccess = document.querySelector('#pay-success');
                 paySuccess.textContent = '感謝您的加值!'
                 setTimeout(function() {
                     window.location.href = '/';
@@ -120,32 +120,7 @@ function depositData(prime) {
                 alert('付款失敗')
             }
         })
+        .catch(
+            handleError
+        )
     };
-
-// function depositData(data){
-   
-//     const nameData = data.data.attraction.name;
-//     const attractionIdData = data.data.attraction.attractionId;
-//     const addressData = data.data.attraction.address;
-//     const imageData = data.data.attraction.URL_image;
-//     const dateData = data.data.date;
-//     const timeData = data.data.time;
-//     const priceData = data.data.price;
-//     console.log(attractionIdData)
-//     return {
-//         name: nameData,
-//         attractionId: attractionIdData,
-//         address: addressData,
-//         imageURL: imageData,
-//         date: dateData,
-//         time: timeData,
-//         price: priceData
-//     };
-// }
-
-function handleResponse(response) {
-    if (!response.ok) {
-        throw response;
-    }
-    return response.json();
-}

@@ -1,6 +1,9 @@
 SHOW DATABASES;
 USE parkingabc;
+SELECT VERSION();
 SHOW TABLES;
+SHOW PROCESSLIST;
+SELECT trx_id, trx_state, trx_started, trx_requested_lock_id, trx_mysql_thread_id FROM information_schema.innodb_trx;
 
 SELECT * FROM car;
 SELECT * FROM car_image;
@@ -13,16 +16,33 @@ SELECT * FROM parkinglotsquare;
 SELECT * FROM parkingsquareimage;
 SELECT * FROM transactions;
 
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE parkinglotsquare 
+SET status = '閒置中' 
+WHERE parkinglotdata_id = 45 AND square_number = 1;
+UPDATE member SET status = NULL WHERE id = 1;
+
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE parkinglotimage
+ADD FOREIGN KEY (parkinglotdata_id) 
+REFERENCES parkinglotdata(id);
+ALTER TABLE parkinglotsquare
+ADD FOREIGN KEY (parkinglotdata_id) 
+REFERENCES parkinglotdata(id);
+
 DROP TABLE IF EXISTS car;
 DROP TABLE IF EXISTS car_image;
 DROP TABLE IF EXISTS consumption;
 DROP TABLE IF EXISTS deposit_account;
 DROP TABLE IF EXISTS member;
-DROP TABLE IF EXISTS parkinglotdata;
 DROP TABLE IF EXISTS parkinglotimage;
 DROP TABLE IF EXISTS parkinglotsquare;
 DROP TABLE IF EXISTS parkingsquareimage;
+DROP TABLE IF EXISTS parkinglotdata;
 DROP TABLE IF EXISTS transactions;
+
 CREATE TABLE car (
   id bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
   member_id varchar(255) NOT NULL,
@@ -96,7 +116,7 @@ CREATE TABLE parkinglotimage (
 CREATE TABLE parkinglotsquare (
   id bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
   parkinglotdata_id bigint DEFAULT NULL,
-  square_number varchar(255) DEFAULT NULL,
+  square_number bigint DEFAULT NULL,
   status varchar(255) DEFAULT NULL
 );
 
@@ -109,11 +129,12 @@ CREATE TABLE parkingsquareimage (
 CREATE TABLE transactions (
   id bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
   order_number varchar(255) NOT NULL,
-  deposit_account_id int NOT NULL,
+  deposit_account_id bigint NOT NULL,
   Type enum('DEPOSIT','WITHDRAWAL') NOT NULL,
   Amount bigint NOT NULL,
   status varchar(255) NOT NULL,
   transactions_time datetime DEFAULT CURRENT_TIMESTAMP
 );
+
 
 

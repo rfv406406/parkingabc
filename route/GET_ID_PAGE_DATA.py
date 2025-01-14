@@ -8,39 +8,17 @@ id_data = Blueprint('GET_ID_PAGE_DATA', __name__)
 
 def get_id_page_data():
     try:
-        auth_header = request.headers.get('Authorization')
-        # print(auth_header)
-        if auth_header is None:
-            return ({"error": True,"message": "please sign in"}), 403
-        else:
-            token = auth_header.split(' ')[1]
-            payload = decode_token(token)
-            member_id = payload['id']
-
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
-   
-        sql_query = '''
-                    SELECT
-                        id,
-                        name,
-                        birthday,
-                        cellphone,
-                        email,
-                        account,
-                        status,
-                        RegistrationDate
-                    FROM
-                        member
-                    WHERE
-                        id = %s;
-                    '''
-        cursor.execute(sql_query, (member_id,))
-        id_data = cursor.fetchone()
-       
-        cursor.close()
-        connection.close()
 
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            payload = get_payload(auth_header)
+            member_id = payload['member_id']
+        else:
+            return ({"error": True,"message": "please sign in"}), 403
+        
+        id_data = get_information_data(cursor, member_id)
         if id_data:
             return_data = {
                 "data": id_data
@@ -51,76 +29,48 @@ def get_id_page_data():
             }
         return jsonify(return_data), 200
     except mysql.connector.Error as e:
+        print("Database Error", e)
+        return jsonify({"error": True, "message": "Database Error"}), 500
+    except Exception as e:
+        print("Internal Server Error", e)
+        return jsonify({"error": True, "message": "Internal Server Error"}), 500
+    finally:
         if cursor:
             cursor.close()
         if connection:
             connection.close()
-        return jsonify({"error": True, "message": "databaseError"}), 500
+
 
 @id_data.route("/api/input_id_page_data", methods = ["POST"])
 
 def input_booking_information():
     try:
+        connection = con.get_connection()
+        cursor = connection.cursor(dictionary=True)
+
         auth_header = request.headers.get('Authorization')
-     
-        if auth_header is None:
-            return ({"error": True,"message": "please sign in"}), 403
+        if auth_header:
+            payload = get_payload(auth_header)
+            member_id = payload['member_id']
         else:
-            token = auth_header.split(' ')[1]
-            payload = decode_token(token)
-            member_id = payload['id']
+            return ({"error": True,"message": "please sign in"}), 403
 
         data = request.json
         
         if not data:
             return ({"error": True,"message": "data is not existed"}), 400
-
-        name = data.get('name')
-        email = data.get('email')
-        birthday = data.get('birthday')
-        cellphone = data.get('cellphone')
-        password = data.get('password')
-
-        # 初始化 SQL 語句和參數列表
-        sql_query = "UPDATE member SET "
-        params = []
-
-        # 為每個非空的欄位添加 SQL 語句和參數
-        if name:
-            sql_query += "name = %s, "
-            params.append(name)
-
-        if email:
-            sql_query += "email = %s, "
-            params.append(email)
-
-        if birthday:
-            sql_query += "birthday = %s, "
-            params.append(birthday)
-
-        if cellphone:
-            sql_query += "cellphone = %s, "
-            params.append(cellphone)
-
-        if password:
-            sql_query += "password = %s, "
-            params.append(password)
-
-        # 去掉最後的逗號並添加 WHERE 
-        sql_query = sql_query.rstrip(', ') + " WHERE id = %s"
-        params.append(member_id)
-
-        connection = con.get_connection()
-        cursor = connection.cursor(dictionary=True)
-        cursor.execute(sql_query, tuple(params))
+        update_information_data(cursor, data, member_id)
         connection.commit()
 
-        cursor.close()
-        connection.close()
         return jsonify({"ok":"True"}), 200
-    except mysql.connector.Error:
+    except mysql.connector.Error as e:
+        print("Database Error", e)
+        return jsonify({"error": True, "message": "Database Error"}), 500
+    except Exception as e:
+        print("Internal Server Error", e)
+        return jsonify({"error": True, "message": "Internal Server Error"}), 500
+    finally:
         if cursor:
             cursor.close()
         if connection:
             connection.close()
-        return jsonify({"error": True,"message": "databaseError"}), 500
