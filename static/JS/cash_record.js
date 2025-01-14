@@ -5,74 +5,58 @@ async function initCashRecord(){
     try{
         const response = await getCashRecordData();
         const data = await handleResponse(response);
-        console.log(data);
         cashRecords = data;
         filterAndDisplayRecords(cashRecords)
     }catch(error){
-        await handleError(error);
+        handleError(error);
     }
 }
 
 async function getCashRecordData(){
     const token = localStorage.getItem('Token');
-    const response = await fetch("/api/cash_record", {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
+    const response = await fetchAPI("/api/cash_record", token, 'GET')
     return response;
 }
 
-async function handleResponse(response) {
-    if (!response.ok) {
-        throw new Error('Get null from backend');
-    }
-    return response.json();
-}
-
-async function handleError(error) {
-    console.error('Backend could got problems', error);
-}
 // ---------------------------------------------------------------------------------
 
-document.getElementById('data-type-selector').addEventListener('change', function() {
+document.querySelector('#data-type-selector').addEventListener('change', () => {
     filterAndDisplayRecords(cashRecords);});
-document.getElementById('time-range-selector').addEventListener('change', function() {
+document.querySelector('#time-range-selector').addEventListener('change', () => {
     filterAndDisplayRecords(cashRecords);});
 
-    function filterAndDisplayRecords(data) {
-        const dataTypeSelector = document.getElementById('data-type-selector');
-        const timeRange = document.getElementById('time-range-selector').value;
+function filterAndDisplayRecords(data) {
+    const dataTypeSelector = document.querySelector('#data-type-selector');
+    const timeRange = document.querySelector('#time-range-selector').value;
+
+    // 將 select 選項的值映射到對應的鍵
+    const dataTypeMapping = {
+        'type1': 'transactions',
+        'type2': 'consumption_payment',
+        'type3': 'consumption_income'
+    };
+
+    let selectedDataType = dataTypeMapping[dataTypeSelector.value];
+    let relevantData = data[selectedDataType];
+    // 確保 relevantData 是為array
     
-        // 將 select 選項的值映射到對應的鍵
-        const dataTypeMapping = {
-            'type1': 'transactions',
-            'type2': 'consumption_payment',
-            'type3': 'consumption_income'
-        };
-    
-        let selectedDataType = dataTypeMapping[dataTypeSelector.value];
-        let relevantData = data[selectedDataType];
-    
-        // 確保 relevantData 是為array
-        if (!Array.isArray(relevantData)) {
-            relevantData = [];
-        }
-    
-        // filter
-        if (selectedDataType === 'transactions') {
-            relevantData = relevantData.filter(record => record.Type === 'DEPOSIT');
-        }
-    
-        // 根據所選時間過濾data
-        let filteredRecords = relevantData.filter(record => {
-            return matchesTimeRange(record, timeRange);
-        });
-    
-        // 動態生成
-        displayRecords(filteredRecords, selectedDataType);
+    if (!Array.isArray(relevantData)) {
+        relevantData = [];
     }
+    console.log(relevantData)
+    // filter
+    if (selectedDataType === 'transactions') {
+        relevantData = relevantData.filter(record => record.Type === 'DEPOSIT');
+    }
+    
+    // 根據所選時間過濾data
+    let filteredRecords = relevantData.filter(record => {
+        return matchesTimeRange(record, timeRange);
+    });
+
+    // 動態生成
+    displayRecords(filteredRecords, selectedDataType);
+}
 
 function matchesTimeRange(record, timeRange) {
     let recordDate;
@@ -83,7 +67,7 @@ function matchesTimeRange(record, timeRange) {
     } else if (record.transactions_time) { // 對於 'transactions'
         recordDate = new Date(record.transactions_time);
     } else {
-        return false; // 如果沒有有效的日期，返回 false
+        return false; 
     }
 
     // 根據時間範圍進行比較
@@ -117,12 +101,12 @@ function isThisMonth(date) {
 }
 
 function displayRecords(records, dataType) {
-    const container = document.getElementById('plate-board-information');
+    const container = document.querySelector('#plate-board-information');
     container.innerHTML = ''; 
 
     if (records.length === 0) {
         container.innerHTML = '<div>沒有資料</div>';
-        return;
+        return null;
     }
 
     records.forEach(record => {

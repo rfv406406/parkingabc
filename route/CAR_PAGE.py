@@ -12,123 +12,115 @@ car_board = Blueprint('CAR_PAGE', __name__)
 def input_car_board_data():
     if request.method == "POST":
         try:
+            connection = con.get_connection()
+            cursor = connection.cursor(dictionary=True)
+
             auth_header = request.headers.get('Authorization')
-            # print(auth_header)
-            if auth_header is None:
-                return ({"error": True,"message": "please sign in"}), 403
+
+            if auth_header:
+                payload = get_payload(auth_header)
+                member_id = payload['member_id']
             else:
-                token = auth_header.split(' ')[1]
-                payload = decode_token(token)
-                member_id = payload['id']
-            
+                return ({"error": True,"message": "please sign in"}), 403
+   
             if not request.form:
                 return ({"error": True,"message": "data is not existed"}), 400
             
             boardNumber = request.form.get('boardNumber')
-            print(boardNumber)
-            # 更新停車時間
-            connection = con.get_connection()
-            cursor = connection.cursor(dictionary=True)
-            cursor.execute("""
-                INSERT INTO car (member_id, carboard_number)
-                VALUES (%s, %s);
-            """, (member_id, boardNumber))
-            connection.commit()
+
+            input_carboard_number(cursor, connection, member_id, boardNumber)
             car_images = request.files.getlist('img')
             car_id = cursor.lastrowid
-            print(car_id)
-            for image in car_images:
-                if image and image.filename.endswith(('jpg', 'jpeg', 'png', 'jfif')):
-                    filename = secure_filename(image.filename)
-                    key = f"{str(int(time.time()))}-{filename}" # 生成檔案名稱
-                    s3_client.upload_fileobj(image, BUCKET_NAME, key)
-                    image_url = f"https://d1hxt3hn1q2xo2.cloudfront.net/{key}"
-                    # print(image_url)
-                    # 將 image_url 和 parkinglotdata_id 保存到DB
-                    insert_query = """
-                        INSERT INTO car_image (car_id, car_image)
-                        VALUES (%s, %s);
-                    """
-                    cursor.execute(insert_query, (car_id, image_url))
+            input_car_images(cursor, car_id, car_images)
+
             connection.commit()
             
-            cursor.close()
-            connection.close()
+            # cursor.close()
+            # connection.close()
             return jsonify({"ok":"True"}), 200
-        except mysql.connector.Error:
+        
+        except mysql.connector.Error as e:
+            print("Database Error", e)
+            return jsonify({"error": True, "message": "Database Error"}), 500
+        except Exception as e:
+            print("Internal Server Error", e)
+            return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        finally:
             if cursor:
                 cursor.close()
             if connection:
                 connection.close()
-            return jsonify({"error": True,"message": "databaseError"}), 500
     
     if request.method == "GET":
         try:
-            auth_header = request.headers.get('Authorization')
-            # print(auth_header)
-            if auth_header is None:
-                return ({"error": True,"message": "please signin"}), 403
-            else:
-                token = auth_header.split(' ')[1]
-                payload = decode_token(token)
-                member_id = payload['id']
-
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
-            #  transactions search
-            cursor.execute("SELECT * FROM car WHERE member_id = %s", (member_id,))
-            carboard_number_datas = cursor.fetchall()
 
-            for carboard_number_data in carboard_number_datas:
-                # 獲取圖像
-                cursor.execute("SELECT car_image FROM car_image WHERE car_id = %s", (carboard_number_data["id"],))
-                images = cursor.fetchall()
-                carboard_number_data["images"] = [image["car_image"] for image in images]
-                
-            cursor.close()
-            connection.close()
+            auth_header = request.headers.get('Authorization')
+
+            if auth_header:
+                payload = get_payload(auth_header)
+                member_id = payload['member_id']
+            else:
+                return ({"error": True,"message": "please sign in"}), 403
+
+            carboard_number_datas = get_carboard_number_datas(cursor, member_id)
+
             print(carboard_number_datas)
-            if carboard_number_datas is not None:  # Check if parking_lot_datas is not None
-                return_data = {
+            car_ids = [carboard_number_data['id'] for carboard_number_data in carboard_number_datas]
+            images = get_car_images(cursor, car_ids)
+            print(images)
+            for carboard_number_data in carboard_number_datas:
+                carboard_number_data["images"] = [image["car_image"] for image in images]
+            print(carboard_number_datas)
+
+            return_data = {
                     "data": carboard_number_datas
                 }
+            
             return jsonify(return_data), 200
         except mysql.connector.Error as e:
+            print("Database Error", e)
+            return jsonify({"error": True, "message": "Database Error"}), 500
+        except Exception as e:
+            print("Internal Server Error", e)
+            return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        finally:
             if cursor:
                 cursor.close()
             if connection:
                 connection.close()
-            return jsonify({"error": True, "message": "databaseError"}), 500
+            
     if request.method == "DELETE":
         try:
-            auth_header = request.headers.get('Authorization')
-            if auth_header is None:
-                return jsonify({"error": True, "message": "Please sign in"}), 403
-            else:
-                token = auth_header.split(' ')[1]
-                payload = decode_token(token)
-                member_id = payload['id']
-
-            data = request.json
-            car_id = data.get('id')  # 從停車場中獲取停車場數據的ID
-
             connection = con.get_connection()
             cursor = connection.cursor(dictionary=True)
 
-            cursor.execute("DELETE FROM car_image WHERE car_id = %s", (car_id,))
+            auth_header = request.headers.get('Authorization')
 
-            # DELETE parkinglotdata
-            cursor.execute("DELETE FROM car WHERE id = %s AND member_id = %s", (car_id, member_id))
+            if auth_header:
+                payload = get_payload(auth_header)
+                member_id = payload['member_id']
+            else:
+                return ({"error": True,"message": "please sign in"}), 403
 
+            data = request.json
+            car_id = data['id']  # 從停車場中獲取停車場數據的ID
+
+            delete_car_image(cursor, car_id)
+            delete_car(cursor, car_id, member_id)
             connection.commit()  
-            cursor.close()
-            connection.close()
 
             return jsonify({"message": "deleted successfully"}), 200
 
         except mysql.connector.Error as e:
+            print("Database Error", e)
+            return jsonify({"error": True, "message": "Database Error"}), 500
+        except Exception as e:
+            print("Internal Server Error", e)
+            return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        finally:
             if cursor:
                 cursor.close()
             if connection:
                 connection.close()
-            return jsonify({"error": True, "message": "Database error"}), 500

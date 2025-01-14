@@ -1,54 +1,20 @@
-// 通用函式來切換類
-function toggleClass(elementSelector, classToToggle) {
-    let element = document.querySelector(elementSelector);
-    if (element) {
-      element.classList.toggle(classToToggle);
-    };
-  };
-  
-  // 事件監聽設置的通用函式
-  function setupToggle(buttonSelector, toggles) {
-    document.querySelector(buttonSelector).addEventListener('click', function(event) {
-      event.preventDefault();
-      toggles.forEach(function(toggle) {
-        toggleClass(toggle.elementSelector, toggle.classToToggle);
-      });
-    });
-  };
-
-//car_page edit
-setupToggle('#plate-board-edit-button', [
-    { elementSelector: '#plate-board-container-header', classToToggle: 'plate-board-container-header-toggled' }
-  ]);
-// ----------------------------------------------------------------------------------
 initCarPage();
 let memberCarData;
 async function initCarPage(){
-    try{
-        const response = await getCarBoardData();
-        const data = await handleResponse(response);
-        memberCarData = data;
-        addCarInDiv(data)
+  const token = localStorage.getItem('Token');
+  try{
+      const getCarBoardData = await fetchAPI("/api/input_car_board_data", token, "GET");
+      const data = await handleResponse(getCarBoardData);
+      memberCarData = data;
+      addCarInDiv(data)
     }catch(error){
-        await handleError(error);
+      handleError(error);
     }
 }
 
-async function getCarBoardData(){
-  const token = localStorage.getItem('Token');
-  const response = await fetch("/api/input_car_board_data", {
-      method: 'GET',
-      headers: {
-          'Authorization': `Bearer ${token}`
-      }
-  });
-  return response;
-}
-
-
   // 匯入車牌資訊
 const carBoardDataStorage = document.querySelector('#plate-board-data-submit')
-carBoardDataStorage.addEventListener('click', async function(event) {
+carBoardDataStorage.addEventListener('click', async (event) => {
   event.preventDefault();
   let formData = await packingCarBoardData(); 
   await passCarBoardData(formData); 
@@ -56,34 +22,31 @@ carBoardDataStorage.addEventListener('click', async function(event) {
 });
 
 //刪除停車場資料
-document.querySelector('#parking-lot-container').addEventListener('click', async function(event) {
+document.querySelector('#parking-lot-container').addEventListener('click', async (event) => {
   if (event.target.matches('.parking-lot-delete-button')) {
       event.preventDefault();
-
       let carTable = event.target.closest('.parking-lot-page-table');
 
       if (carTable) {
-          const cartBoardNumber = carTable.querySelector('.parking-lot-information-page-go-button').textContent;
-          const carData = memberCarData.data.find(lot => lot.carboard_number === cartBoardNumber); 
-          console.log(carData)
           try{
-              const response = await deleteCarData(carData);
-              const data = await handleResponse(response);
-              console.log(data)
-              initCarPage();
+            const cartBoardNumber = carTable.querySelector('.parking-lot-information-page-go-button').textContent;
+            const carData = memberCarData.data.find(lot => lot.carboard_number === cartBoardNumber); 
+            const response = await deleteCarData(carData);
+            const data = await handleResponse(response);
+            initCarPage();
           }catch(error){
-              await handleError(error);
+            handleError(error);
           }
       }
   }
 });
 
-async function getCarBoardInformation(){
+function getCarBoardInformation(){
   let boardNumber = document.querySelector('#plate-board-number').value;
   if(boardNumber == ''){
     let message = document.querySelector('#car-page-message')
     message.textContent = '請輸入車牌'
-    return
+    return null;
   }
   let carImgArray = [];
   let img = document.querySelector('#car-img-file').files
@@ -98,7 +61,7 @@ async function getCarBoardInformation(){
 };
 
 async function packingCarBoardData(){
-  let carBoardData = await getCarBoardInformation();
+  let carBoardData = getCarBoardInformation();
 
   let formData = new FormData();
 
@@ -109,7 +72,6 @@ async function packingCarBoardData(){
           formData.append('img', carBoardData.img[i]);
       }
   } else {
-      // 空值時，添加''或 null 作為替代
       formData.append('img', '');
   }
 
@@ -120,7 +82,6 @@ async function passCarBoardData(formData){
   try{
       const response = await inputCarBoardDataToDB(formData);
       const data = await handleResponse(response);
-      console.log(data);
       // await fetchData();
   }catch(error){
       handleError(error);
@@ -129,40 +90,16 @@ async function passCarBoardData(formData){
 
 async function inputCarBoardDataToDB(formData){
   const token = localStorage.getItem('Token');
-  const response = await fetch("/api/input_car_board_data", {
-      method: 'POST',
-      headers: {
-          'Authorization': `Bearer ${token}`,
-      },
-      body: formData,
-  });
+  const response = await fetchAPI("/api/input_car_board_data", token, 'POST', formData)
   return response;
 }
 
-// async function getData(){
-//   const response = await fetch("/api/input_parking_lot_information", {
-//       method: 'GET',
-//   });
-//   return response;
-// }
-
-async function handleResponse(response) {
-  if (!response.ok) {
-      throw new Error('Get null from backend');
-  }
-  return response.json();
-}
-
-async function handleError(error) {
-  console.error('Backend could got problems', error);
-}
-
 function addCarInDiv(data) {
-  const container = document.getElementById('parking-lot-container'); 
+  const container = document.querySelector('#parking-lot-container'); 
   container.innerHTML = ''; 
   if(data.data.length == 0){
       container.textContent = '目前無登記的車牌';
-      return;
+      return null;
   }
 
   data.data.forEach(item => {
@@ -190,8 +127,12 @@ function addCarInDiv(data) {
       parkingLotDiv.appendChild(deleteButton);
 
       // 點擊 parking-lot-page-table 切換刪除按鈕成顯示
-      parkingLotDiv.addEventListener('click', function() {
-          deleteButton.style.display = deleteButton.style.display === 'none' ? 'block' : 'none';
+      parkingLotDiv.addEventListener('click', () => {
+          if(deleteButton.style.display === "none") {
+            deleteButton.style.display === 'block';
+          }else{
+            deleteButton.style.display === 'none';
+          } 
       });
 
       container.appendChild(parkingLotDiv);
@@ -204,13 +145,6 @@ function addCarInDiv(data) {
 
 async function deleteCarData(data){
   const token = localStorage.getItem('Token');
-  const response = await fetch("/api/input_car_board_data", {
-      method: 'DELETE',
-      headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data), 
-  });
+  const response = await fetchAPI("/api/input_car_board_data", token, 'DELETE', data)
   return response;
 }

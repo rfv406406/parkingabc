@@ -9,33 +9,17 @@ member_data = Blueprint('MEMBER_DATA_API', __name__)
 
 def get_member_data():
     try:
-        auth_header = request.headers.get('Authorization')
-        # print(auth_header)
-        if auth_header is None:
-            return ({"error": True,"message": "please sign in"}), 403
-        else:
-            token = auth_header.split(' ')[1]
-            payload = decode_token(token)
-            member_id = payload['id']
-
         connection = con.get_connection()
         cursor = connection.cursor(dictionary=True)
-        sql_query = '''
-                    SELECT 
-                        member.status,
-                        deposit_account.Balance
-                    FROM 
-                        member
-                    JOIN 
-                        deposit_account ON member.id = deposit_account.member_id
-                    WHERE
-                        member.id = %s;
-                    '''
-        cursor.execute(sql_query, (member_id,))
-        member_data = cursor.fetchall()
-       
-        cursor.close()
-        connection.close()
+
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            payload = get_payload(auth_header)
+            member_id = payload['member_id']
+        else:
+            return jsonify({"error": True,"message": "please sign in"}), 403
+
+        member_data = get_uesr_datas(cursor, member_id)
         if member_data:
             return_data = {
                 "data": member_data
@@ -46,8 +30,13 @@ def get_member_data():
             }
         return jsonify(return_data), 200
     except mysql.connector.Error as e:
+        print("Database Error", e)
+        return jsonify({"error": True, "message": "Database Error"}), 500
+    except Exception as e:
+        print("Internal Server Error", e)
+        return jsonify({"error": True, "message": "Internal Server Error"}), 500
+    finally:
         if cursor:
-            cursor.close()
+                cursor.close()
         if connection:
             connection.close()
-        return jsonify({"error": True, "message": "databaseError"}), 500

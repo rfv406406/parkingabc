@@ -223,6 +223,12 @@
     cursor: pointer;
 }
 
+.parking_lot-information .selector option {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
 
 .parking_lot-information .separator {
     width: 100%;
