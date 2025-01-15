@@ -4,10 +4,6 @@ A mobile-friendly website focused on backend and database design, offering servi
 
 <img src=readmefile/img.png width=80% />
 
-## DEMO URL
-
-https://parkingabc.online/
-
 ## Test Account
 
 Guests could use map and navigation function without logging in. 
